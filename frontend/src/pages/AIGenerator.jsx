@@ -34,7 +34,7 @@ export default function AIGenerator() {
         formData.append("past_papers_pdf", pastPapersPdf);
       }
 
-      const res = await axios.post("http://127.0.0.1:8000/ai/generate", formData, {
+      const res = await axios.post("https://academiq-jenb.onrender.com/ai/generate", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setResult(res.data.questions);

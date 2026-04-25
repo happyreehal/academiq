@@ -15,7 +15,7 @@ export default function Register() {
     setLoading(true);
     setError("");
     try {
-      await axios.post("http://127.0.0.1:8000/auth/register", form);
+      await axios.post("https://academiq-jenb.onrender.com/auth/register", form);
       navigate("/login");
     } catch (err) {
       setError(err.response?.data?.detail || "Registration failed");

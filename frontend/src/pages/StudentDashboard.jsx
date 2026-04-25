@@ -3,7 +3,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-const API = "http://127.0.0.1:8000";
+const API = "https://academiq-jenb.onrender.com";
 const SEMESTERS = ["1st","2nd","3rd","4th","5th","6th","7th","8th"];
 
 export default function StudentDashboard() {

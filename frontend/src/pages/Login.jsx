@@ -20,7 +20,7 @@ export default function Login() {
     setLoading(true);
     setError("");
     try {
-      const res = await axios.post("http://127.0.0.1:8000/auth/login", form);
+      const res = await axios.post("https://academiq-jenb.onrender.com/auth/login", form);
       login({ name: res.data.name, role: res.data.role }, res.data.token);
       if (res.data.role === "admin") navigate("/admin");
       else navigate("/student");
