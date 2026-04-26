@@ -3,6 +3,8 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
+const API = "https://academiq-jenb.onrender.com";
+
 export default function AIGenerator() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -17,112 +19,116 @@ export default function AIGenerator() {
   const [feedbackSent, setFeedbackSent] = useState(false);
 
   const handleGenerate = async () => {
-    if (!syllabusPdf) {
-      setError("Please upload syllabus PDF");
-      return;
-    }
-    setLoading(true);
-    setError("");
-    setResult("");
-    setFeedback(null);
-    setFeedbackSent(false);
-
+    if (!syllabusPdf) { setError("Please upload syllabus PDF"); return; }
+    setLoading(true); setError(""); setResult(""); setFeedback(null); setFeedbackSent(false);
     try {
       const formData = new FormData();
       formData.append("syllabus_pdf", syllabusPdf);
-      if (pastPapersPdf) {
-        formData.append("past_papers_pdf", pastPapersPdf);
-      }
-
-      const res = await axios.post("https://academiq-jenb.onrender.com/ai/generate", formData, {
+      if (pastPapersPdf) formData.append("past_papers_pdf", pastPapersPdf);
+      const res = await axios.post(`${API}/ai/generate`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setResult(res.data.questions);
     } catch (err) {
       setError(err.response?.data?.detail || "Generation failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
+    } finally { setLoading(false); }
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      <nav className="text-white px-8 py-4 flex justify-between items-center" style={{backgroundColor:"#1e3a5f"}}>
-        <h1 className="text-xl font-bold">AcademiQ — AI Question Generator</h1>
-        <div className="flex items-center gap-4">
-          <button onClick={() => navigate("/student")} className="text-sm underline">Back to Dashboard</button>
-          <span className="text-sm">Welcome, {user?.name}</span>
-          <button onClick={handleLogout} className="bg-white text-sm px-4 py-1 rounded-lg font-medium" style={{color:"#1e3a5f"}}>Logout</button>
+    <div style={{minHeight:"100vh", background:"#F4F7FB", fontFamily:"'DM Sans',sans-serif"}}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+        .ai-card { background:white; borderRadius:16px; border:1px solid rgba(15,42,74,0.12); padding:28px; marginBottom:20px; }
+        .file-input { width:100%; padding:10px 14px; border:2px dashed rgba(15,42,74,0.2); borderRadius:10px; fontSize:14px; fontFamily:'DM Sans',sans-serif; background:#F4F7FB; cursor:pointer; boxSizing:border-box; }
+        .gen-btn { width:100%; padding:15px; background:linear-gradient(135deg,#0F2A4A,#1D5FA0); color:white; border:none; borderRadius:12px; fontSize:16px; fontWeight:600; cursor:pointer; fontFamily:'DM Sans',sans-serif; transition:opacity 0.2s; }
+        .gen-btn:hover { opacity:0.9; }
+        .gen-btn:disabled { opacity:0.6; cursor:not-allowed; }
+        .feedback-btn { padding:10px 20px; borderRadius:10px; border:1px solid rgba(15,42,74,0.2); fontSize:15px; cursor:pointer; fontFamily:'DM Sans',sans-serif; background:white; transition:all 0.2s; }
+        .feedback-btn.up.active { background:#E1F5EE; borderColor:#1D9E75; }
+        .feedback-btn.down.active { background:#fef2f2; borderColor:#dc2626; }
+        .comment-area { width:100%; padding:12px 14px; border:1px solid rgba(15,42,74,0.15); borderRadius:10px; fontSize:14px; fontFamily:'DM Sans',sans-serif; resize:vertical; outline:none; boxSizing:border-box; }
+        .nav-btn { background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:white; padding:8px 18px; borderRadius:8px; cursor:pointer; fontSize:14px; fontFamily:'DM Sans',sans-serif; }
+      `}</style>
+
+      {/* Navbar */}
+      <nav style={{background:"#0F2A4A", height:"64px", padding:"0 32px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100}}>
+        <div style={{display:"flex", alignItems:"center", gap:"10px"}}>
+          <div style={{width:"36px", height:"36px", background:"#1D9E75", borderRadius:"8px", display:"flex", alignItems:"center", justifyContent:"center", color:"white", fontWeight:"700", fontSize:"18px"}}>Q</div>
+          <span style={{color:"white", fontWeight:"600", fontSize:"15px"}}>AcademiQ <span style={{color:"#1D9E75"}}>AI Generator</span></span>
+        </div>
+        <div style={{display:"flex", alignItems:"center", gap:"12px"}}>
+          <button onClick={() => navigate("/student")} style={{background:"none", border:"none", color:"rgba(255,255,255,0.7)", cursor:"pointer", fontSize:"14px", textDecoration:"underline"}}>← Back</button>
+          <span style={{color:"rgba(255,255,255,0.7)", fontSize:"14px"}}>👋 {user?.name}</span>
+          <button onClick={() => { logout(); navigate("/login"); }} className="nav-btn">Logout</button>
         </div>
       </nav>
 
-      <div className="max-w-4xl mx-auto mt-10 px-4 space-y-6">
-        <div className="bg-white p-6 rounded-2xl shadow-md">
-          <h2 className="text-xl font-bold mb-1" style={{color:"#1e3a5f"}}>Step 1 — Upload Syllabus PDF</h2>
-          <p className="text-sm text-slate-500 mb-3">Upload your latest course syllabus in PDF format</p>
+      <div style={{maxWidth:"800px", margin:"40px auto", padding:"0 20px"}}>
+
+        {/* Step 1 */}
+        <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px", marginBottom:"20px"}}>
+          <h2 style={{fontSize:"18px", fontWeight:"700", color:"#0F2A4A", margin:"0 0 6px"}}>📄 Step 1 — Upload Syllabus PDF</h2>
+          <p style={{color:"#4A6080", fontSize:"14px", margin:"0 0 14px"}}>Upload your latest course syllabus in PDF format</p>
           <input type="file" accept=".pdf" onChange={(e) => setSyllabusPdf(e.target.files[0])}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2" />
-          {syllabusPdf && <p className="text-sm text-green-600 mt-1">✓ {syllabusPdf.name}</p>}
+            style={{width:"100%", padding:"10px 14px", border:"2px dashed rgba(15,42,74,0.2)", borderRadius:"10px", fontSize:"14px", background:"#F4F7FB", cursor:"pointer", boxSizing:"border-box"}} />
+          {syllabusPdf && <p style={{color:"#1D9E75", fontSize:"13px", marginTop:"8px", fontWeight:"600"}}>✓ {syllabusPdf.name}</p>}
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-md">
-          <h2 className="text-xl font-bold mb-1" style={{color:"#1e3a5f"}}>Step 2 — Upload Past Year Papers PDF (Optional)</h2>
-          <p className="text-sm text-slate-500 mb-3">Upload previous year question papers for better predictions</p>
+        {/* Step 2 */}
+        <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px", marginBottom:"20px"}}>
+          <h2 style={{fontSize:"18px", fontWeight:"700", color:"#0F2A4A", margin:"0 0 6px"}}>📚 Step 2 — Upload Past Year Papers PDF <span style={{color:"#4A6080", fontWeight:"400", fontSize:"14px"}}>(Optional)</span></h2>
+          <p style={{color:"#4A6080", fontSize:"14px", margin:"0 0 14px"}}>Upload previous year question papers for better predictions</p>
           <input type="file" accept=".pdf" onChange={(e) => setPastPapersPdf(e.target.files[0])}
-            className="w-full border border-slate-300 rounded-lg px-3 py-2" />
-          {pastPapersPdf && <p className="text-sm text-green-600 mt-1">✓ {pastPapersPdf.name}</p>}
+            style={{width:"100%", padding:"10px 14px", border:"2px dashed rgba(15,42,74,0.2)", borderRadius:"10px", fontSize:"14px", background:"#F4F7FB", cursor:"pointer", boxSizing:"border-box"}} />
+          {pastPapersPdf && <p style={{color:"#1D9E75", fontSize:"13px", marginTop:"8px", fontWeight:"600"}}>✓ {pastPapersPdf.name}</p>}
         </div>
 
-        {error && <div className="bg-red-100 text-red-600 px-4 py-2 rounded">{error}</div>}
+        {/* Error */}
+        {error && (
+          <div style={{background:"#fef2f2", border:"1px solid #fecaca", color:"#dc2626", padding:"12px 16px", borderRadius:"10px", fontSize:"14px", marginBottom:"20px"}}>
+            ⚠️ {error}
+          </div>
+        )}
 
+        {/* Generate Button */}
         <button onClick={handleGenerate} disabled={loading}
-          className="w-full py-3 rounded-xl text-white font-semibold text-lg"
-          style={{backgroundColor:"#1e3a5f"}}>
-          {loading ? "Generating Practice Paper... Please wait..." : "Generate AI Practice Paper"}
+          style={{width:"100%", padding:"15px", background:loading?"#94a3b8":"linear-gradient(135deg,#0F2A4A,#1D5FA0)", color:"white", border:"none", borderRadius:"12px", fontSize:"16px", fontWeight:"600", cursor:loading?"not-allowed":"pointer", fontFamily:"'DM Sans',sans-serif", marginBottom:"20px"}}>
+          {loading ? "⏳ Generating Practice Paper... Please wait..." : "🤖 Generate AI Practice Paper"}
         </button>
 
+        {/* Result */}
         {result && (
-          <div className="bg-white p-6 rounded-2xl shadow-md">
-            <h2 className="text-xl font-bold mb-4" style={{color:"#1e3a5f"}}>Generated Practice Paper</h2>
-            <pre className="whitespace-pre-wrap text-slate-700 text-sm leading-relaxed">{result}</pre>
+          <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px", marginBottom:"40px"}}>
+            <h2 style={{fontSize:"18px", fontWeight:"700", color:"#0F2A4A", margin:"0 0 16px"}}>📝 Generated Practice Paper</h2>
+            <pre style={{whiteSpace:"pre-wrap", color:"#374151", fontSize:"14px", lineHeight:"1.7", fontFamily:"'DM Sans',sans-serif"}}>{result}</pre>
 
-            <div className="mt-6 border-t pt-4">
-              <p className="font-medium text-slate-700 mb-2">Rate this generated paper:</p>
-              <div className="flex gap-4 mb-3">
+            <div style={{marginTop:"24px", paddingTop:"20px", borderTop:"1px solid rgba(15,42,74,0.1)"}}>
+              <p style={{fontWeight:"600", color:"#0F2A4A", marginBottom:"12px"}}>Rate this generated paper:</p>
+              <div style={{display:"flex", gap:"12px", marginBottom:"16px"}}>
                 <button onClick={() => setFeedback("up")}
-                  className={`px-4 py-2 rounded-lg border text-lg ${feedback === "up" ? "bg-green-100 border-green-500" : "border-slate-300"}`}>
+                  style={{padding:"10px 20px", borderRadius:"10px", border:`1px solid ${feedback==="up"?"#1D9E75":"rgba(15,42,74,0.2)"}`, fontSize:"15px", cursor:"pointer", background:feedback==="up"?"#E1F5EE":"white"}}>
                   👍 Helpful
                 </button>
                 <button onClick={() => setFeedback("down")}
-                  className={`px-4 py-2 rounded-lg border text-lg ${feedback === "down" ? "bg-red-100 border-red-400" : "border-slate-300"}`}>
+                  style={{padding:"10px 20px", borderRadius:"10px", border:`1px solid ${feedback==="down"?"#dc2626":"rgba(15,42,74,0.2)"}`, fontSize:"15px", cursor:"pointer", background:feedback==="down"?"#fef2f2":"white"}}>
                   👎 Not Helpful
                 </button>
               </div>
 
               {feedback && !feedbackSent && (
-                <div className="space-y-2">
-                  <textarea
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    rows={3}
-                    className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Any comments? (optional)"
-                  />
+                <div style={{display:"flex", flexDirection:"column", gap:"10px"}}>
+                  <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={3}
+                    style={{width:"100%", padding:"12px 14px", border:"1px solid rgba(15,42,74,0.15)", borderRadius:"10px", fontSize:"14px", fontFamily:"'DM Sans',sans-serif", resize:"vertical", outline:"none", boxSizing:"border-box"}}
+                    placeholder="Any comments? (optional)" />
                   <button onClick={() => setFeedbackSent(true)}
-                    className="px-4 py-2 rounded-lg text-white text-sm font-medium"
-                    style={{backgroundColor:"#1e3a5f"}}>
+                    style={{alignSelf:"flex-start", padding:"10px 20px", background:"#0F2A4A", color:"white", border:"none", borderRadius:"8px", fontSize:"14px", fontWeight:"500", cursor:"pointer"}}>
                     Submit Feedback
                   </button>
                 </div>
               )}
 
               {feedbackSent && (
-                <p className="text-green-600 font-medium">Thank you for your feedback!</p>
+                <p style={{color:"#1D9E75", fontWeight:"600"}}>✅ Thank you for your feedback!</p>
               )}
             </div>
           </div>
