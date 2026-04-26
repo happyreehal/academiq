@@ -17,14 +17,20 @@ users_col = db["users"]
 
 pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+ADMIN_SECRET = os.getenv("ADMIN_SECRET", "academiq_admin_2026")
 
 @router.post("/register")
 def register(user: UserRegister):
+    if user.role == "admin":
+        if not user.admin_code:
+            raise HTTPException(status_code=403, detail="Admin secret code required")
+        if user.admin_code != ADMIN_SECRET:
+            raise HTTPException(status_code=403, detail="Invalid admin secret code")
+
     if users_col.find_one({"email": user.email, "role": user.role}):
         raise HTTPException(status_code=400, detail="Email already registered")
 
     hashed_pw = pwd_ctx.hash(user.password)
-
     user_doc = {
         "name": user.name,
         "email": user.email,
