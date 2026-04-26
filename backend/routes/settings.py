@@ -1,127 +1,134 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pymongo import MongoClient
-from utils.dependencies import admin_only
-from dotenv import load_dotenv
+from utils.dependencies import admin_only, get_current_user
 from pydantic import BaseModel
+from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-MONGO_URI = os.getenv("MONGO_URI")
-client = MongoClient(MONGO_URI)
+router = APIRouter()
+client = MongoClient(os.getenv("MONGO_URI"))
 db = client["academiq"]
 settings_col = db["settings"]
 users_col = db["users"]
 
-router = APIRouter()
+def get_settings():
+    doc = settings_col.find_one({"_id": "main"})
+    if not doc:
+        doc = {"_id": "main", "departments": [], "classes": [], "subjects": {}, "dept_classes": {}}
+        settings_col.insert_one(doc)
+    return doc
 
-def get_setting(key):
-    doc = settings_col.find_one({"key": key})
-    return doc["values"] if doc else []
+def save_settings(doc):
+    settings_col.update_one({"_id": "main"}, {"$set": doc}, upsert=True)
 
-def set_setting(key, values):
-    settings_col.update_one({"key": key}, {"$set": {"values": values}}, upsert=True)
-
-class AddItem(BaseModel):
+class ValueModel(BaseModel):
     value: str
 
-class SubjectAdd(BaseModel):
+class SubjectModel(BaseModel):
     department: str
     subject: str
 
-class DeptClassMap(BaseModel):
+class DeptClassModel(BaseModel):
     department: str
     class_name: str
 
 @router.get("/departments")
 def get_departments():
-    return {"departments": get_setting("departments")}
+    return {"departments": get_settings().get("departments", [])}
 
 @router.post("/departments")
-def add_department(item: AddItem, user=Depends(admin_only)):
-    val = item.value.strip().upper()
-    current = get_setting("departments")
-    if val in current:
+def add_department(body: ValueModel, user=Depends(admin_only)):
+    doc = get_settings()
+    depts = doc.get("departments", [])
+    if body.value in depts:
         raise HTTPException(400, "Already exists")
-    current.append(val)
-    set_setting("departments", current)
-    return {"departments": current}
+    depts.append(body.value)
+    save_settings({"departments": depts})
+    return {"departments": depts}
 
 @router.delete("/departments/{name}")
-def remove_department(name: str, user=Depends(admin_only)):
-    current = get_setting("departments")
-    if name not in current:
-        raise HTTPException(404, "Not found")
-    current.remove(name)
-    set_setting("departments", current)
-    doc = settings_col.find_one({"key": "subjects"})
-    if doc:
-        subjects = doc.get("values", {})
-        subjects.pop(name, None)
-        settings_col.update_one({"key": "subjects"}, {"$set": {"values": subjects}})
-    mapping_doc = settings_col.find_one({"key": "dept_classes"})
-    if mapping_doc:
-        mapping = mapping_doc.get("values", {})
-        mapping.pop(name, None)
-        settings_col.update_one({"key": "dept_classes"}, {"$set": {"values": mapping}})
-    return {"departments": current}
+def delete_department(name: str, user=Depends(admin_only)):
+    doc = get_settings()
+    depts = [d for d in doc.get("departments", []) if d != name]
+    subjects = doc.get("subjects", {})
+    subjects.pop(name, None)
+    dept_classes = doc.get("dept_classes", {})
+    dept_classes.pop(name, None)
+    save_settings({"departments": depts, "subjects": subjects, "dept_classes": dept_classes})
+    return {"departments": depts}
 
 @router.get("/classes")
 def get_classes():
-    return {"classes": get_setting("classes")}
+    return {"classes": get_settings().get("classes", [])}
 
 @router.post("/classes")
-def add_class(item: AddItem, user=Depends(admin_only)):
-    val = item.value.strip()
-    current = get_setting("classes"  )
-    if val in current:
+def add_class(body: ValueModel, user=Depends(admin_only)):
+    doc = get_settings()
+    classes = doc.get("classes", [])
+    if body.value in classes:
         raise HTTPException(400, "Already exists")
-    current.append(val)
-    set_setting("classes", current)
-    return {"classes": current}
+    classes.append(body.value)
+    save_settings({"classes": classes})
+    return {"classes": classes}
 
 @router.delete("/classes/{name}")
-def remove_class(name: str, user=Depends(admin_only)):
-    current = get_setting("classes")
-    if name not in current:
-        raise HTTPException(404, "Not found")
-    current.remove(name)
-    set_setting("classes", current)
-    return {"classes": current}
+def delete_class(name: str, user=Depends(admin_only)):
+    doc = get_settings()
+    classes = [c for c in doc.get("classes", []) if c != name]
+    save_settings({"classes": classes})
+    return {"classes": classes}
 
 @router.get("/subjects")
-def get_all_subjects():
-    doc = settings_col.find_one({"key": "subjects"})
-    return {"subjects": doc["values"] if doc else {}}
+def get_subjects():
+    return {"subjects": get_settings().get("subjects", {})}
 
 @router.post("/subjects")
-def add_subject(item: SubjectAdd, user=Depends(admin_only)):
-    dept = item.department.strip().upper()
-    subj = item.subject.strip()
-    depts = get_setting("departments")
-    if dept not in depts:
-        raise HTTPException(400, f"Department '{dept}' does not exist")
-    doc = settings_col.find_one({"key": "subjects"})
-    subjects = doc["values"] if doc else {}
-    dept_list = subjects.get(dept, [])
-    if subj in dept_list:
-        raise HTTPException(400, "Subject already exists")
-    dept_list.append(subj)
-    subjects[dept] = dept_list
-    settings_col.update_one({"key": "subjects"}, {"$set": {"values": subjects}}, upsert=True)
+def add_subject(body: SubjectModel, user=Depends(admin_only)):
+    doc = get_settings()
+    subjects = doc.get("subjects", {})
+    if body.department not in subjects:
+        subjects[body.department] = []
+    if body.subject in subjects[body.department]:
+        raise HTTPException(400, "Already exists")
+    subjects[body.department].append(body.subject)
+    save_settings({"subjects": subjects})
     return {"subjects": subjects}
 
 @router.delete("/subjects/{department}/{subject}")
-def remove_subject(department: str, subject: str, user=Depends(admin_only)):
-    doc = settings_col.find_one({"key": "subjects"})
-    subjects = doc["values"] if doc else {}
-    dept_list = subjects.get(department, [])
-    if subject not in dept_list:
-        raise HTTPException(404, "Subject not found")
-    dept_list.remove(subject)
-    subjects[department] = dept_list
-    settings_col.update_one({"key": "subjects"}, {"$set": {"values": subjects}}, upsert=True)
+def delete_subject(department: str, subject: str, user=Depends(admin_only)):
+    doc = get_settings()
+    subjects = doc.get("subjects", {})
+    if department in subjects:
+        subjects[department] = [s for s in subjects[department] if s != subject]
+    save_settings({"subjects": subjects})
     return {"subjects": subjects}
+
+@router.get("/dept-classes")
+def get_dept_classes():
+    return {"dept_classes": get_settings().get("dept_classes", {})}
+
+@router.post("/dept-classes")
+def add_dept_class(body: DeptClassModel, user=Depends(admin_only)):
+    doc = get_settings()
+    dept_classes = doc.get("dept_classes", {})
+    if body.department not in dept_classes:
+        dept_classes[body.department] = []
+    if body.class_name in dept_classes[body.department]:
+        raise HTTPException(400, "Already linked")
+    dept_classes[body.department].append(body.class_name)
+    save_settings({"dept_classes": dept_classes})
+    return {"dept_classes": dept_classes}
+
+@router.delete("/dept-classes/{department}/{class_name}")
+def delete_dept_class(department: str, class_name: str, user=Depends(admin_only)):
+    doc = get_settings()
+    dept_classes = doc.get("dept_classes", {})
+    if department in dept_classes:
+        dept_classes[department] = [c for c in dept_classes[department] if c != class_name]
+    save_settings({"dept_classes": dept_classes})
+    return {"dept_classes": dept_classes}
 
 @router.get("/students")
 def get_students(user=Depends(admin_only)):
@@ -129,45 +136,6 @@ def get_students(user=Depends(admin_only)):
     return {"students": students}
 
 @router.delete("/students/{email}")
-def remove_student(email: str, user=Depends(admin_only)):
-    result = users_col.delete_one({"email": email, "role": "student"})
-    if result.deleted_count == 0:
-        raise HTTPException(404, "Student not found")
-    return {"message": f"Student {email} removed"}
-
-@router.get("/dept-classes")
-def get_dept_classes():
-    doc = settings_col.find_one({"key": "dept_classes"})
-    return {"dept_classes": doc["values"] if doc else {}}
-
-@router.post("/dept-classes")
-def add_dept_class(item: DeptClassMap, user=Depends(admin_only)):
-    dept = item.department.strip().upper()
-    cls = item.class_name.strip()
-    depts = get_setting("departments")
-    if dept not in depts:
-        raise HTTPException(400, f"Department '{dept}' does not exist")
-    classes = get_setting("classes")
-    if cls not in classes:
-        raise HTTPException(400, f"Class '{cls}' does not exist")
-    doc = settings_col.find_one({"key": "dept_classes"})
-    mapping = doc["values"] if doc else {}
-    dept_list = mapping.get(dept, [])
-    if cls in dept_list:
-        raise HTTPException(400, "Already linked")
-    dept_list.append(cls)
-    mapping[dept] = dept_list
-    settings_col.update_one({"key": "dept_classes"}, {"$set": {"values": mapping}}, upsert=True)
-    return {"dept_classes": mapping}
-
-@router.delete("/dept-classes/{department}/{class_name}")
-def remove_dept_class(department: str, class_name: str, user=Depends(admin_only)):
-    doc = settings_col.find_one({"key": "dept_classes"})
-    mapping = doc["values"] if doc else {}
-    dept_list = mapping.get(department, [])
-    if class_name not in dept_list:
-        raise HTTPException(404, "Not found")
-    dept_list.remove(class_name)
-    mapping[department] = dept_list
-    settings_col.update_one({"key": "dept_classes"}, {"$set": {"values": mapping}}, upsert=True)
-    return {"dept_classes": mapping}
+def delete_student(email: str, user=Depends(admin_only)):
+    users_col.delete_one({"email": email, "role": "student"})
+    return {"message": "Student removed"}
