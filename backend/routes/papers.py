@@ -22,10 +22,6 @@ papers_col = db["papers"]
 
 router = APIRouter()
 
-DEPARTMENTS = ["CSE", "ECE", "ME", "CE", "EE", "MCA", "MBA"]
-CLASSES = ["B.Tech", "MCA", "MBA", "M.Tech"]
-SEMESTERS = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"]
-
 @router.post("/upload")
 def upload_paper(
     department: str = Form(...),
@@ -63,7 +59,6 @@ def upload_paper(
         "uploaded_at": datetime.utcnow(),
     }
     papers_col.insert_one(paper_doc)
-
     return {"message": "Paper uploaded successfully", "url": upload_result["secure_url"]}
 
 
@@ -89,3 +84,24 @@ def list_papers(
 
     papers = list(papers_col.find(query, {"_id": 0}))
     return {"papers": papers}
+
+
+@router.get("/all")
+def all_papers(user=Depends(admin_only)):
+    papers = list(papers_col.find({}, {"_id": 0}))
+    return {"papers": papers}
+
+
+@router.delete("/delete/{public_id:path}")
+def delete_paper(public_id: str, user=Depends(admin_only)):
+    import urllib.parse
+    public_id = urllib.parse.unquote(public_id)
+    paper = papers_col.find_one({"public_id": public_id})
+    if not paper:
+        raise HTTPException(status_code=404, detail="Paper not found")
+    try:
+        cloudinary.uploader.destroy(public_id, resource_type="raw")
+    except Exception:
+        pass
+    papers_col.delete_one({"public_id": public_id})
+    return {"message": "Paper deleted successfully"}

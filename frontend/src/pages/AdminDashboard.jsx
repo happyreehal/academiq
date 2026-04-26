@@ -37,11 +37,16 @@ export default function AdminDashboard() {
   const [students, setStudents] = useState([]);
   const [studentsLoaded, setStudentsLoaded] = useState(false);
 
-  useEffect(() => { fetchSettings(); }, []);
+  // Papers state
+  const [papers, setPapers] = useState([]);
+  const [papersLoaded, setPapersLoaded] = useState(false);
+  const [papersMsg, setPapersMsg] = useState("");
+  const [filterDept, setFilterDept] = useState("");
+  const [filterSem, setFilterSem] = useState("");
 
-  useEffect(() => {
-    if (activeTab === "students" && !studentsLoaded) fetchStudents();
-  }, [activeTab]);
+  useEffect(() => { fetchSettings(); }, []);
+  useEffect(() => { if (activeTab === "students" && !studentsLoaded) fetchStudents(); }, [activeTab]);
+  useEffect(() => { if (activeTab === "papers") fetchPapers(); }, [activeTab]);
 
   async function fetchSettings() {
     try {
@@ -66,7 +71,27 @@ export default function AdminDashboard() {
     } catch (_) {}
   }
 
+  async function fetchPapers() {
+    try {
+      const res = await axios.get(`${API}/papers/all`, { headers: authH() });
+      setPapers(res.data.papers);
+      setPapersLoaded(true);
+    } catch (_) {}
+  }
+
+  async function deletePaper(public_id) {
+    if (!window.confirm("Delete this paper permanently?")) return;
+    try {
+      await axios.delete(`${API}/papers/delete/${encodeURIComponent(public_id)}`, { headers: authH() });
+      setPapers(prev => prev.filter(p => p.public_id !== public_id));
+      flashPapers("🗑️ Paper deleted successfully");
+    } catch (err) {
+      flashPapers("⚠️ " + (err.response?.data?.detail || "Delete failed"));
+    }
+  }
+
   const flash = (msg) => { setSettingsMsg(msg); setTimeout(() => setSettingsMsg(""), 3000); };
+  const flashPapers = (msg) => { setPapersMsg(msg); setTimeout(() => setPapersMsg(""), 3000); };
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -80,6 +105,7 @@ export default function AdminDashboard() {
       });
       setUploadMsg("Paper uploaded successfully!");
       setForm({ department:"", class_name:"", semester:"", subject:"", academic_year:"", file:null });
+      setPapersLoaded(false);
     } catch (err) {
       setUploadErr(err.response?.data?.detail || "Upload failed");
     } finally { setUploading(false); }
@@ -94,9 +120,9 @@ export default function AdminDashboard() {
   }
 
   async function removeDept(name) {
-    if (!window.confirm(`Remove "${name}"? Its subjects and class mappings will also be removed.`)) return;
+    if (!window.confirm(`Remove "${name}"?`)) return;
     try {
-      const res = await axios.delete(`${API}/settings/departments/${name}`, { headers: authH() });
+      const res = await axios.delete(`${API}/settings/departments/${encodeURIComponent(name)}`, { headers: authH() });
       setDepartments(res.data.departments); fetchSettings(); flash("🗑️ Removed");
     } catch (err) { flash("⚠️ " + (err.response?.data?.detail || "Error")); }
   }
@@ -127,7 +153,7 @@ export default function AdminDashboard() {
 
   async function removeSubject(dept, subj) {
     try {
-      const res = await axios.delete(`${API}/settings/subjects/${dept}/${encodeURIComponent(subj)}`, { headers: authH() });
+      const res = await axios.delete(`${API}/settings/subjects/${encodeURIComponent(dept)}/${encodeURIComponent(subj)}`, { headers: authH() });
       setSubjects(res.data.subjects); flash("🗑️ Removed");
     } catch (err) { flash("⚠️ " + (err.response?.data?.detail || "Error")); }
   }
@@ -136,13 +162,13 @@ export default function AdminDashboard() {
     if (!mapDept || !mapClass) return;
     try {
       const res = await axios.post(`${API}/settings/dept-classes`, { department: mapDept, class_name: mapClass }, { headers: authH() });
-      setDeptClasses(res.data.dept_classes); setMapClass(""); flash("✅ Class linked to department");
+      setDeptClasses(res.data.dept_classes); setMapClass(""); flash("✅ Class linked");
     } catch (err) { flash("⚠️ " + (err.response?.data?.detail || "Error")); }
   }
 
   async function removeDeptClass(dept, cls) {
     try {
-      const res = await axios.delete(`${API}/settings/dept-classes/${dept}/${encodeURIComponent(cls)}`, { headers: authH() });
+      const res = await axios.delete(`${API}/settings/dept-classes/${encodeURIComponent(dept)}/${encodeURIComponent(cls)}`, { headers: authH() });
       setDeptClasses(res.data.dept_classes); flash("🗑️ Removed");
     } catch (err) { flash("⚠️ " + (err.response?.data?.detail || "Error")); }
   }
@@ -157,11 +183,18 @@ export default function AdminDashboard() {
 
   const uploadClasses = form.department ? (deptClasses[form.department] || []) : [];
   const uploadSubjects = form.department ? (subjects[form.department] || []) : [];
+
+  const filteredPapers = papers.filter(p => {
+    if (filterDept && p.department !== filterDept) return false;
+    if (filterSem && p.semester !== filterSem) return false;
+    return true;
+  });
+
   return (
     <div style={{minHeight:"100vh", background:"#F4F7FB", fontFamily:"'DM Sans', sans-serif"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap');
-        .adm-tab { flex:1; padding:11px; border:none; border-radius:10px; cursor:pointer; font-size:14px; font-weight:500; font-family:'DM Sans',sans-serif; color:#4A6080; background:transparent; transition:all 0.2s; }
+        .adm-tab { flex:1; padding:11px; border:none; border-radius:10px; cursor:pointer; font-size:13px; font-weight:500; font-family:'DM Sans',sans-serif; color:#4A6080; background:transparent; transition:all 0.2s; }
         .adm-tab.active { background:#0F2A4A; color:white; }
         .adm-tab:hover:not(.active) { background:#F4F7FB; }
         .form-input { width:100%; padding:11px 14px; border:1px solid rgba(15,42,74,0.12); border-radius:8px; font-size:14px; font-family:'DM Sans',sans-serif; color:#0F2A4A; background:#F4F7FB; outline:none; transition:border-color 0.2s; box-sizing:border-box; }
@@ -178,12 +211,14 @@ export default function AdminDashboard() {
         .tag button:hover { color:#dc2626; }
         .drop-zone { border:2px dashed rgba(15,42,74,0.2); border-radius:10px; padding:28px; text-align:center; cursor:pointer; transition:all 0.2s; background:#F4F7FB; }
         .drop-zone.active { border-color:#1D9E75; background:#E1F5EE; }
+        .paper-card { background:white; border:1px solid rgba(15,42,74,0.1); border-radius:12px; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; transition:box-shadow 0.2s; }
+        .paper-card:hover { box-shadow:0 4px 15px rgba(0,0,0,0.08); }
       `}</style>
 
       {/* Navbar */}
       <nav style={{background:"#0F2A4A", height:"64px", padding:"0 32px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100}}>
         <div style={{display:"flex", alignItems:"center", gap:"10px"}}>
-          <div style={{width:"36px", height:"36px", background:"#1D9E75", borderRadius:"8px", display:"flex", alignItems:"center", justifyContent:"center", color:"white", fontWeight:"700", fontSize:"18px", fontFamily:"'Playfair Display',serif"}}>Q</div>
+          <div style={{width:"36px", height:"36px", background:"#1D9E75", borderRadius:"8px", display:"flex", alignItems:"center", justifyContent:"center", color:"white", fontWeight:"700", fontSize:"18px"}}>Q</div>
           <span style={{color:"white", fontWeight:"600", fontSize:"15px"}}>AcademiQ <span style={{color:"#1D9E75"}}>Admin</span></span>
         </div>
         <div style={{display:"flex", alignItems:"center", gap:"14px"}}>
@@ -192,18 +227,20 @@ export default function AdminDashboard() {
         </div>
       </nav>
 
-      <div style={{maxWidth:"860px", margin:"0 auto", padding:"36px 20px"}}>
+      <div style={{maxWidth:"900px", margin:"0 auto", padding:"36px 20px"}}>
 
         {/* Tabs */}
-        <div style={{display:"flex", gap:"8px", marginBottom:"28px", background:"white", padding:"6px", borderRadius:"14px", border:"1px solid rgba(15,42,74,0.12)"}}>
+        <div style={{display:"flex", gap:"6px", marginBottom:"28px", background:"white", padding:"6px", borderRadius:"14px", border:"1px solid rgba(15,42,74,0.12)"}}>
           <button className={`adm-tab ${activeTab==="upload"?"active":""}`} onClick={() => setActiveTab("upload")}>📤 Upload Paper</button>
-          <button className={`adm-tab ${activeTab==="settings"?"active":""}`} onClick={() => setActiveTab("settings")}>⚙️ Manage Settings</button>
+          <button className={`adm-tab ${activeTab==="papers"?"active":""}`} onClick={() => setActiveTab("papers")}>📋 Manage Papers</button>
+          <button className={`adm-tab ${activeTab==="settings"?"active":""}`} onClick={() => setActiveTab("settings")}>⚙️ Settings</button>
           <button className={`adm-tab ${activeTab==="students"?"active":""}`} onClick={() => setActiveTab("students")}>👨‍🎓 Students</button>
         </div>
 
         {settingsMsg && <div style={{background:"#E1F5EE", border:"1px solid rgba(29,158,117,0.3)", color:"#0f7a5a", padding:"10px 16px", borderRadius:"10px", fontSize:"14px", fontWeight:"500", marginBottom:"20px"}}>{settingsMsg}</div>}
+        {papersMsg && <div style={{background:"#E1F5EE", border:"1px solid rgba(29,158,117,0.3)", color:"#0f7a5a", padding:"10px 16px", borderRadius:"10px", fontSize:"14px", fontWeight:"500", marginBottom:"20px"}}>{papersMsg}</div>}
 
-        {/* ── TAB 1: UPLOAD ── */}
+        {/* TAB 1: UPLOAD */}
         {activeTab === "upload" && (
           <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
             <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:"0 0 20px"}}>Upload Question Paper</h2>
@@ -266,11 +303,57 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ── TAB 2: SETTINGS ── */}
+        {/* TAB 2: MANAGE PAPERS */}
+        {activeTab === "papers" && (
+          <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+            <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"20px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:0}}>📋 Manage Papers</h2>
+              <span style={{background:"#E1F5EE", color:"#1D9E75", borderRadius:"20px", padding:"4px 12px", fontSize:"13px", fontWeight:"600"}}>{filteredPapers.length} papers</span>
+            </div>
+
+            {/* Filters */}
+            <div style={{display:"flex", gap:"12px", marginBottom:"20px"}}>
+              <select className="form-input" value={filterDept} onChange={e => setFilterDept(e.target.value)}>
+                <option value="">All Departments</option>
+                {departments.map(d => <option key={d}>{d}</option>)}
+              </select>
+              <select className="form-input" value={filterSem} onChange={e => setFilterSem(e.target.value)}>
+                <option value="">All Semesters</option>
+                {SEMESTERS.map(s => <option key={s}>{s}</option>)}
+              </select>
+            </div>
+
+            {filteredPapers.length === 0 ? (
+              <div style={{textAlign:"center", padding:"40px", color:"#94a3b8"}}>
+                <div style={{fontSize:"32px", marginBottom:"8px"}}>📭</div>
+                <div>No papers found</div>
+              </div>
+            ) : (
+              filteredPapers.map((paper, idx) => (
+                <div key={idx} className="paper-card">
+                  <div>
+                    <div style={{fontWeight:"600", color:"#0F2A4A", fontSize:"15px"}}>{paper.subject} — {paper.academic_year}</div>
+                    <div style={{color:"#4A6080", fontSize:"13px", marginTop:"4px"}}>{paper.department} | {paper.class_name} | {paper.semester} Semester</div>
+                    <div style={{color:"#94a3b8", fontSize:"12px", marginTop:"2px"}}>Uploaded by: {paper.uploaded_by}</div>
+                  </div>
+                  <div style={{display:"flex", gap:"8px"}}>
+                    <a href={paper.file_url} target="_blank" rel="noreferrer"
+                      style={{padding:"7px 14px", background:"#E1F5EE", color:"#1D9E75", borderRadius:"8px", fontSize:"13px", fontWeight:"500", textDecoration:"none", border:"1px solid rgba(29,158,117,0.3)"}}>
+                      👁️ View
+                    </a>
+                    <button className="btn-danger" onClick={() => deletePaper(paper.public_id)}>
+                      🗑️ Delete
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {/* TAB 3: SETTINGS */}
         {activeTab === "settings" && (
           <div style={{display:"flex", flexDirection:"column", gap:"20px"}}>
-
-            {/* Departments */}
             <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
               <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:"0 0 16px"}}>🏛️ Departments</h2>
               <div style={{display:"flex", gap:"10px"}}>
@@ -279,13 +362,10 @@ export default function AdminDashboard() {
               </div>
               <div style={{marginTop:"14px"}}>
                 {departments.length === 0 && <span style={{color:"#94a3b8", fontSize:"14px"}}>No departments yet</span>}
-                {departments.map(d => (
-                  <span key={d} className="tag">{d}<button onClick={() => removeDept(d)}>×</button></span>
-                ))}
+                {departments.map(d => <span key={d} className="tag">{d}<button onClick={() => removeDept(d)}>×</button></span>)}
               </div>
             </div>
 
-            {/* Classes */}
             <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
               <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:"0 0 16px"}}>🎓 Classes</h2>
               <div style={{display:"flex", gap:"10px"}}>
@@ -294,13 +374,10 @@ export default function AdminDashboard() {
               </div>
               <div style={{marginTop:"14px"}}>
                 {classes.length === 0 && <span style={{color:"#94a3b8", fontSize:"14px"}}>No classes yet</span>}
-                {classes.map(c => (
-                  <span key={c} className="tag">{c}<button onClick={() => removeClass(c)}>×</button></span>
-                ))}
+                {classes.map(c => <span key={c} className="tag">{c}<button onClick={() => removeClass(c)}>×</button></span>)}
               </div>
             </div>
 
-            {/* Dept-Class Mapping */}
             <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
               <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:"0 0 4px"}}>🔗 Department → Class Mapping</h2>
               <p style={{color:"#4A6080", fontSize:"13px", margin:"0 0 16px"}}>Student ko department choose karne ke baad sirf linked classes dikhegi</p>
@@ -316,22 +393,18 @@ export default function AdminDashboard() {
                 <button className="btn-navy" onClick={addDeptClass}>Link</button>
               </div>
               <div style={{marginTop:"16px"}}>
-                {departments.length === 0 && <span style={{color:"#94a3b8", fontSize:"14px"}}>Add departments first</span>}
                 {departments.map(d => (
                   <div key={d} style={{marginBottom:"12px"}}>
                     <div style={{fontSize:"12px", fontWeight:"600", color:"#4A6080", textTransform:"uppercase", letterSpacing:"0.5px", marginBottom:"6px"}}>{d}</div>
                     {(deptClasses[d] || []).length === 0
                       ? <span style={{color:"#94a3b8", fontSize:"13px"}}>No classes linked yet</span>
-                      : (deptClasses[d] || []).map(c => (
-                          <span key={c} className="tag">{c}<button onClick={() => removeDeptClass(d, c)}>×</button></span>
-                        ))
+                      : (deptClasses[d] || []).map(c => <span key={c} className="tag">{c}<button onClick={() => removeDeptClass(d, c)}>×</button></span>)
                     }
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Subjects */}
             <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
               <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:"0 0 16px"}}>📚 Subjects</h2>
               <div style={{display:"flex", gap:"10px"}}>
@@ -343,25 +416,21 @@ export default function AdminDashboard() {
                 <button className="btn-navy" onClick={addSubject}>Add</button>
               </div>
               <div style={{marginTop:"16px"}}>
-                {departments.length === 0 && <span style={{color:"#94a3b8", fontSize:"14px"}}>Add departments first</span>}
                 {departments.map(d => (
                   <div key={d} style={{marginBottom:"14px"}}>
                     <div style={{fontSize:"12px", fontWeight:"600", color:"#4A6080", textTransform:"uppercase", letterSpacing:"0.5px", marginBottom:"6px"}}>{d}</div>
                     {(subjects[d] || []).length === 0
                       ? <span style={{color:"#94a3b8", fontSize:"13px"}}>No subjects yet</span>
-                      : (subjects[d] || []).map(s => (
-                          <span key={s} className="tag">{s}<button onClick={() => removeSubject(d, s)}>×</button></span>
-                        ))
+                      : (subjects[d] || []).map(s => <span key={s} className="tag">{s}<button onClick={() => removeSubject(d, s)}>×</button></span>)
                     }
                   </div>
                 ))}
               </div>
             </div>
-
           </div>
         )}
 
-        {/* ── TAB 3: STUDENTS ── */}
+        {/* TAB 4: STUDENTS */}
         {activeTab === "students" && (
           <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
             <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"20px"}}>
@@ -396,7 +465,6 @@ export default function AdminDashboard() {
             )}
           </div>
         )}
-
       </div>
     </div>
   );
