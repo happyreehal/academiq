@@ -19,7 +19,14 @@ SUPER_ADMIN_EMAIL = "happyreehal584@gmail.com"
 def get_settings():
     doc = settings_col.find_one({"_id": "main"})
     if not doc:
-        doc = {"_id": "main", "departments": [], "classes": [], "subjects": {}, "dept_classes": {}, "admin_secret": os.getenv("ADMIN_SECRET", "academiq_admin_2026")}
+        doc = {
+            "_id": "main",
+            "departments": [],
+            "courses": [],
+            "subjects": {},
+            "dept_courses": {},
+            "admin_secret": os.getenv("ADMIN_SECRET", "academiq_admin_2026")
+        }
         settings_col.insert_one(doc)
     return doc
 
@@ -39,11 +46,13 @@ class ValueModel(BaseModel):
 
 class SubjectModel(BaseModel):
     department: str
+    course: str
+    semester: str
     subject: str
 
-class DeptClassModel(BaseModel):
+class DeptCourseModel(BaseModel):
     department: str
-    class_name: str
+    course: str
 
 class SecretModel(BaseModel):
     new_secret: str
@@ -70,35 +79,35 @@ def delete_department(name: str, user=Depends(admin_only)):
     depts = [d for d in doc.get("departments", []) if d != name]
     subjects = doc.get("subjects", {})
     subjects.pop(name, None)
-    dept_classes = doc.get("dept_classes", {})
-    dept_classes.pop(name, None)
-    save_settings({"departments": depts, "subjects": subjects, "dept_classes": dept_classes})
+    dept_courses = doc.get("dept_courses", {})
+    dept_courses.pop(name, None)
+    save_settings({"departments": depts, "subjects": subjects, "dept_courses": dept_courses})
     return {"departments": depts}
 
-# ── CLASSES ──
-@router.get("/classes")
-def get_classes():
-    return {"classes": get_settings().get("classes", [])}
+# ── COURSES ──
+@router.get("/courses")
+def get_courses():
+    return {"courses": get_settings().get("courses", [])}
 
-@router.post("/classes")
-def add_class(body: ValueModel, user=Depends(admin_only)):
+@router.post("/courses")
+def add_course(body: ValueModel, user=Depends(admin_only)):
     doc = get_settings()
-    classes = doc.get("classes", [])
-    if body.value in classes:
+    courses = doc.get("courses", [])
+    if body.value in courses:
         raise HTTPException(400, "Already exists")
-    classes.append(body.value)
-    save_settings({"classes": classes})
-    return {"classes": classes}
+    courses.append(body.value)
+    save_settings({"courses": courses})
+    return {"courses": courses}
 
-@router.delete("/classes/{name:path}")
-def delete_class(name: str, user=Depends(admin_only)):
+@router.delete("/courses/{name:path}")
+def delete_course(name: str, user=Depends(admin_only)):
     name = urllib.parse.unquote(name)
     doc = get_settings()
-    classes = [c for c in doc.get("classes", []) if c != name]
-    save_settings({"classes": classes})
-    return {"classes": classes}
+    courses = [c for c in doc.get("courses", []) if c != name]
+    save_settings({"courses": courses})
+    return {"courses": courses}
 
-# ── SUBJECTS ──
+# ── SUBJECTS (Department → Course → Semester → Subjects) ──
 @router.get("/subjects")
 def get_subjects():
     return {"subjects": get_settings().get("subjects", {})}
@@ -108,51 +117,61 @@ def add_subject(body: SubjectModel, user=Depends(admin_only)):
     doc = get_settings()
     subjects = doc.get("subjects", {})
     if body.department not in subjects:
-        subjects[body.department] = []
-    if body.subject in subjects[body.department]:
+        subjects[body.department] = {}
+    if body.course not in subjects[body.department]:
+        subjects[body.department][body.course] = {}
+    if body.semester not in subjects[body.department][body.course]:
+        subjects[body.department][body.course][body.semester] = []
+    if body.subject in subjects[body.department][body.course][body.semester]:
         raise HTTPException(400, "Already exists")
-    subjects[body.department].append(body.subject)
+    subjects[body.department][body.course][body.semester].append(body.subject)
     save_settings({"subjects": subjects})
     return {"subjects": subjects}
 
-@router.delete("/subjects/{department:path}/{subject:path}")
-def delete_subject(department: str, subject: str, user=Depends(admin_only)):
+@router.delete("/subjects/{department}/{course}/{semester}/{subject}")
+def delete_subject(department: str, course: str, semester: str, subject: str, user=Depends(admin_only)):
     department = urllib.parse.unquote(department)
+    course = urllib.parse.unquote(course)
+    semester = urllib.parse.unquote(semester)
     subject = urllib.parse.unquote(subject)
     doc = get_settings()
     subjects = doc.get("subjects", {})
-    if department in subjects:
-        subjects[department] = [s for s in subjects[department] if s != subject]
+    try:
+        subjects[department][course][semester] = [
+            s for s in subjects[department][course][semester] if s != subject
+        ]
+    except KeyError:
+        pass
     save_settings({"subjects": subjects})
     return {"subjects": subjects}
 
-# ── DEPT-CLASSES ──
-@router.get("/dept-classes")
-def get_dept_classes():
-    return {"dept_classes": get_settings().get("dept_classes", {})}
+# ── DEPT-COURSE MAPPING ──
+@router.get("/dept-courses")
+def get_dept_courses():
+    return {"dept_courses": get_settings().get("dept_courses", {})}
 
-@router.post("/dept-classes")
-def add_dept_class(body: DeptClassModel, user=Depends(admin_only)):
+@router.post("/dept-courses")
+def add_dept_course(body: DeptCourseModel, user=Depends(admin_only)):
     doc = get_settings()
-    dept_classes = doc.get("dept_classes", {})
-    if body.department not in dept_classes:
-        dept_classes[body.department] = []
-    if body.class_name in dept_classes[body.department]:
+    dept_courses = doc.get("dept_courses", {})
+    if body.department not in dept_courses:
+        dept_courses[body.department] = []
+    if body.course in dept_courses[body.department]:
         raise HTTPException(400, "Already linked")
-    dept_classes[body.department].append(body.class_name)
-    save_settings({"dept_classes": dept_classes})
-    return {"dept_classes": dept_classes}
+    dept_courses[body.department].append(body.course)
+    save_settings({"dept_courses": dept_courses})
+    return {"dept_courses": dept_courses}
 
-@router.delete("/dept-classes/{department:path}/{class_name:path}")
-def delete_dept_class(department: str, class_name: str, user=Depends(admin_only)):
+@router.delete("/dept-courses/{department}/{course}")
+def delete_dept_course(department: str, course: str, user=Depends(admin_only)):
     department = urllib.parse.unquote(department)
-    class_name = urllib.parse.unquote(class_name)
+    course = urllib.parse.unquote(course)
     doc = get_settings()
-    dept_classes = doc.get("dept_classes", {})
-    if department in dept_classes:
-        dept_classes[department] = [c for c in dept_classes[department] if c != class_name]
-    save_settings({"dept_classes": dept_classes})
-    return {"dept_classes": dept_classes}
+    dept_courses = doc.get("dept_courses", {})
+    if department in dept_courses:
+        dept_courses[department] = [c for c in dept_courses[department] if c != course]
+    save_settings({"dept_courses": dept_courses})
+    return {"dept_courses": dept_courses}
 
 # ── STUDENTS ──
 @router.get("/students")
@@ -204,7 +223,7 @@ def delete_admin(email: str, user=Depends(super_only)):
     users_col.delete_one({"email": email, "role": "admin"})
     return {"message": "Admin removed"}
 
-# ── SECRET KEY (Super Admin Only) ──
+# ── SECRET KEY ──
 @router.get("/admin-secret")
 def get_admin_secret(user=Depends(super_only)):
     doc = get_settings()
