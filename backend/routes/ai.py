@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi.responses import StreamingResponse
 from groq import Groq
 from dotenv import load_dotenv
 import os
@@ -59,13 +60,20 @@ Focus on topics that appear frequently in past papers.
 Format the output clearly with section headings and question numbers.
 Also mention the probability/importance of each topic at the end."""
 
-    try:
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=2000,
-        )
-        result = response.choices[0].message.content
-        return {"questions": result}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    # Streaming generator function
+    def stream_response():
+        try:
+            stream = client.chat.completions.create(
+                model="llama-3.1-8b-instant",   # FIX: 70b → 8b, ~5x faster
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=1500,                 # FIX: 2000 → 1500, enough for full paper
+                stream=True,                     # FIX: streaming on
+            )
+            for chunk in stream:
+                delta = chunk.choices[0].delta.content
+                if delta:
+                    yield delta
+        except Exception as e:
+            yield f"\n\nError: {str(e)}"
+
+    return StreamingResponse(stream_response(), media_type="text/plain")
