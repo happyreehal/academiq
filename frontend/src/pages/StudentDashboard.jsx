@@ -11,10 +11,10 @@ export default function StudentDashboard() {
   const navigate = useNavigate();
 
   const [departments, setDepartments] = useState([]);
-  const [deptClasses, setDeptClasses] = useState({});
+  const [deptCourses, setDeptCourses] = useState({});   // FIX: was deptClasses
   const [subjects, setSubjects] = useState({});
 
-  const [filters, setFilters] = useState({ department:"", class_name:"", semester:"", subject:"" });
+  const [filters, setFilters] = useState({ department:"", course:"", semester:"", subject:"" }); // FIX: class_name → course
   const [papers, setPapers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
@@ -24,19 +24,25 @@ export default function StudentDashboard() {
       try {
         const [d, dc, s] = await Promise.all([
           axios.get(`${API}/settings/departments`),
-          axios.get(`${API}/settings/dept-classes`),
+          axios.get(`${API}/settings/dept-courses`),   // FIX: was dept-classes
           axios.get(`${API}/settings/subjects`),
         ]);
         setDepartments(d.data.departments);
-        setDeptClasses(dc.data.dept_classes);
+        setDeptCourses(dc.data.dept_courses);           // FIX: was dept_classes
         setSubjects(s.data.subjects);
       } catch (_) {}
     }
     fetchSettings();
   }, []);
 
-  const filteredClasses = filters.department ? (deptClasses[filters.department] || []) : [];
-  const filteredSubjects = filters.department ? (subjects[filters.department] || []) : [];
+  // FIX: was deptClasses[department], now deptCourses[department]
+  const filteredCourses = filters.department ? (deptCourses[filters.department] || []) : [];
+
+  // FIX: subjects structure is subjects[dept][course][semester], not flat subjects[dept]
+  const filteredSubjects =
+    filters.department && filters.course && filters.semester
+      ? (subjects[filters.department]?.[filters.course]?.[filters.semester] || [])
+      : [];
 
   const handleSearch = async () => {
     setLoading(true);
@@ -44,9 +50,9 @@ export default function StudentDashboard() {
     try {
       const params = {};
       if (filters.department) params.department = filters.department;
-      if (filters.class_name) params.class_name = filters.class_name;
-      if (filters.semester) params.semester = filters.semester;
-      if (filters.subject) params.subject = filters.subject;
+      if (filters.course)     params.course = filters.course;       // FIX: was class_name
+      if (filters.semester)   params.semester = filters.semester;
+      if (filters.subject)    params.subject = filters.subject;
       const res = await axios.get(`${API}/papers/list`, { params });
       setPapers(res.data.papers);
     } catch (err) {
@@ -81,40 +87,50 @@ export default function StudentDashboard() {
         <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px", marginBottom:"20px"}}>
           <h2 style={{fontSize:"18px", fontWeight:"600", color:"#0F2A4A", margin:"0 0 20px"}}>🔍 Filter Question Papers</h2>
           <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px"}}>
+
+            {/* Department */}
             <div>
               <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Department</label>
               <select className="form-input" value={filters.department}
-                onChange={e => setFilters({...filters, department:e.target.value, class_name:"", subject:""})}>
+                onChange={e => setFilters({...filters, department:e.target.value, course:"", semester:"", subject:""})}>
                 <option value="">All Departments</option>
                 {departments.map(d => <option key={d}>{d}</option>)}
               </select>
             </div>
+
+            {/* Course — FIX: was "Class", now "Course" */}
             <div>
-              <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Class</label>
-              <select className="form-input" value={filters.class_name}
-                onChange={e => setFilters({...filters, class_name:e.target.value})}
+              <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Course</label>
+              <select className="form-input" value={filters.course}
+                onChange={e => setFilters({...filters, course:e.target.value, semester:"", subject:""})}
                 disabled={!filters.department}>
-                <option value="">{filters.department ? "All Classes" : "Select Department first"}</option>
-                {filteredClasses.map(c => <option key={c}>{c}</option>)}
+                <option value="">{filters.department ? "All Courses" : "Select Department first"}</option>
+                {filteredCourses.map(c => <option key={c}>{c}</option>)}
               </select>
             </div>
+
+            {/* Semester */}
             <div>
               <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Semester</label>
               <select className="form-input" value={filters.semester}
-                onChange={e => setFilters({...filters, semester:e.target.value})}>
-                <option value="">All Semesters</option>
+                onChange={e => setFilters({...filters, semester:e.target.value, subject:""})}
+                disabled={!filters.course}>
+                <option value="">{filters.course ? "All Semesters" : "Select Course first"}</option>
                 {SEMESTERS.map(s => <option key={s}>{s}</option>)}
               </select>
             </div>
+
+            {/* Subject — FIX: now depends on dept+course+semester */}
             <div>
               <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Subject</label>
               <select className="form-input" value={filters.subject}
                 onChange={e => setFilters({...filters, subject:e.target.value})}
-                disabled={!filters.department}>
-                <option value="">{filters.department ? "All Subjects" : "Select Department first"}</option>
+                disabled={!filters.semester}>
+                <option value="">{filters.semester ? "All Subjects" : "Select Semester first"}</option>
                 {filteredSubjects.map(s => <option key={s}>{s}</option>)}
               </select>
             </div>
+
           </div>
           <button onClick={handleSearch} style={{marginTop:"20px", background:"#0F2A4A", color:"white", border:"none", padding:"12px 28px", borderRadius:"8px", fontSize:"14px", fontWeight:"500", cursor:"pointer"}}>
             {loading ? "⏳ Searching..." : "🔍 Search Papers"}
@@ -138,7 +154,8 @@ export default function StudentDashboard() {
                   <div key={idx} style={{border:"1px solid rgba(15,42,74,0.12)", borderRadius:"12px", padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center"}}>
                     <div>
                       <div style={{fontWeight:"600", color:"#0F2A4A", fontSize:"15px"}}>{paper.subject} — {paper.academic_year}</div>
-                      <div style={{color:"#4A6080", fontSize:"13px", marginTop:"4px"}}>{paper.department} · {paper.class_name} · {paper.semester} Semester</div>
+                      {/* FIX: was paper.class_name, now paper.course */}
+                      <div style={{color:"#4A6080", fontSize:"13px", marginTop:"4px"}}>{paper.department} · {paper.course} · {paper.semester} Semester</div>
                     </div>
                     <div style={{display:"flex", gap:"8px"}}>
                       <a href={paper.file_url} target="_blank" rel="noreferrer"
