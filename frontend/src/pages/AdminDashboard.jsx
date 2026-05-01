@@ -11,6 +11,7 @@ const authH = () => ({ Authorization: `Bearer ${token()}` });
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const isSuperAdmin = user?.is_super;
   const [activeTab, setActiveTab] = useState("upload");
 
   // Upload state
@@ -44,9 +45,18 @@ export default function AdminDashboard() {
   const [filterDept, setFilterDept] = useState("");
   const [filterSem, setFilterSem] = useState("");
 
+  // Super admin state
+  const [admins, setAdmins] = useState([]);
+  const [adminsLoaded, setAdminsLoaded] = useState(false);
+  const [newSecret, setNewSecret] = useState("");
+  const [currentSecret, setCurrentSecret] = useState("");
+  const [superMsg, setSuperMsg] = useState("");
+
   useEffect(() => { fetchSettings(); }, []);
-  useEffect(() => { if (activeTab === "students" && !studentsLoaded) fetchStudents(); }, [activeTab]);
+  useEffect(() => { if (activeTab === "students") fetchStudents(); }, [activeTab]);
   useEffect(() => { if (activeTab === "papers") fetchPapers(); }, [activeTab]);
+  useEffect(() => { if (activeTab === "admins" && isSuperAdmin) fetchAdmins(); }, [activeTab]);
+  useEffect(() => { if (activeTab === "superadmin" && isSuperAdmin) fetchSecret(); }, [activeTab]);
 
   async function fetchSettings() {
     try {
@@ -79,19 +89,24 @@ export default function AdminDashboard() {
     } catch (_) {}
   }
 
-  async function deletePaper(public_id) {
-    if (!window.confirm("Delete this paper permanently?")) return;
+  async function fetchAdmins() {
     try {
-      await axios.delete(`${API}/papers/delete/${encodeURIComponent(public_id)}`, { headers: authH() });
-      setPapers(prev => prev.filter(p => p.public_id !== public_id));
-      flashPapers("🗑️ Paper deleted successfully");
-    } catch (err) {
-      flashPapers("⚠️ " + (err.response?.data?.detail || "Delete failed"));
-    }
+      const res = await axios.get(`${API}/settings/admins`, { headers: authH() });
+      setAdmins(res.data.admins);
+      setAdminsLoaded(true);
+    } catch (_) {}
+  }
+
+  async function fetchSecret() {
+    try {
+      const res = await axios.get(`${API}/settings/admin-secret`, { headers: authH() });
+      setCurrentSecret(res.data.secret);
+    } catch (_) {}
   }
 
   const flash = (msg) => { setSettingsMsg(msg); setTimeout(() => setSettingsMsg(""), 3000); };
   const flashPapers = (msg) => { setPapersMsg(msg); setTimeout(() => setPapersMsg(""), 3000); };
+  const flashSuper = (msg) => { setSuperMsg(msg); setTimeout(() => setSuperMsg(""), 3000); };
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -110,6 +125,75 @@ export default function AdminDashboard() {
       setUploadErr(err.response?.data?.detail || "Upload failed");
     } finally { setUploading(false); }
   };
+
+  async function deletePaper(public_id) {
+    if (!window.confirm("Delete this paper permanently?")) return;
+    try {
+      await axios.delete(`${API}/papers/delete/${encodeURIComponent(public_id)}`, { headers: authH() });
+      setPapers(prev => prev.filter(p => p.public_id !== public_id));
+      flashPapers("🗑️ Paper deleted successfully");
+    } catch (err) { flashPapers("⚠️ " + (err.response?.data?.detail || "Delete failed")); }
+  }
+
+  async function approveStudent(email) {
+    try {
+      await axios.post(`${API}/settings/students/${encodeURIComponent(email)}/approve`, {}, { headers: authH() });
+      setStudents(prev => prev.map(s => s.email === email ? {...s, status:"active"} : s));
+      flash("✅ Student approved");
+    } catch (err) { flash("⚠️ " + (err.response?.data?.detail || "Error")); }
+  }
+
+  async function rejectStudent(email) {
+    try {
+      await axios.post(`${API}/settings/students/${encodeURIComponent(email)}/reject`, {}, { headers: authH() });
+      setStudents(prev => prev.map(s => s.email === email ? {...s, status:"rejected"} : s));
+      flash("🗑️ Student rejected");
+    } catch (err) { flash("⚠️ " + (err.response?.data?.detail || "Error")); }
+  }
+
+  async function removeStudent(email) {
+    if (!window.confirm(`Remove student "${email}"?`)) return;
+    try {
+      await axios.delete(`${API}/settings/students/${encodeURIComponent(email)}`, { headers: authH() });
+      setStudents(prev => prev.filter(s => s.email !== email));
+      flash("🗑️ Student removed");
+    } catch (err) { flash("⚠️ " + (err.response?.data?.detail || "Error")); }
+  }
+
+  async function approveAdmin(email) {
+    try {
+      await axios.post(`${API}/settings/admins/${encodeURIComponent(email)}/approve`, {}, { headers: authH() });
+      setAdmins(prev => prev.map(a => a.email === email ? {...a, status:"active"} : a));
+      flashSuper("✅ Admin approved");
+    } catch (err) { flashSuper("⚠️ " + (err.response?.data?.detail || "Error")); }
+  }
+
+  async function rejectAdmin(email) {
+    try {
+      await axios.post(`${API}/settings/admins/${encodeURIComponent(email)}/reject`, {}, { headers: authH() });
+      setAdmins(prev => prev.map(a => a.email === email ? {...a, status:"rejected"} : a));
+      flashSuper("🗑️ Admin rejected");
+    } catch (err) { flashSuper("⚠️ " + (err.response?.data?.detail || "Error")); }
+  }
+
+  async function removeAdmin(email) {
+    if (!window.confirm(`Remove admin "${email}"?`)) return;
+    try {
+      await axios.delete(`${API}/settings/admins/${encodeURIComponent(email)}`, { headers: authH() });
+      setAdmins(prev => prev.filter(a => a.email !== email));
+      flashSuper("🗑️ Admin removed");
+    } catch (err) { flashSuper("⚠️ " + (err.response?.data?.detail || "Error")); }
+  }
+
+  async function updateSecret() {
+    if (newSecret.length < 8) { flashSuper("⚠️ Secret must be at least 8 characters"); return; }
+    try {
+      await axios.post(`${API}/settings/admin-secret`, { new_secret: newSecret }, { headers: authH() });
+      setCurrentSecret(newSecret);
+      setNewSecret("");
+      flashSuper("✅ Admin secret updated successfully");
+    } catch (err) { flashSuper("⚠️ " + (err.response?.data?.detail || "Error")); }
+  }
 
   async function addDept() {
     if (!newDept.trim()) return;
@@ -173,29 +257,33 @@ export default function AdminDashboard() {
     } catch (err) { flash("⚠️ " + (err.response?.data?.detail || "Error")); }
   }
 
-  async function removeStudent(email) {
-    if (!window.confirm(`Remove student "${email}"?`)) return;
-    try {
-      await axios.delete(`${API}/settings/students/${encodeURIComponent(email)}`, { headers: authH() });
-      setStudents(prev => prev.filter(s => s.email !== email)); flash("🗑️ Student removed");
-    } catch (err) { flash("⚠️ " + (err.response?.data?.detail || "Error")); }
-  }
-
   const uploadClasses = form.department ? (deptClasses[form.department] || []) : [];
   const uploadSubjects = form.department ? (subjects[form.department] || []) : [];
-
   const filteredPapers = papers.filter(p => {
     if (filterDept && p.department !== filterDept) return false;
     if (filterSem && p.semester !== filterSem) return false;
     return true;
   });
 
+  const pendingStudents = students.filter(s => s.status === "pending");
+  const activeStudents = students.filter(s => s.status === "active");
+  const rejectedStudents = students.filter(s => s.status === "rejected");
+  const pendingAdmins = admins.filter(a => a.status === "pending");
+  const activeAdmins = admins.filter(a => a.status === "active");
+
+  const statusBadge = (status) => {
+    const colors = { active: {bg:"#E1F5EE", color:"#1D9E75"}, pending: {bg:"#FEF9C3", color:"#92400E"}, rejected: {bg:"#FEF2F2", color:"#DC2626"} };
+    const c = colors[status] || colors.pending;
+    return <span style={{background:c.bg, color:c.color, padding:"3px 10px", borderRadius:"20px", fontSize:"12px", fontWeight:"600"}}>{status}</span>;
+  };
+
   return (
     <div style={{minHeight:"100vh", background:"#F4F7FB", fontFamily:"'DM Sans', sans-serif"}}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap');
-        .adm-tab { flex:1; padding:11px; border:none; border-radius:10px; cursor:pointer; font-size:13px; font-weight:500; font-family:'DM Sans',sans-serif; color:#4A6080; background:transparent; transition:all 0.2s; }
+        .adm-tab { flex:1; padding:10px 8px; border:none; border-radius:10px; cursor:pointer; font-size:12px; font-weight:500; font-family:'DM Sans',sans-serif; color:#4A6080; background:transparent; transition:all 0.2s; white-space:nowrap; }
         .adm-tab.active { background:#0F2A4A; color:white; }
+        .adm-tab.super-tab.active { background:linear-gradient(135deg,#7C3AED,#5B21B6); }
         .adm-tab:hover:not(.active) { background:#F4F7FB; }
         .form-input { width:100%; padding:11px 14px; border:1px solid rgba(15,42,74,0.12); border-radius:8px; font-size:14px; font-family:'DM Sans',sans-serif; color:#0F2A4A; background:#F4F7FB; outline:none; transition:border-color 0.2s; box-sizing:border-box; }
         .form-input:focus { border-color:#2D5FA0; background:white; }
@@ -206,6 +294,12 @@ export default function AdminDashboard() {
         .btn-accent:disabled { opacity:0.6; cursor:not-allowed; }
         .btn-danger { background:#fef2f2; color:#dc2626; border:1px solid #fecaca; padding:5px 12px; border-radius:6px; font-size:12px; cursor:pointer; font-family:'DM Sans',sans-serif; }
         .btn-danger:hover { background:#fee2e2; }
+        .btn-approve { background:#E1F5EE; color:#1D9E75; border:1px solid rgba(29,158,117,0.3); padding:5px 12px; border-radius:6px; font-size:12px; cursor:pointer; font-family:'DM Sans',sans-serif; }
+        .btn-approve:hover { background:#C6EFE0; }
+        .btn-reject { background:#FEF9C3; color:#92400E; border:1px solid #FDE68A; padding:5px 12px; border-radius:6px; font-size:12px; cursor:pointer; font-family:'DM Sans',sans-serif; }
+        .btn-reject:hover { background:#FEF08A; }
+        .btn-purple { background:linear-gradient(135deg,#7C3AED,#5B21B6); color:white; border:none; padding:10px 20px; border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; }
+        .btn-purple:hover { opacity:0.85; }
         .tag { display:inline-flex; align-items:center; gap:6px; background:white; border:1px solid rgba(15,42,74,0.12); border-radius:20px; padding:5px 12px; font-size:13px; color:#0F2A4A; font-weight:500; margin:4px; }
         .tag button { background:none; border:none; cursor:pointer; color:#4A6080; font-size:15px; line-height:1; padding:0; }
         .tag button:hover { color:#dc2626; }
@@ -213,13 +307,17 @@ export default function AdminDashboard() {
         .drop-zone.active { border-color:#1D9E75; background:#E1F5EE; }
         .paper-card { background:white; border:1px solid rgba(15,42,74,0.1); border-radius:12px; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; transition:box-shadow 0.2s; }
         .paper-card:hover { box-shadow:0 4px 15px rgba(0,0,0,0.08); }
+        .user-row { padding:12px 14px; border-bottom:1px solid rgba(15,42,74,0.08); display:grid; align-items:center; gap:8px; }
       `}</style>
 
       {/* Navbar */}
       <nav style={{background:"#0F2A4A", height:"64px", padding:"0 32px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100}}>
         <div style={{display:"flex", alignItems:"center", gap:"10px"}}>
           <div style={{width:"36px", height:"36px", background:"#1D9E75", borderRadius:"8px", display:"flex", alignItems:"center", justifyContent:"center", color:"white", fontWeight:"700", fontSize:"18px"}}>Q</div>
-          <span style={{color:"white", fontWeight:"600", fontSize:"15px"}}>AcademiQ <span style={{color:"#1D9E75"}}>Admin</span></span>
+          <span style={{color:"white", fontWeight:"600", fontSize:"15px"}}>
+            AcademiQ <span style={{color:"#1D9E75"}}>Admin</span>
+            {isSuperAdmin && <span style={{background:"linear-gradient(135deg,#7C3AED,#5B21B6)", color:"white", fontSize:"11px", padding:"2px 8px", borderRadius:"20px", marginLeft:"8px", fontWeight:"600"}}>SUPER</span>}
+          </span>
         </div>
         <div style={{display:"flex", alignItems:"center", gap:"14px"}}>
           <span style={{color:"rgba(255,255,255,0.7)", fontSize:"14px"}}>👋 {user?.name}</span>
@@ -227,18 +325,27 @@ export default function AdminDashboard() {
         </div>
       </nav>
 
-      <div style={{maxWidth:"900px", margin:"0 auto", padding:"36px 20px"}}>
+      <div style={{maxWidth:"960px", margin:"0 auto", padding:"36px 20px"}}>
 
         {/* Tabs */}
-        <div style={{display:"flex", gap:"6px", marginBottom:"28px", background:"white", padding:"6px", borderRadius:"14px", border:"1px solid rgba(15,42,74,0.12)"}}>
-          <button className={`adm-tab ${activeTab==="upload"?"active":""}`} onClick={() => setActiveTab("upload")}>📤 Upload Paper</button>
-          <button className={`adm-tab ${activeTab==="papers"?"active":""}`} onClick={() => setActiveTab("papers")}>📋 Manage Papers</button>
+        <div style={{display:"flex", gap:"6px", marginBottom:"28px", background:"white", padding:"6px", borderRadius:"14px", border:"1px solid rgba(15,42,74,0.12)", flexWrap:"wrap"}}>
+          <button className={`adm-tab ${activeTab==="upload"?"active":""}`} onClick={() => setActiveTab("upload")}>📤 Upload</button>
+          <button className={`adm-tab ${activeTab==="papers"?"active":""}`} onClick={() => setActiveTab("papers")}>📋 Papers</button>
+          <button className={`adm-tab ${activeTab==="students"?"active":""}`} onClick={() => setActiveTab("students")}>
+            👨‍🎓 Students {pendingStudents.length > 0 && <span style={{background:"#EF4444", color:"white", borderRadius:"50%", padding:"1px 6px", fontSize:"11px", marginLeft:"4px"}}>{pendingStudents.length}</span>}
+          </button>
           <button className={`adm-tab ${activeTab==="settings"?"active":""}`} onClick={() => setActiveTab("settings")}>⚙️ Settings</button>
-          <button className={`adm-tab ${activeTab==="students"?"active":""}`} onClick={() => setActiveTab("students")}>👨‍🎓 Students</button>
+          {isSuperAdmin && <>
+            <button className={`adm-tab super-tab ${activeTab==="admins"?"active":""}`} onClick={() => setActiveTab("admins")}>
+              👑 Admins {pendingAdmins.length > 0 && <span style={{background:"#EF4444", color:"white", borderRadius:"50%", padding:"1px 6px", fontSize:"11px", marginLeft:"4px"}}>{pendingAdmins.length}</span>}
+            </button>
+            <button className={`adm-tab super-tab ${activeTab==="superadmin"?"active":""}`} onClick={() => setActiveTab("superadmin")}>🔐 Super</button>
+          </>}
         </div>
 
         {settingsMsg && <div style={{background:"#E1F5EE", border:"1px solid rgba(29,158,117,0.3)", color:"#0f7a5a", padding:"10px 16px", borderRadius:"10px", fontSize:"14px", fontWeight:"500", marginBottom:"20px"}}>{settingsMsg}</div>}
         {papersMsg && <div style={{background:"#E1F5EE", border:"1px solid rgba(29,158,117,0.3)", color:"#0f7a5a", padding:"10px 16px", borderRadius:"10px", fontSize:"14px", fontWeight:"500", marginBottom:"20px"}}>{papersMsg}</div>}
+        {superMsg && <div style={{background:"#F3E8FF", border:"1px solid #C4B5FD", color:"#5B21B6", padding:"10px 16px", borderRadius:"10px", fontSize:"14px", fontWeight:"500", marginBottom:"20px"}}>{superMsg}</div>}
 
         {/* TAB 1: UPLOAD */}
         {activeTab === "upload" && (
@@ -258,7 +365,7 @@ export default function AdminDashboard() {
                 <div>
                   <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Class</label>
                   <select className="form-input" value={form.class_name} onChange={e => setForm({...form, class_name:e.target.value})} required disabled={!form.department}>
-                    <option value="">{form.department ? "Select Class" : "Select Department first"}</option>
+                    <option value="">{form.department ? "Select Class" : "Select Dept first"}</option>
                     {uploadClasses.map(c => <option key={c}>{c}</option>)}
                   </select>
                 </div>
@@ -277,7 +384,7 @@ export default function AdminDashboard() {
               <div>
                 <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Subject</label>
                 <select className="form-input" value={form.subject} onChange={e => setForm({...form, subject:e.target.value})} required disabled={!form.department}>
-                  <option value="">{form.department ? "Select Subject" : "Select Department first"}</option>
+                  <option value="">{form.department ? "Select Subject" : "Select Dept first"}</option>
                   {uploadSubjects.map(s => <option key={s}>{s}</option>)}
                 </select>
               </div>
@@ -303,15 +410,13 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* TAB 2: MANAGE PAPERS */}
+        {/* TAB 2: PAPERS */}
         {activeTab === "papers" && (
           <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
             <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"20px"}}>
               <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:0}}>📋 Manage Papers</h2>
               <span style={{background:"#E1F5EE", color:"#1D9E75", borderRadius:"20px", padding:"4px 12px", fontSize:"13px", fontWeight:"600"}}>{filteredPapers.length} papers</span>
             </div>
-
-            {/* Filters */}
             <div style={{display:"flex", gap:"12px", marginBottom:"20px"}}>
               <select className="form-input" value={filterDept} onChange={e => setFilterDept(e.target.value)}>
                 <option value="">All Departments</option>
@@ -322,28 +427,22 @@ export default function AdminDashboard() {
                 {SEMESTERS.map(s => <option key={s}>{s}</option>)}
               </select>
             </div>
-
             {filteredPapers.length === 0 ? (
-              <div style={{textAlign:"center", padding:"40px", color:"#94a3b8"}}>
-                <div style={{fontSize:"32px", marginBottom:"8px"}}>📭</div>
-                <div>No papers found</div>
-              </div>
+              <div style={{textAlign:"center", padding:"40px", color:"#94a3b8"}}><div style={{fontSize:"32px", marginBottom:"8px"}}>📭</div><div>No papers found</div></div>
             ) : (
               filteredPapers.map((paper, idx) => (
                 <div key={idx} className="paper-card">
                   <div>
                     <div style={{fontWeight:"600", color:"#0F2A4A", fontSize:"15px"}}>{paper.subject} — {paper.academic_year}</div>
                     <div style={{color:"#4A6080", fontSize:"13px", marginTop:"4px"}}>{paper.department} | {paper.class_name} | {paper.semester} Semester</div>
-                    <div style={{color:"#94a3b8", fontSize:"12px", marginTop:"2px"}}>Uploaded by: {paper.uploaded_by}</div>
+                    <div style={{color:"#94a3b8", fontSize:"12px", marginTop:"2px"}}>By: {paper.uploaded_by}</div>
                   </div>
                   <div style={{display:"flex", gap:"8px"}}>
                     <a href={paper.file_url} target="_blank" rel="noreferrer"
                       style={{padding:"7px 14px", background:"#E1F5EE", color:"#1D9E75", borderRadius:"8px", fontSize:"13px", fontWeight:"500", textDecoration:"none", border:"1px solid rgba(29,158,117,0.3)"}}>
                       👁️ View
                     </a>
-                    <button className="btn-danger" onClick={() => deletePaper(paper.public_id)}>
-                      🗑️ Delete
-                    </button>
+                    <button className="btn-danger" onClick={() => deletePaper(paper.public_id)}>🗑️ Delete</button>
                   </div>
                 </div>
               ))
@@ -351,7 +450,72 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* TAB 3: SETTINGS */}
+        {/* TAB 3: STUDENTS */}
+        {activeTab === "students" && (
+          <div style={{display:"flex", flexDirection:"column", gap:"20px"}}>
+            {/* Pending */}
+            <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"18px", color:"#0F2A4A", margin:"0 0 16px"}}>
+                ⏳ Pending Requests <span style={{background:"#FEF9C3", color:"#92400E", borderRadius:"20px", padding:"3px 10px", fontSize:"13px", marginLeft:"8px"}}>{pendingStudents.length}</span>
+              </h2>
+              {pendingStudents.length === 0 ? (
+                <p style={{color:"#94a3b8", fontSize:"14px"}}>No pending requests</p>
+              ) : pendingStudents.map(s => (
+                <div key={s.email} style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 0", borderBottom:"1px solid rgba(15,42,74,0.06)"}}>
+                  <div>
+                    <div style={{fontWeight:"600", color:"#0F2A4A"}}>{s.name}</div>
+                    <div style={{color:"#4A6080", fontSize:"13px"}}>{s.email} {s.college_id && `• ${s.college_id}`}</div>
+                  </div>
+                  <div style={{display:"flex", gap:"8px"}}>
+                    <button className="btn-approve" onClick={() => approveStudent(s.email)}>✅ Approve</button>
+                    <button className="btn-reject" onClick={() => rejectStudent(s.email)}>❌ Reject</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Active Students */}
+            <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"18px", color:"#0F2A4A", margin:"0 0 16px"}}>
+                ✅ Active Students <span style={{background:"#E1F5EE", color:"#1D9E75", borderRadius:"20px", padding:"3px 10px", fontSize:"13px", marginLeft:"8px"}}>{activeStudents.length}</span>
+              </h2>
+              {activeStudents.length === 0 ? (
+                <p style={{color:"#94a3b8", fontSize:"14px"}}>No active students</p>
+              ) : activeStudents.map(s => (
+                <div key={s.email} style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 0", borderBottom:"1px solid rgba(15,42,74,0.06)"}}>
+                  <div>
+                    <div style={{fontWeight:"600", color:"#0F2A4A"}}>{s.name}</div>
+                    <div style={{color:"#4A6080", fontSize:"13px"}}>{s.email} {s.college_id && `• ${s.college_id}`}</div>
+                  </div>
+                  <button className="btn-danger" onClick={() => removeStudent(s.email)}>🗑️ Remove</button>
+                </div>
+              ))}
+            </div>
+
+            {/* Rejected Students */}
+            {rejectedStudents.length > 0 && (
+              <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+                <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"18px", color:"#0F2A4A", margin:"0 0 16px"}}>
+                  ❌ Rejected Students <span style={{background:"#FEF2F2", color:"#DC2626", borderRadius:"20px", padding:"3px 10px", fontSize:"13px", marginLeft:"8px"}}>{rejectedStudents.length}</span>
+                </h2>
+                {rejectedStudents.map(s => (
+                  <div key={s.email} style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 0", borderBottom:"1px solid rgba(15,42,74,0.06)"}}>
+                    <div>
+                      <div style={{fontWeight:"600", color:"#0F2A4A"}}>{s.name}</div>
+                      <div style={{color:"#4A6080", fontSize:"13px"}}>{s.email}</div>
+                    </div>
+                    <div style={{display:"flex", gap:"8px"}}>
+                      <button className="btn-approve" onClick={() => approveStudent(s.email)}>✅ Approve</button>
+                      <button className="btn-danger" onClick={() => removeStudent(s.email)}>🗑️ Remove</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 4: SETTINGS */}
         {activeTab === "settings" && (
           <div style={{display:"flex", flexDirection:"column", gap:"20px"}}>
             <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
@@ -380,7 +544,7 @@ export default function AdminDashboard() {
 
             <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
               <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:"0 0 4px"}}>🔗 Department → Class Mapping</h2>
-              <p style={{color:"#4A6080", fontSize:"13px", margin:"0 0 16px"}}>Student ko department choose karne ke baad sirf linked classes dikhegi</p>
+              <p style={{color:"#4A6080", fontSize:"13px", margin:"0 0 16px"}}>Student ko sirf linked classes dikhegi</p>
               <div style={{display:"flex", gap:"10px"}}>
                 <select className="form-input" value={mapDept} onChange={e => setMapDept(e.target.value)}>
                   <option value="">Select Department</option>
@@ -397,7 +561,7 @@ export default function AdminDashboard() {
                   <div key={d} style={{marginBottom:"12px"}}>
                     <div style={{fontSize:"12px", fontWeight:"600", color:"#4A6080", textTransform:"uppercase", letterSpacing:"0.5px", marginBottom:"6px"}}>{d}</div>
                     {(deptClasses[d] || []).length === 0
-                      ? <span style={{color:"#94a3b8", fontSize:"13px"}}>No classes linked yet</span>
+                      ? <span style={{color:"#94a3b8", fontSize:"13px"}}>No classes linked</span>
                       : (deptClasses[d] || []).map(c => <span key={c} className="tag">{c}<button onClick={() => removeDeptClass(d, c)}>×</button></span>)
                     }
                   </div>
@@ -430,39 +594,86 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* TAB 4: STUDENTS */}
-        {activeTab === "students" && (
-          <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
-            <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"20px"}}>
-              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:0}}>👨‍🎓 Registered Students</h2>
-              <span style={{background:"#E1F5EE", color:"#1D9E75", borderRadius:"20px", padding:"4px 12px", fontSize:"13px", fontWeight:"600"}}>{students.length} total</span>
+        {/* TAB 5: ADMINS (Super Admin Only) */}
+        {activeTab === "admins" && isSuperAdmin && (
+          <div style={{display:"flex", flexDirection:"column", gap:"20px"}}>
+            {/* Pending Admins */}
+            <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"18px", color:"#0F2A4A", margin:"0 0 16px"}}>
+                ⏳ Pending Admin Requests <span style={{background:"#FEF9C3", color:"#92400E", borderRadius:"20px", padding:"3px 10px", fontSize:"13px", marginLeft:"8px"}}>{pendingAdmins.length}</span>
+              </h2>
+              {pendingAdmins.length === 0 ? (
+                <p style={{color:"#94a3b8", fontSize:"14px"}}>No pending admin requests</p>
+              ) : pendingAdmins.map(a => (
+                <div key={a.email} style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 0", borderBottom:"1px solid rgba(15,42,74,0.06)"}}>
+                  <div>
+                    <div style={{fontWeight:"600", color:"#0F2A4A"}}>{a.name}</div>
+                    <div style={{color:"#4A6080", fontSize:"13px"}}>{a.email}</div>
+                  </div>
+                  <div style={{display:"flex", gap:"8px"}}>
+                    <button className="btn-approve" onClick={() => approveAdmin(a.email)}>✅ Approve</button>
+                    <button className="btn-reject" onClick={() => rejectAdmin(a.email)}>❌ Reject</button>
+                  </div>
+                </div>
+              ))}
             </div>
-            {students.length === 0 ? (
-              <div style={{textAlign:"center", padding:"40px", color:"#94a3b8"}}>
-                <div style={{fontSize:"32px", marginBottom:"8px"}}>👤</div>
-                <div>No students registered yet</div>
+
+            {/* Active Admins */}
+            <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"18px", color:"#0F2A4A", margin:"0 0 16px"}}>
+                👑 Active Admins <span style={{background:"#E1F5EE", color:"#1D9E75", borderRadius:"20px", padding:"3px 10px", fontSize:"13px", marginLeft:"8px"}}>{activeAdmins.length}</span>
+              </h2>
+              {activeAdmins.length === 0 ? (
+                <p style={{color:"#94a3b8", fontSize:"14px"}}>No active admins</p>
+              ) : activeAdmins.map(a => (
+                <div key={a.email} style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 0", borderBottom:"1px solid rgba(15,42,74,0.06)"}}>
+                  <div>
+                    <div style={{fontWeight:"600", color:"#0F2A4A"}}>
+                      {a.name}
+                      {a.email === "happyreehal584@gmail.com" && <span style={{background:"linear-gradient(135deg,#7C3AED,#5B21B6)", color:"white", fontSize:"10px", padding:"2px 8px", borderRadius:"20px", marginLeft:"8px"}}>SUPER</span>}
+                    </div>
+                    <div style={{color:"#4A6080", fontSize:"13px"}}>{a.email}</div>
+                  </div>
+                  {a.email !== "happyreehal584@gmail.com" && (
+                    <button className="btn-danger" onClick={() => removeAdmin(a.email)}>🗑️ Remove</button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 6: SUPER ADMIN SETTINGS */}
+        {activeTab === "superadmin" && isSuperAdmin && (
+          <div style={{display:"flex", flexDirection:"column", gap:"20px"}}>
+            <div style={{background:"white", borderRadius:"16px", border:"2px solid #C4B5FD", padding:"28px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#5B21B6", margin:"0 0 8px"}}>🔐 Change Admin Secret Key</h2>
+              <p style={{color:"#4A6080", fontSize:"14px", margin:"0 0 20px"}}>Yeh key admin registration ke waqt required hogi. Change karne ke baad purani key kaam nahi karegi.</p>
+
+              <div style={{background:"#F3E8FF", border:"1px solid #C4B5FD", borderRadius:"10px", padding:"14px 16px", marginBottom:"20px"}}>
+                <div style={{fontSize:"12px", fontWeight:"600", color:"#5B21B6", marginBottom:"4px"}}>Current Secret Key:</div>
+                <div style={{fontFamily:"monospace", fontSize:"16px", color:"#0F2A4A", fontWeight:"600"}}>{currentSecret || "Loading..."}</div>
               </div>
-            ) : (
-              <table style={{width:"100%", borderCollapse:"collapse", fontSize:"14px"}}>
-                <thead>
-                  <tr>
-                    {["Name","Email","College ID","Action"].map(h => (
-                      <th key={h} style={{textAlign:"left", padding:"10px 14px", fontSize:"12px", fontWeight:"600", color:"#4A6080", textTransform:"uppercase", letterSpacing:"0.5px", borderBottom:"2px solid rgba(15,42,74,0.12)"}}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {students.map(s => (
-                    <tr key={s.email}>
-                      <td style={{padding:"12px 14px", borderBottom:"1px solid rgba(15,42,74,0.08)", color:"#0F2A4A", fontWeight:"500"}}>{s.name}</td>
-                      <td style={{padding:"12px 14px", borderBottom:"1px solid rgba(15,42,74,0.08)", color:"#4A6080"}}>{s.email}</td>
-                      <td style={{padding:"12px 14px", borderBottom:"1px solid rgba(15,42,74,0.08)", color:"#4A6080"}}>{s.college_id || "—"}</td>
-                      <td style={{padding:"12px 14px", borderBottom:"1px solid rgba(15,42,74,0.08)"}}><button className="btn-danger" onClick={() => removeStudent(s.email)}>Remove</button></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+
+              <div style={{display:"flex", flexDirection:"column", gap:"12px"}}>
+                <div>
+                  <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>New Secret Key (min 8 characters)</label>
+                  <input type="text" className="form-input" value={newSecret}
+                    onChange={e => setNewSecret(e.target.value)}
+                    placeholder="Enter new secret key" />
+                </div>
+                <button className="btn-purple" onClick={updateSecret} style={{alignSelf:"flex-start", padding:"12px 28px"}}>
+                  🔄 Update Secret Key
+                </button>
+              </div>
+            </div>
+
+            <div style={{background:"#FEF2F2", borderRadius:"16px", border:"1px solid #FECACA", padding:"20px"}}>
+              <h3 style={{color:"#DC2626", fontSize:"15px", fontWeight:"700", margin:"0 0 8px"}}>⚠️ Important</h3>
+              <p style={{color:"#7F1D1D", fontSize:"14px", margin:0, lineHeight:"1.6"}}>
+                Secret key change karne ke baad existing admins ke accounts affect nahi honge — sirf nayi registrations ke liye nayi key required hogi. Key safe jagah store karo.
+              </p>
+            </div>
           </div>
         )}
       </div>
