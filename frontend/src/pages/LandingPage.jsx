@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 export default function LandingPage() {
   const navigate = useNavigate();
 
-  const COLLEGE_LOGO = "https://res.cloudinary.com/dshlu0r4n/image/upload/v1777604160/1708666946784_myio59.jpg";
+  const COLLEGE_LOGO = "https://res.cloudinary.com/dshlu0r4n/image/upload/v1777613826/Screenshot_2026-05-01_105739_ffc3be.png";
   const MY_PHOTO = "https://res.cloudinary.com/dshlu0r4n/image/upload/v1777604161/1_qpjnrg.jpg";
 
   return (
