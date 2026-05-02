@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime
 import urllib.parse
+from fastapi.responses import StreamingResponse
+import httpx
 
 load_dotenv()
 
@@ -131,3 +133,20 @@ def fix_pdf_urls_remove(user=Depends(admin_only)):
             )
             fixed += 1
     return {"message": f"Fixed {fixed} paper URLs"}
+@router.get("/download")
+async def download_paper(url: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, follow_redirects=True)
+    
+    filename = url.split("/")[-1]
+    if not filename.endswith(".pdf"):
+        filename = filename + ".pdf"
+    
+    return StreamingResponse(
+        iter([response.content]),
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}",
+            "Content-Type": "application/pdf",
+        }
+    )

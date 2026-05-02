@@ -63,7 +63,7 @@ export default function StudentDashboard() {
     `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
 
   const downloadUrl = (url) =>
-    `https://docs.google.com/viewer?url=${encodeURIComponent(url)}`;
+  `${API}/papers/download?url=${encodeURIComponent(url)}`;
 
   return (
     <div style={{minHeight:"100vh", background:"#F4F7FB", fontFamily:"'DM Sans', sans-serif"}}>
