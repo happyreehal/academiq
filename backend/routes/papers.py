@@ -22,6 +22,9 @@ papers_col = db["papers"]
 
 router = APIRouter()
 
+def clean_public_id(text):
+    return text.replace(" ", "_").replace("&", "and").replace(".", "").replace(",", "").replace("/", "-")
+
 @router.post("/upload")
 def upload_paper(
     department: str = Form(...),
@@ -39,11 +42,13 @@ def upload_paper(
     if academic_year < current_year - 10:
         raise HTTPException(status_code=400, detail="Paper older than 10 years not allowed")
 
+    safe_id = f"{clean_public_id(department)}_{clean_public_id(class_name)}_{clean_public_id(semester)}_{clean_public_id(subject)}_{academic_year}"
+
     upload_result = cloudinary.uploader.upload(
         file.file,
         resource_type="raw",
         folder="academiq/papers",
-        public_id=f"{department}_{class_name}_{semester}_{subject}_{academic_year}",
+        public_id=safe_id,
         overwrite=True,
     )
 
