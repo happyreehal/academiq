@@ -60,13 +60,18 @@ export default function StudentDashboard() {
   };
 
   const viewUrl = (url) => {
-  // Google Docs viewer use karo - mobile pe bhi kaam karta hai
-  return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}`;
+  // Google Docs viewer - mobile pe bhi perfectly kaam karta hai
+  // koi conversion nahi, raw URL as-is pass karo
+  const cleanUrl = url.replace("/image/upload/fl_attachment/", "/raw/upload/")
+                      .replace("/image/upload/", "/raw/upload/");
+  return `https://docs.google.com/viewer?url=${encodeURIComponent(cleanUrl)}`;
 };
 
 const downloadUrl = (url) => {
-  // Backend download proxy use karo
-  return `${API}/papers/download?url=${encodeURIComponent(url)}`;
+  // cleanUrl - raw pe hi rehne do
+  const cleanUrl = url.replace("/image/upload/fl_attachment/", "/raw/upload/")
+                      .replace("/image/upload/", "/raw/upload/");
+  return `${API}/papers/download?url=${encodeURIComponent(cleanUrl)}`;
 };
 
   return (
