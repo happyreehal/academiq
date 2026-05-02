@@ -60,19 +60,13 @@ export default function StudentDashboard() {
   };
 
   const viewUrl = (url) => {
-  // raw URL ko image URL mein convert karo purane papers ke liye
-  const fixed = url.includes("/raw/upload/")
-    ? url.replace("/raw/upload/", "/image/upload/")
-    : url;
-  return fixed;
+  // Google Docs viewer use karo - mobile pe bhi kaam karta hai
+  return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}`;
 };
 
 const downloadUrl = (url) => {
-  const fixed = url.includes("/raw/upload/")
-    ? url.replace("/raw/upload/", "/image/upload/")
-    : url;
-  // fl_attachment force download karega
-  return fixed.replace("/upload/", "/upload/fl_attachment/");
+  // Backend download proxy use karo
+  return `${API}/papers/download?url=${encodeURIComponent(url)}`;
 };
 
   return (

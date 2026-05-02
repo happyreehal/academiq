@@ -49,7 +49,7 @@ def upload_paper(
 
     upload_result = cloudinary.uploader.upload(
         file.file,
-        resource_type="auto",
+        resource_type="raw",
         folder="academiq/papers",
         public_id=safe_id,
         overwrite=True,
