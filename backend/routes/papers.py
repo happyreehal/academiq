@@ -117,14 +117,14 @@ def delete_paper(public_id: str, user=Depends(admin_only)):
     return {"message": "Paper deleted successfully"}
 
 
-@router.post("/fix-urls")
-def fix_pdf_urls(user=Depends(admin_only)):
+@router.post("/fix-urls-remove")
+def fix_pdf_urls_remove(user=Depends(admin_only)):
     papers = list(papers_col.find({}))
     fixed = 0
     for paper in papers:
         url = paper.get("file_url", "")
-        if not url.endswith(".pdf"):
-            new_url = url + ".pdf"
+        if url.endswith(".pdf") and "/raw/upload/" in url:
+            new_url = url[:-4]  # remove .pdf
             papers_col.update_one(
                 {"_id": paper["_id"]},
                 {"$set": {"file_url": new_url}}
