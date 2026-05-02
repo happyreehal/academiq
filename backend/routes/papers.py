@@ -118,7 +118,7 @@ def delete_paper(public_id: str, user=Depends(admin_only)):
 
 
 @router.get("/download")
-async def download_paper(url: str):
+async def download_paper(url: str, inline: bool = False):
     async with httpx.AsyncClient() as client:
         response = await client.get(url, follow_redirects=True)
 
@@ -126,11 +126,13 @@ async def download_paper(url: str):
     if not filename.endswith(".pdf"):
         filename = filename + ".pdf"
 
+    disposition = "inline" if inline else "attachment"
+
     return StreamingResponse(
         iter([response.content]),
         media_type="application/pdf",
         headers={
-            "Content-Disposition": f"attachment; filename={filename}",
+            "Content-Disposition": f"{disposition}; filename={filename}",
             "Content-Type": "application/pdf",
         }
     )

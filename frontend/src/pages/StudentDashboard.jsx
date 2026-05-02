@@ -67,11 +67,12 @@ export default function StudentDashboard() {
   return `https://docs.google.com/viewer?url=${encodeURIComponent(cleanUrl)}`;
 };
 
+const viewUrl = (url) => {
+  return `${API}/papers/download?url=${encodeURIComponent(url)}&inline=true`;
+};
+
 const downloadUrl = (url) => {
-  // cleanUrl - raw pe hi rehne do
-  const cleanUrl = url.replace("/image/upload/fl_attachment/", "/raw/upload/")
-                      .replace("/image/upload/", "/raw/upload/");
-  return `${API}/papers/download?url=${encodeURIComponent(cleanUrl)}`;
+  return `${API}/papers/download?url=${encodeURIComponent(url)}`;
 };
 
   return (
