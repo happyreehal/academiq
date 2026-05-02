@@ -6,6 +6,7 @@ import cloudinary.uploader
 from dotenv import load_dotenv
 import os
 from datetime import datetime
+import urllib.parse
 
 load_dotenv()
 
@@ -52,19 +53,24 @@ def upload_paper(
         overwrite=True,
     )
 
+    # PDF URL fix - browser mein view ho sake
+    secure_url = upload_result["secure_url"]
+    if not secure_url.endswith(".pdf"):
+        secure_url = secure_url + ".pdf"
+
     paper_doc = {
         "department": department,
         "class_name": class_name,
         "semester": semester,
         "subject": subject,
         "academic_year": academic_year,
-        "file_url": upload_result["secure_url"],
+        "file_url": secure_url,
         "public_id": upload_result["public_id"],
         "uploaded_by": user["email"],
         "uploaded_at": datetime.utcnow(),
     }
     papers_col.insert_one(paper_doc)
-    return {"message": "Paper uploaded successfully", "url": upload_result["secure_url"]}
+    return {"message": "Paper uploaded successfully", "url": secure_url}
 
 
 @router.get("/list")
@@ -99,7 +105,6 @@ def all_papers(user=Depends(admin_only)):
 
 @router.delete("/delete/{public_id:path}")
 def delete_paper(public_id: str, user=Depends(admin_only)):
-    import urllib.parse
     public_id = urllib.parse.unquote(public_id)
     paper = papers_col.find_one({"public_id": public_id})
     if not paper:
@@ -110,3 +115,19 @@ def delete_paper(public_id: str, user=Depends(admin_only)):
         pass
     papers_col.delete_one({"public_id": public_id})
     return {"message": "Paper deleted successfully"}
+
+
+@router.post("/fix-urls")
+def fix_pdf_urls(user=Depends(admin_only)):
+    papers = list(papers_col.find({}))
+    fixed = 0
+    for paper in papers:
+        url = paper.get("file_url", "")
+        if not url.endswith(".pdf"):
+            new_url = url + ".pdf"
+            papers_col.update_one(
+                {"_id": paper["_id"]},
+                {"$set": {"file_url": new_url}}
+            )
+            fixed += 1
+    return {"message": f"Fixed {fixed} paper URLs"}
