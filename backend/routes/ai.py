@@ -106,22 +106,24 @@ YOUR TASK:
 Step 1 - READ the syllabus carefully and identify:
 - Course name and subject code
 - Time allowed, pass percentage
-- Number of sections (A, B, C etc.)
-- Topics under each section
+- Number of sections and topics under each section
 
-Step 2 - IDENTIFY MARKS CAREFULLY:
-- Syllabus may mention "Maximum Marks: 100", "External: 70", "Internal: 30"
-- You must ONLY use EXTERNAL EXAMINATION marks for the question paper
-- Internal Assessment marks are given by teacher separately - NEVER include them
-- The question paper total = External Examination marks only
-- Example: If External = 70, generate paper of 70 marks total
-- Read "Instruction for Paper Setter" carefully to understand section-wise marks distribution
+Step 2 - CALCULATE MARKS LIKE THIS:
+- Find "External Examination" marks in syllabus — this is your TOTAL
+- Find "Instruction for Paper Setter" — it tells section wise breakdown
+- Example from a typical syllabus:
+  * "Sections A & B will have FOUR questions each carrying 10 marks"
+  * "Attempt any TWO from each section" → Section A = 2x10 = 20 marks, Section B = 2x10 = 20 marks
+  * "Section C will have 10 short-answer questions carrying 30 marks" → Section C = 30 marks
+  * Total = 20 + 20 + 30 = 70 marks ✓ matches External marks
+- ALWAYS verify: Section A + Section B + Section C = External marks total
+- NEVER use Internal Assessment marks
 
-Step 3 - UNDERSTAND exact pattern from syllabus:
-- How many questions in each section
-- Marks per question in each section
-- How many questions to attempt per section
-- Verify: sum of all section marks = External marks total
+Step 3 - STRICTLY follow this question count:
+- Section A: EXACTLY 4 questions, student attempts ANY 2, each question = (Section A marks / 2)
+- Section B: EXACTLY 4 questions, student attempts ANY 2, each question = (Section B marks / 2)
+- Section C: EXACTLY 10 questions, ALL compulsory, each question = (Section C marks / 10)
+- Double check: 2 x (marks per question in A) + 2 x (marks per question in B) + 10 x (marks per question in C) = External total
 
 Step 4 - If past papers provided, use ONLY to:
 - Identify frequently asked topics
@@ -131,50 +133,42 @@ Step 4 - If past papers provided, use ONLY to:
 
 Step 5 - Generate BRAND NEW practice questions:
 - Completely different from past paper questions
-- Follow EXACT pattern from syllabus instructions
-- Section A topics only in Section A
-- Section B topics only in Section B
-- All Section C questions must carry equal marks
+- Section A topics only in Section A of syllabus
+- Section B topics only in Section B of syllabus
 - Questions must be university-level and detailed
 
-STRICT RULES:
-- Total marks = External marks ONLY (ignore internal/sessional marks)
-- NEVER copy questions from past papers
-- Section wise marks must add up to external total exactly
-- Write clear instructions before each section
-
-FORMAT:
+FORMAT (follow EXACTLY):
 [Subject Name and Code]
-Time Allowed: [X Hours] | Maximum Marks: [External Marks only] | Pass Percentage: [X%]
+Time Allowed: [X Hours] | Maximum Marks: [External Marks ONLY] | Pass Percentage: [X%]
 
-Note: [Instruction for candidates from syllabus]
+Note: Attempt any two questions each from Section A & B. Attempt all questions in Section C.
 
-SECTION A ([X] Marks)
-Attempt any [X] questions. Each question carries [X] marks.
-1. [Fresh question] ([X] Marks)
-2. [Fresh question] ([X] Marks)
-3. [Fresh question] ([X] Marks)
-4. [Fresh question] ([X] Marks)
+SECTION A ([total attempted marks] Marks)
+Attempt any 2 questions. Each question carries [X] marks.
+1. [Fresh question on Section A topic] ([X] Marks)
+2. [Fresh question on Section A topic] ([X] Marks)
+3. [Fresh question on Section A topic] ([X] Marks)
+4. [Fresh question on Section A topic] ([X] Marks)
 
-SECTION B ([X] Marks)
-Attempt any [X] questions. Each question carries [X] marks.
-1. [Fresh question] ([X] Marks)
-2. [Fresh question] ([X] Marks)
-3. [Fresh question] ([X] Marks)
-4. [Fresh question] ([X] Marks)
+SECTION B ([total attempted marks] Marks)
+Attempt any 2 questions. Each question carries [X] marks.
+1. [Fresh question on Section B topic] ([X] Marks)
+2. [Fresh question on Section B topic] ([X] Marks)
+3. [Fresh question on Section B topic] ([X] Marks)
+4. [Fresh question on Section B topic] ([X] Marks)
 
 SECTION C ([X] Marks)
-Attempt ALL questions. Each question carries [X] marks.
-1. [Fresh short answer question] ([X] Marks)
-2. [Fresh short answer question] ([X] Marks)
-3. [Fresh short answer question] ([X] Marks)
-4. [Fresh short answer question] ([X] Marks)
-5. [Fresh short answer question] ([X] Marks)
-6. [Fresh short answer question] ([X] Marks)
-7. [Fresh short answer question] ([X] Marks)
-8. [Fresh short answer question] ([X] Marks)
-9. [Fresh short answer question] ([X] Marks)
-10. [Fresh short answer question] ([X] Marks)
+Attempt ALL 10 questions. Each question carries [X] marks.
+1. [Fresh short answer] ([X] Marks)
+2. [Fresh short answer] ([X] Marks)
+3. [Fresh short answer] ([X] Marks)
+4. [Fresh short answer] ([X] Marks)
+5. [Fresh short answer] ([X] Marks)
+6. [Fresh short answer] ([X] Marks)
+7. [Fresh short answer] ([X] Marks)
+8. [Fresh short answer] ([X] Marks)
+9. [Fresh short answer] ([X] Marks)
+10. [Fresh short answer] ([X] Marks)
 
 --- Important Topics (based on past papers) ---
 [Topics by importance/frequency]
