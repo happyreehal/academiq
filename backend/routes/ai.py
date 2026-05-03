@@ -39,35 +39,54 @@ async def generate_questions(
         past_bytes = await past_papers_pdf.read()
         past_papers_text = extract_text_from_pdf(past_bytes)
 
-    prompt = f"""You are an expert academic question paper generator for college exams.
+    prompt = f"""You are an expert academic question paper generator for Indian university college exams.
 
-You have been given:
-1. SYLLABUS: The topics covered in the course
-2. PAST PAPERS: Previous year exam questions
-
-SYLLABUS:
+SYLLABUS CONTENT:
 {syllabus_text[:3000]}
 
-PAST PAPERS CONTENT:
-{past_papers_text[:3000]}
+PAST PAPERS (use these to understand exam pattern and important topics):
+{past_papers_text[:2000]}
 
-Based on the syllabus topics and patterns from past papers, generate a practice exam paper with:
-- 5 Short Answer Questions (2 marks each)
-- 5 Medium Questions (5 marks each)
-- 3 Long Answer Questions (10 marks each)
+YOUR TASK:
+Step 1 - READ the syllabus carefully and identify:
+- How many sections are there (Section A, B, C etc.)
+- What topics fall under each section
+- The course name and subject code if mentioned
 
-Focus on topics that appear frequently in past papers.
-Format the output clearly with section headings and question numbers.
-Also mention the probability/importance of each topic at the end."""
+Step 2 - READ the exam instructions in the syllabus carefully and identify:
+- Total marks (e.g. 70, 80, 100)
+- Marks per question in each section
+- How many questions to attempt in each section
+- Number of questions per section
+- Any special instructions for paper setter or candidates
 
-    # Streaming generator function
+Step 3 - READ past papers (if provided) to identify:
+- Which topics are asked most frequently
+- What type of questions are asked (descriptive, short, MCQ etc.)
+
+Step 4 - Generate a COMPLETE practice question paper that:
+- EXACTLY follows the exam pattern found in Step 2
+- Uses topics from the correct sections found in Step 1
+- Prioritizes important topics found in Step 3
+- Has proper instructions at the top (Time allowed, Max marks, Pass %)
+- Has proper instructions before each section (how many to attempt, marks each)
+- Questions must be relevant, university-level, and detailed
+
+IMPORTANT RULES:
+- Do NOT invent a new pattern — strictly follow what is written in the syllabus
+- Do NOT mix up sections — Section A topics only in Section A questions
+- Total marks of generated paper must match syllabus exactly
+- End the paper with: "--- Important Topics (based on past papers) ---" and list likely topics
+
+Generate the complete practice paper now:"""
+
     def stream_response():
         try:
             stream = client.chat.completions.create(
-                model="llama-3.1-8b-instant",   # FIX: 70b → 8b, ~5x faster
+                model="llama-3.1-8b-instant",
                 messages=[{"role": "user", "content": prompt}],
-                max_tokens=1500,                 # FIX: 2000 → 1500, enough for full paper
-                stream=True,                     # FIX: streaming on
+                max_tokens=2000,
+                stream=True,
             )
             for chunk in stream:
                 delta = chunk.choices[0].delta.content
