@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 import os
 import pdfplumber
 import io
-import httpx
+import base64
+import pypdfium2 as pdfium
 
 load_dotenv()
 
@@ -24,31 +25,38 @@ def extract_text_pdfplumber(file_bytes):
         pass
     return text.strip()
 
-async def extract_text_ocr(file_bytes, filename):
+def extract_text_groq_vision(file_bytes):
     try:
-        async with httpx.AsyncClient(timeout=60) as http:
-            response = await http.post(
-                "https://api2.ocr.space/parse/image",
-                data={
-                    "apikey": os.getenv("OCR_SPACE_API_KEY"),
-                    "language": "eng",
-                    "isOverlayRequired": False,
-                    "detectOrientation": True,
-                    "scale": True,
-                    "OCREngine": 2,
-                },
-                files={"file": (filename, file_bytes, "application/pdf")},
+        pdf = pdfium.PdfDocument(io.BytesIO(file_bytes))
+        all_text = ""
+        for i in range(min(3, len(pdf))):
+            page = pdf[i]
+            bitmap = page.render(scale=1.5)
+            img = bitmap.to_pil()
+            buf = io.BytesIO()
+            img.save(buf, format="JPEG", quality=85)
+            b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+            response = client.chat.completions.create(
+                model="meta-llama/llama-4-scout-17b-16e-instruct",
+                messages=[{
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": f"data:image/jpeg;base64,{b64}"}
+                        },
+                        {
+                            "type": "text",
+                            "text": "Extract all text from this image exactly as it appears. Include all headings, instructions, topics, marks, and any other text visible."
+                        }
+                    ]
+                }],
+                max_tokens=2000,
             )
-        print("OCR STATUS:", response.status_code)
-        print("OCR RESPONSE:", response.text[:500])
-        result = response.json()
-        if result.get("IsErroredOnProcessing"):
-            print("OCR ERROR:", result.get("ErrorMessage"))
-            return ""
-        pages = result.get("ParsedResults", [])
-        return "\n".join(p.get("ParsedText", "") for p in pages).strip()
+            all_text += response.choices[0].message.content + "\n"
+        return all_text.strip()
     except Exception as e:
-        print("OCR EXCEPTION:", str(e))
+        print("GROQ VISION ERROR:", str(e))
         return ""
 
 async def extract_text_from_pdf(file_bytes, filename="syllabus.pdf", required=True):
@@ -56,9 +64,9 @@ async def extract_text_from_pdf(file_bytes, filename="syllabus.pdf", required=Tr
     print("PDFPLUMBER TEXT LENGTH:", len(text))
 
     if len(text) < 100:
-        print("Falling back to OCR...")
-        text = await extract_text_ocr(file_bytes, filename)
-        print("OCR TEXT LENGTH:", len(text))
+        print("Falling back to Groq Vision OCR...")
+        text = extract_text_groq_vision(file_bytes)
+        print("GROQ VISION TEXT LENGTH:", len(text))
 
     if not text.strip():
         if required:
@@ -67,7 +75,7 @@ async def extract_text_from_pdf(file_bytes, filename="syllabus.pdf", required=Tr
                 detail="Could not extract text from syllabus PDF. Please ensure the PDF is not password protected."
             )
         else:
-            print("Past paper extraction failed - skipping")
+            print("PDF extraction failed - skipping")
             return ""
 
     return text
