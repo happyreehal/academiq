@@ -28,7 +28,7 @@ async def extract_text_ocr(file_bytes, filename):
     try:
         async with httpx.AsyncClient(timeout=60) as http:
             response = await http.post(
-                "https://api.ocr.space/parse/document",
+                "https://api.ocr.space/parse/image",
                 data={
                     "apikey": os.getenv("OCR_SPACE_API_KEY"),
                     "language": "eng",
