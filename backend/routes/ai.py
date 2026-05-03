@@ -86,39 +86,67 @@ async def generate_questions(
 SYLLABUS CONTENT:
 {syllabus_text[:3000]}
 
-PAST PAPERS (use these to understand exam pattern and important topics):
+PAST PAPERS FOR REFERENCE ONLY - DO NOT COPY THESE QUESTIONS:
 {past_papers_text[:2000]}
 
 YOUR TASK:
+
 Step 1 - READ the syllabus carefully and identify:
-- How many sections are there (Section A, B, C etc.)
-- What topics fall under each section
-- The course name and subject code if mentioned
+- Course name and subject code
+- Total marks, time allowed, pass percentage
+- Number of sections (A, B, C etc.)
+- Topics under each section
+- EXACT exam pattern from "Instruction for Paper Setter" and "Instruction for Candidates"
 
-Step 2 - READ the exam instructions in the syllabus carefully and identify:
-- Total marks (e.g. 70, 80, 100)
-- Marks per question in each section
-- How many questions to attempt in each section
-- Number of questions per section
-- Any special instructions for paper setter or candidates
+Step 2 - UNDERSTAND the exact pattern from syllabus instructions:
+- How many questions in each section
+- Marks per question
+- How many questions to attempt
+- Calculate total marks correctly
 
-Step 3 - READ past papers (if provided) to identify:
-- Which topics are asked most frequently
-- What type of questions are asked (descriptive, short, MCQ etc.)
+Step 3 - If past papers provided, use them ONLY to:
+- Identify which topics are asked more frequently
+- Understand question style (descriptive, analytical etc.)
+- DO NOT copy or reuse any question from past papers
+- DO NOT use same wording as past papers
 
-Step 4 - Generate a COMPLETE practice question paper that:
-- EXACTLY follows the exam pattern found in Step 2
-- Uses topics from the correct sections found in Step 1
-- Prioritizes important topics found in Step 3
-- Has proper instructions at the top (Time allowed, Max marks, Pass %)
-- Has proper instructions before each section (how many to attempt, marks each)
-- Questions must be relevant, university-level, and detailed
+Step 4 - Generate BRAND NEW practice questions that:
+- Are completely different from past paper questions
+- Follow EXACT same pattern as found in syllabus
+- Cover topics from correct sections only
+- Are university-level and detailed
 
-IMPORTANT RULES:
-- Do NOT invent a new pattern — strictly follow what is written in the syllabus
-- Do NOT mix up sections — Section A topics only in Section A questions
-- Total marks of generated paper must match syllabus exactly
-- End the paper with: "--- Important Topics (based on past papers) ---" and list likely topics
+STRICT RULES:
+- Section C questions must ALL carry EQUAL marks as per syllabus (e.g. if 10 questions for 30 marks = 3 marks each)
+- NEVER copy questions from past papers — generate fresh questions only
+- Total marks must match syllabus exactly
+- Section A topics only in Section A, Section B topics only in Section B
+- Write instructions clearly before each section
+
+FORMAT:
+[Subject Name and Code]
+Time Allowed: [X Hours] | Maximum Marks: [X] | Pass Percentage: [X%]
+
+Instructions for Candidates: [from syllabus]
+
+SECTION A ([X] Marks)
+[Instructions: Attempt any X questions. Each question carries X marks.]
+1. [Fresh question on Section A topic] ([X] Marks)
+2. [Fresh question on Section A topic] ([X] Marks)
+...
+
+SECTION B ([X] Marks)  
+[Instructions: Attempt any X questions. Each question carries X marks.]
+1. [Fresh question on Section B topic] ([X] Marks)
+...
+
+SECTION C ([X] Marks)
+[Instructions: Attempt ALL questions. Each question carries X marks.]
+1. [Fresh short answer question] ([X] Marks)
+...
+
+--- Important Topics (based on past papers) ---
+[List topics by frequency/importance]
 
 Generate the complete practice paper now:"""
 
