@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
-from pymongo import MongoClient
 from utils.dependencies import admin_only
 import cloudinary
 import cloudinary.uploader
@@ -9,6 +8,7 @@ from datetime import datetime
 import urllib.parse
 from fastapi.responses import StreamingResponse
 import httpx
+from main import db
 
 load_dotenv()
 
@@ -18,9 +18,6 @@ cloudinary.config(
     api_secret=os.getenv("CLOUDINARY_API_SECRET"),
 )
 
-MONGO_URI = os.getenv("MONGO_URI")
-client = MongoClient(MONGO_URI)
-db = client["academiq"]
 papers_col = db["papers"]
 
 router = APIRouter()

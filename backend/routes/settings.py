@@ -1,16 +1,15 @@
 from fastapi import APIRouter, HTTPException, Depends
-from pymongo import MongoClient
 from utils.dependencies import admin_only, get_current_user
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from main import db
 import os
 import urllib.parse
 
 load_dotenv()
 
 router = APIRouter()
-client = MongoClient(os.getenv("MONGO_URI"))
-db = client["academiq"]
+
 settings_col = db["settings"]
 users_col = db["users"]
 
@@ -57,7 +56,6 @@ class DeptCourseModel(BaseModel):
 class SecretModel(BaseModel):
     new_secret: str
 
-# ── DEPARTMENTS ──
 @router.get("/departments")
 def get_departments():
     return {"departments": get_settings().get("departments", [])}
@@ -84,7 +82,6 @@ def delete_department(name: str, user=Depends(admin_only)):
     save_settings({"departments": depts, "subjects": subjects, "dept_courses": dept_courses})
     return {"departments": depts}
 
-# ── COURSES ──
 @router.get("/courses")
 def get_courses():
     return {"courses": get_settings().get("courses", [])}
@@ -107,7 +104,6 @@ def delete_course(name: str, user=Depends(admin_only)):
     save_settings({"courses": courses})
     return {"courses": courses}
 
-# ── SUBJECTS (Department → Course → Semester → Subjects) ──
 @router.get("/subjects")
 def get_subjects():
     return {"subjects": get_settings().get("subjects", {})}
@@ -145,7 +141,6 @@ def delete_subject(department: str, course: str, semester: str, subject: str, us
     save_settings({"subjects": subjects})
     return {"subjects": subjects}
 
-# ── DEPT-COURSE MAPPING ──
 @router.get("/dept-courses")
 def get_dept_courses():
     return {"dept_courses": get_settings().get("dept_courses", {})}
@@ -173,7 +168,6 @@ def delete_dept_course(department: str, course: str, user=Depends(admin_only)):
     save_settings({"dept_courses": dept_courses})
     return {"dept_courses": dept_courses}
 
-# ── STUDENTS ──
 @router.get("/students")
 def get_students(user=Depends(admin_only)):
     students = list(users_col.find({"role": "student"}, {"_id": 0, "password": 0}))
@@ -197,7 +191,6 @@ def delete_student(email: str, user=Depends(admin_only)):
     users_col.delete_one({"email": email, "role": "student"})
     return {"message": "Student removed"}
 
-# ── ADMINS (Super Admin Only) ──
 @router.get("/admins")
 def get_admins(user=Depends(super_only)):
     admins = list(users_col.find({"role": "admin"}, {"_id": 0, "password": 0}))
@@ -223,7 +216,6 @@ def delete_admin(email: str, user=Depends(super_only)):
     users_col.delete_one({"email": email, "role": "admin"})
     return {"message": "Admin removed"}
 
-# ── SECRET KEY ──
 @router.get("/admin-secret")
 def get_admin_secret(user=Depends(super_only)):
     doc = get_settings()

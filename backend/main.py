@@ -1,12 +1,24 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+from pymongo import MongoClient
+import os
+
+load_dotenv()
+
+# Single shared MongoDB connection
+client = MongoClient(
+    os.getenv("MONGO_URI"),
+    maxPoolSize=10,
+    serverSelectionTimeoutMS=5000,
+    connectTimeoutMS=5000,
+)
+db = client["academiq"]
+
 from routes.auth import router as auth_router
 from routes.papers import router as papers_router
 from routes.ai import router as ai_router
 from routes.settings import router as settings_router
-
-load_dotenv()
 
 app = FastAPI(title="AcademiQ API")
 

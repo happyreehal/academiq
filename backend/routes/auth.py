@@ -1,18 +1,15 @@
 from fastapi import APIRouter, HTTPException
-from pymongo import MongoClient
 from passlib.context import CryptContext
 from models.user import UserRegister, UserLogin
 from utils.jwt_handler import create_token
 from dotenv import load_dotenv
+from main import db
 import os
 
 load_dotenv()
 
 router = APIRouter()
 
-MONGO_URI = os.getenv("MONGO_URI")
-client = MongoClient(MONGO_URI)
-db = client["academiq"]
 users_col = db["users"]
 settings_col = db["settings"]
 
