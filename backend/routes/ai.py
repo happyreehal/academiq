@@ -5,13 +5,15 @@ from dotenv import load_dotenv
 import os
 import pdfplumber
 import io
+import httpx
 
 load_dotenv()
 
 router = APIRouter()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-def extract_text_from_pdf(file_bytes):
+def extract_text_pdfplumber(file_bytes):
+    """Text-based PDF se text nikalo"""
     text = ""
     try:
         with pdfplumber.open(io.BytesIO(file_bytes)) as pdf:
@@ -19,8 +21,53 @@ def extract_text_from_pdf(file_bytes):
                 page_text = page.extract_text()
                 if page_text:
                     text += page_text + "\n"
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"PDF reading failed: {str(e)}")
+    except Exception:
+        pass
+    return text.strip()
+
+async def extract_text_ocr(file_bytes, filename):
+    """Scanned/image-based PDF ke liye OCR.space API use karo"""
+    try:
+        async with httpx.AsyncClient(timeout=60) as http:
+            response = await http.post(
+                "https://api.ocr.space/parse/document",
+                data={
+                    "apikey": os.getenv("OCR_SPACE_API_KEY"),
+                    "language": "eng",
+                    "isOverlayRequired": False,
+                    "detectOrientation": True,
+                    "scale": True,
+                    "OCREngine": 2,
+                },
+                files={"file": (filename, file_bytes, "application/pdf")},
+            )
+        result = response.json()
+        if result.get("IsErroredOnProcessing"):
+            return ""
+        pages = result.get("ParsedResults", [])
+        return "\n".join(p.get("ParsedText", "") for p in pages).strip()
+    except Exception:
+        return ""
+
+async def extract_text_from_pdf(file_bytes, filename="syllabus.pdf"):
+    """
+    Smart extraction:
+    1. Pehle pdfplumber try karo (text-based PDF)
+    2. Agar text nahi mila toh OCR.space use karo (scanned PDF)
+    """
+    # Step 1: text-based try karo
+    text = extract_text_pdfplumber(file_bytes)
+
+    # Step 2: agar kam text mila (scanned PDF) toh OCR use karo
+    if len(text) < 100:
+        text = await extract_text_ocr(file_bytes, filename)
+
+    if not text.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="Could not extract text from PDF. Please ensure the PDF is not password protected."
+        )
+
     return text
 
 @router.post("/generate")
@@ -29,15 +76,12 @@ async def generate_questions(
     past_papers_pdf: UploadFile = File(None),
 ):
     syllabus_bytes = await syllabus_pdf.read()
-    syllabus_text = extract_text_from_pdf(syllabus_bytes)
-
-    if not syllabus_text.strip():
-        raise HTTPException(status_code=400, detail="Could not extract text from syllabus PDF. Please use a text-based PDF, not a scanned image.")
+    syllabus_text = await extract_text_from_pdf(syllabus_bytes, syllabus_pdf.filename)
 
     past_papers_text = ""
     if past_papers_pdf and past_papers_pdf.filename:
         past_bytes = await past_papers_pdf.read()
-        past_papers_text = extract_text_from_pdf(past_bytes)
+        past_papers_text = await extract_text_from_pdf(past_bytes, past_papers_pdf.filename)
 
     prompt = f"""You are an expert academic question paper generator for Indian university college exams.
 
