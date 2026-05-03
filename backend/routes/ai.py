@@ -28,7 +28,7 @@ async def extract_text_ocr(file_bytes, filename):
     try:
         async with httpx.AsyncClient(timeout=60) as http:
             response = await http.post(
-                "https://api.ocr.space/parse/image",
+                "https://api2.ocr.space/parse/image",
                 data={
                     "apikey": os.getenv("OCR_SPACE_API_KEY"),
                     "language": "eng",
@@ -51,7 +51,7 @@ async def extract_text_ocr(file_bytes, filename):
         print("OCR EXCEPTION:", str(e))
         return ""
 
-async def extract_text_from_pdf(file_bytes, filename="syllabus.pdf"):
+async def extract_text_from_pdf(file_bytes, filename="syllabus.pdf", required=True):
     text = extract_text_pdfplumber(file_bytes)
     print("PDFPLUMBER TEXT LENGTH:", len(text))
 
@@ -61,10 +61,14 @@ async def extract_text_from_pdf(file_bytes, filename="syllabus.pdf"):
         print("OCR TEXT LENGTH:", len(text))
 
     if not text.strip():
-        raise HTTPException(
-            status_code=400,
-            detail="Could not extract text from PDF. Please ensure the PDF is not password protected."
-        )
+        if required:
+            raise HTTPException(
+                status_code=400,
+                detail="Could not extract text from syllabus PDF. Please ensure the PDF is not password protected."
+            )
+        else:
+            print("Past paper extraction failed - skipping")
+            return ""
 
     return text
 
@@ -74,12 +78,12 @@ async def generate_questions(
     past_papers_pdf: UploadFile = File(None),
 ):
     syllabus_bytes = await syllabus_pdf.read()
-    syllabus_text = await extract_text_from_pdf(syllabus_bytes, syllabus_pdf.filename)
+    syllabus_text = await extract_text_from_pdf(syllabus_bytes, syllabus_pdf.filename, required=True)
 
     past_papers_text = ""
     if past_papers_pdf and past_papers_pdf.filename:
         past_bytes = await past_papers_pdf.read()
-        past_papers_text = await extract_text_from_pdf(past_bytes, past_papers_pdf.filename)
+        past_papers_text = await extract_text_from_pdf(past_bytes, past_papers_pdf.filename, required=False)
 
     prompt = f"""You are an expert academic question paper generator for Indian university college exams.
 
@@ -155,7 +159,14 @@ SECTION C ([X] Marks)
 Attempt ALL questions. Each question carries [X] marks.
 1. [Fresh short answer question] ([X] Marks)
 2. [Fresh short answer question] ([X] Marks)
-... (total 10 questions)
+3. [Fresh short answer question] ([X] Marks)
+4. [Fresh short answer question] ([X] Marks)
+5. [Fresh short answer question] ([X] Marks)
+6. [Fresh short answer question] ([X] Marks)
+7. [Fresh short answer question] ([X] Marks)
+8. [Fresh short answer question] ([X] Marks)
+9. [Fresh short answer question] ([X] Marks)
+10. [Fresh short answer question] ([X] Marks)
 
 --- Important Topics (based on past papers) ---
 [Topics by importance/frequency]
@@ -173,8 +184,15 @@ Generate the complete practice paper now:"""
             for chunk in stream:
                 delta = chunk.choices[0].delta.content
                 if delta:
-                    yield delta
+                    yield delta.encode("utf-8")
         except Exception as e:
-            yield f"\n\nError: {str(e)}"
+            yield f"\n\nError: {str(e)}".encode("utf-8")
 
-    return StreamingResponse(stream_response(), media_type="text/plain")
+    return StreamingResponse(
+        stream_response(),
+        media_type="text/plain; charset=utf-8",
+        headers={
+            "X-Accel-Buffering": "no",
+            "Cache-Control": "no-cache",
+        }
+    )
