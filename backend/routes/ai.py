@@ -93,60 +93,72 @@ YOUR TASK:
 
 Step 1 - READ the syllabus carefully and identify:
 - Course name and subject code
-- Total marks, time allowed, pass percentage
+- Time allowed, pass percentage
 - Number of sections (A, B, C etc.)
 - Topics under each section
-- EXACT exam pattern from "Instruction for Paper Setter" and "Instruction for Candidates"
 
-Step 2 - UNDERSTAND the exact pattern from syllabus instructions:
+Step 2 - IDENTIFY MARKS CAREFULLY:
+- Syllabus may mention "Maximum Marks: 100", "External: 70", "Internal: 30"
+- You must ONLY use EXTERNAL EXAMINATION marks for the question paper
+- Internal Assessment marks are given by teacher separately - NEVER include them
+- The question paper total = External Examination marks only
+- Example: If External = 70, generate paper of 70 marks total
+- Read "Instruction for Paper Setter" carefully to understand section-wise marks distribution
+
+Step 3 - UNDERSTAND exact pattern from syllabus:
 - How many questions in each section
-- Marks per question
-- How many questions to attempt
-- Calculate total marks correctly
+- Marks per question in each section
+- How many questions to attempt per section
+- Verify: sum of all section marks = External marks total
 
-Step 3 - If past papers provided, use them ONLY to:
-- Identify which topics are asked more frequently
-- Understand question style (descriptive, analytical etc.)
-- DO NOT copy or reuse any question from past papers
-- DO NOT use same wording as past papers
+Step 4 - If past papers provided, use ONLY to:
+- Identify frequently asked topics
+- Understand question style
+- NEVER copy or reuse any question from past papers
+- NEVER use same wording as past papers
 
-Step 4 - Generate BRAND NEW practice questions that:
-- Are completely different from past paper questions
-- Follow EXACT same pattern as found in syllabus
-- Cover topics from correct sections only
-- Are university-level and detailed
+Step 5 - Generate BRAND NEW practice questions:
+- Completely different from past paper questions
+- Follow EXACT pattern from syllabus instructions
+- Section A topics only in Section A
+- Section B topics only in Section B
+- All Section C questions must carry equal marks
+- Questions must be university-level and detailed
 
 STRICT RULES:
-- Section C questions must ALL carry EQUAL marks as per syllabus (e.g. if 10 questions for 30 marks = 3 marks each)
-- NEVER copy questions from past papers — generate fresh questions only
-- Total marks must match syllabus exactly
-- Section A topics only in Section A, Section B topics only in Section B
-- Write instructions clearly before each section
+- Total marks = External marks ONLY (ignore internal/sessional marks)
+- NEVER copy questions from past papers
+- Section wise marks must add up to external total exactly
+- Write clear instructions before each section
 
 FORMAT:
 [Subject Name and Code]
-Time Allowed: [X Hours] | Maximum Marks: [X] | Pass Percentage: [X%]
+Time Allowed: [X Hours] | Maximum Marks: [External Marks only] | Pass Percentage: [X%]
 
-Instructions for Candidates: [from syllabus]
+Note: [Instruction for candidates from syllabus]
 
 SECTION A ([X] Marks)
-[Instructions: Attempt any X questions. Each question carries X marks.]
-1. [Fresh question on Section A topic] ([X] Marks)
-2. [Fresh question on Section A topic] ([X] Marks)
-...
+Attempt any [X] questions. Each question carries [X] marks.
+1. [Fresh question] ([X] Marks)
+2. [Fresh question] ([X] Marks)
+3. [Fresh question] ([X] Marks)
+4. [Fresh question] ([X] Marks)
 
-SECTION B ([X] Marks)  
-[Instructions: Attempt any X questions. Each question carries X marks.]
-1. [Fresh question on Section B topic] ([X] Marks)
-...
+SECTION B ([X] Marks)
+Attempt any [X] questions. Each question carries [X] marks.
+1. [Fresh question] ([X] Marks)
+2. [Fresh question] ([X] Marks)
+3. [Fresh question] ([X] Marks)
+4. [Fresh question] ([X] Marks)
 
 SECTION C ([X] Marks)
-[Instructions: Attempt ALL questions. Each question carries X marks.]
+Attempt ALL questions. Each question carries [X] marks.
 1. [Fresh short answer question] ([X] Marks)
-...
+2. [Fresh short answer question] ([X] Marks)
+... (total 10 questions)
 
 --- Important Topics (based on past papers) ---
-[List topics by frequency/importance]
+[Topics by importance/frequency]
 
 Generate the complete practice paper now:"""
 
