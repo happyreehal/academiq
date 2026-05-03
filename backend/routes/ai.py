@@ -13,7 +13,6 @@ router = APIRouter()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def extract_text_pdfplumber(file_bytes):
-    """Text-based PDF se text nikalo"""
     text = ""
     try:
         with pdfplumber.open(io.BytesIO(file_bytes)) as pdf:
@@ -26,7 +25,6 @@ def extract_text_pdfplumber(file_bytes):
     return text.strip()
 
 async def extract_text_ocr(file_bytes, filename):
-    """Scanned/image-based PDF ke liye OCR.space API use karo"""
     try:
         async with httpx.AsyncClient(timeout=60) as http:
             response = await http.post(
@@ -41,26 +39,26 @@ async def extract_text_ocr(file_bytes, filename):
                 },
                 files={"file": (filename, file_bytes, "application/pdf")},
             )
+        print("OCR STATUS:", response.status_code)
+        print("OCR RESPONSE:", response.text[:500])
         result = response.json()
         if result.get("IsErroredOnProcessing"):
+            print("OCR ERROR:", result.get("ErrorMessage"))
             return ""
         pages = result.get("ParsedResults", [])
         return "\n".join(p.get("ParsedText", "") for p in pages).strip()
-    except Exception:
+    except Exception as e:
+        print("OCR EXCEPTION:", str(e))
         return ""
 
 async def extract_text_from_pdf(file_bytes, filename="syllabus.pdf"):
-    """
-    Smart extraction:
-    1. Pehle pdfplumber try karo (text-based PDF)
-    2. Agar text nahi mila toh OCR.space use karo (scanned PDF)
-    """
-    # Step 1: text-based try karo
     text = extract_text_pdfplumber(file_bytes)
+    print("PDFPLUMBER TEXT LENGTH:", len(text))
 
-    # Step 2: agar kam text mila (scanned PDF) toh OCR use karo
     if len(text) < 100:
+        print("Falling back to OCR...")
         text = await extract_text_ocr(file_bytes, filename)
+        print("OCR TEXT LENGTH:", len(text))
 
     if not text.strip():
         raise HTTPException(
