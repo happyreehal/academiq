@@ -50,6 +50,7 @@ export default function StudentDashboard() {
       if (filters.course)     params.class_name = filters.course;
       if (filters.semester)   params.semester = filters.semester;
       if (filters.subject)    params.subject = filters.subject;
+
       const res = await axios.get(`${API}/papers/list`, { params });
       setPapers(res.data.papers);
     } catch (err) {
@@ -70,48 +71,74 @@ export default function StudentDashboard() {
   };
 
   return (
-    <div style={{minHeight:"100vh", background:"#F4F7FB", fontFamily:"'DM Sans', sans-serif"}}>
+    <div style={{minHeight:"100vh", background:"#030810", fontFamily:"'DM Sans', sans-serif"}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
-        .form-input { width:100%; padding:11px 14px; border:1px solid rgba(15,42,74,0.12); border-radius:8px; font-size:14px; font-family:'DM Sans',sans-serif; color:#0F2A4A; background:#F4F7FB; outline:none; transition:border-color 0.2s; box-sizing:border-box; }
-        .form-input:focus { border-color:#2D5FA0; background:white; }
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+        
+        .form-input { 
+          width:100%; padding:11px 14px; 
+          border:1px solid rgba(255,255,255,0.1); 
+          border-radius:4px; font-size:14px; 
+          font-family:'DM Sans',sans-serif; color:white; 
+          background:rgba(255,255,255,0.03); 
+          outline:none; transition:border-color 0.2s; box-sizing:border-box; 
+        }
+        .form-input:focus { border-color:#1D9E75; background:rgba(255,255,255,0.06); }
         .form-input:disabled { opacity:0.5; cursor:not-allowed; }
-        .paper-card { border:1px solid rgba(15,42,74,0.12); border-radius:12px; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; transition:box-shadow 0.2s; }
-        .paper-card:hover { box-shadow:0 4px 15px rgba(0,0,0,0.08); }
-        .btn-view { background:#0F2A4A; color:white; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:500; text-decoration:none; display:inline-block; }
-        .btn-view:hover { opacity:0.85; }
-        .btn-download { background:#E1F5EE; color:#1D9E75; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:500; text-decoration:none; border:1px solid rgba(29,158,117,0.3); display:inline-block; }
-        .btn-download:hover { background:#C6EFE0; }
+        .form-input option { background: #040b14; color: white; }
+        
+        .paper-card { 
+          background:rgba(255,255,255,0.02); 
+          border:1px solid rgba(255,255,255,0.06); 
+          border-radius:4px; padding:20px 24px; 
+          display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; 
+          transition:all 0.4s ease; position: relative; overflow: hidden;
+        }
+        .paper-card:hover { background:rgba(29,158,117,0.04); border-color:rgba(29,158,117,0.2); transform:translateY(-2px); }
+        
+        .btn-view { 
+          background:rgba(255,255,255,0.05); color:white; padding:8px 16px; border-radius:4px; 
+          font-size:13px; font-weight:500; text-decoration:none; display:inline-block; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s;
+        }
+        .btn-view:hover { background:rgba(255,255,255,0.1); }
+        
+        .btn-download { 
+          background:linear-gradient(135deg, #1D9E75, #0d7a5a); color:white; padding:8px 16px; border-radius:4px; font-size:13px; font-weight:500; text-decoration:none; border:none; display:inline-block; transition: all 0.3s;
+        }
+        .btn-download:hover { box-shadow: 0 10px 20px rgba(29,158,117,0.3); transform: translateY(-1px); }
       `}</style>
 
       {/* Navbar */}
-      <nav style={{background:"#0F2A4A", height:"64px", padding:"0 24px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100}}>
+      <nav style={{
+        background:"rgba(3,8,16,0.95)", backdropFilter:"blur(20px)", borderBottom:"1px solid rgba(255,255,255,0.06)",
+        height:"72px", padding:"0 6%", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100
+      }}>
         <div style={{display:"flex", alignItems:"center", gap:"10px"}}>
-          <div style={{width:"32px", height:"32px", background:"#1D9E75", borderRadius:"8px", display:"flex", alignItems:"center", justifyContent:"center", color:"white", fontWeight:"700", fontSize:"16px"}}>Q</div>
+          <div style={{width:"32px", height:"32px", background:"#1D9E75", borderRadius:"4px", display:"flex", alignItems:"center", justifyContent:"center", color:"white", fontWeight:"700", fontSize:"16px"}}>Q</div>
           <span style={{color:"white", fontWeight:"600", fontSize:"15px"}}>AcademiQ <span style={{color:"#1D9E75"}}>Student Portal</span></span>
         </div>
-        <div style={{display:"flex", alignItems:"center", gap:"10px"}}>
+        <div style={{display:"flex", alignItems:"center", gap:"14px"}}>
           <button onClick={() => navigate("/ai-generator")}
-            style={{background:"#1D9E75", color:"white", border:"none", padding:"8px 14px", borderRadius:"8px", fontSize:"13px", fontWeight:"500", cursor:"pointer"}}>
+            style={{background:"rgba(29,158,117,0.1)", color:"#1D9E75", border:"1px solid rgba(29,158,117,0.3)", padding:"8px 14px", borderRadius:"4px", fontSize:"13px", fontWeight:"500", cursor:"pointer", transition:"all 0.3s"}}>
             🤖 AI Generator
           </button>
-          <span style={{color:"rgba(255,255,255,0.7)", fontSize:"13px"}}>👋 {user?.name}</span>
+          <span style={{color:"rgba(255,255,255,0.5)", fontSize:"13px", letterSpacing:"1px"}}>👋 {user?.name}</span>
           <button onClick={() => { logout(); navigate("/login"); }}
-            style={{background:"rgba(255,255,255,0.12)", border:"1px solid rgba(255,255,255,0.25)", color:"white", padding:"8px 14px", borderRadius:"8px", fontSize:"13px", cursor:"pointer"}}>
+            style={{background:"transparent", border:"1px solid rgba(255,255,255,0.2)", color:"rgba(255,255,255,0.8)", padding:"8px 14px", borderRadius:"4px", fontSize:"13px", cursor:"pointer", transition:"all 0.3s"}}>
             Logout
           </button>
         </div>
       </nav>
 
-      <div style={{maxWidth:"860px", margin:"0 auto", padding:"36px 20px"}}>
+      <div style={{maxWidth:"860px", margin:"0 auto", padding:"60px 20px"}}>
 
         {/* Filter Card */}
-        <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px", marginBottom:"20px"}}>
-          <h2 style={{fontSize:"18px", fontWeight:"600", color:"#0F2A4A", margin:"0 0 20px"}}>🔍 Filter Question Papers</h2>
-          <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px"}}>
+        <div style={{background:"rgba(255,255,255,0.02)", borderRadius:"4px", border:"1px solid rgba(255,255,255,0.06)", padding:"36px", marginBottom:"30px", backdropFilter:"blur(20px)"}}>
+          <h2 style={{fontFamily:"'Cormorant Garamond', serif", fontSize:"28px", fontWeight:"400", color:"white", margin:"0 0 24px"}}>🔍 Filter Question Papers</h2>
+          <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"20px"}}>
 
             <div>
-              <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Department</label>
+              <label style={{display:"block", fontSize:"12px", fontWeight:"500", color:"rgba(255,255,255,0.5)", marginBottom:"8px", letterSpacing:"1px", textTransform:"uppercase"}}>Department</label>
               <select className="form-input" value={filters.department}
                 onChange={e => setFilters({...filters, department:e.target.value, course:"", semester:"", subject:""})}>
                 <option value="">All Departments</option>
@@ -120,7 +147,7 @@ export default function StudentDashboard() {
             </div>
 
             <div>
-              <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Course</label>
+              <label style={{display:"block", fontSize:"12px", fontWeight:"500", color:"rgba(255,255,255,0.5)", marginBottom:"8px", letterSpacing:"1px", textTransform:"uppercase"}}>Course</label>
               <select className="form-input" value={filters.course}
                 onChange={e => setFilters({...filters, course:e.target.value, semester:"", subject:""})}
                 disabled={!filters.department}>
@@ -130,7 +157,7 @@ export default function StudentDashboard() {
             </div>
 
             <div>
-              <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Semester</label>
+              <label style={{display:"block", fontSize:"12px", fontWeight:"500", color:"rgba(255,255,255,0.5)", marginBottom:"8px", letterSpacing:"1px", textTransform:"uppercase"}}>Semester</label>
               <select className="form-input" value={filters.semester}
                 onChange={e => setFilters({...filters, semester:e.target.value, subject:""})}
                 disabled={!filters.course}>
@@ -140,7 +167,7 @@ export default function StudentDashboard() {
             </div>
 
             <div>
-              <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Subject</label>
+              <label style={{display:"block", fontSize:"12px", fontWeight:"500", color:"rgba(255,255,255,0.5)", marginBottom:"8px", letterSpacing:"1px", textTransform:"uppercase"}}>Subject</label>
               <select className="form-input" value={filters.subject}
                 onChange={e => setFilters({...filters, subject:e.target.value})}
                 disabled={!filters.semester}>
@@ -152,53 +179,45 @@ export default function StudentDashboard() {
           </div>
 
           <button onClick={handleSearch}
-            style={{marginTop:"20px", background:"#0F2A4A", color:"white", border:"none", padding:"12px 28px", borderRadius:"8px", fontSize:"14px", fontWeight:"500", cursor:"pointer", fontFamily:"'DM Sans',sans-serif"}}>
+            style={{marginTop:"28px", background:"linear-gradient(135deg, #1D9E75, #0d7a5a)", color:"white", border:"none", padding:"14px 32px", borderRadius:"4px", fontSize:"14px", fontWeight:"600", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", letterSpacing:"1px", transition:"all 0.3s"}}>
             {loading ? "⏳ Searching..." : "🔍 Search Papers"}
           </button>
         </div>
 
         {/* Results */}
         {searched && (
-          <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
-            <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"20px"}}>
-              <h2 style={{fontSize:"18px", fontWeight:"600", color:"#0F2A4A", margin:0}}>
+          <div style={{background:"rgba(255,255,255,0.02)", borderRadius:"4px", border:"1px solid rgba(255,255,255,0.06)", padding:"36px", backdropFilter:"blur(20px)"}}>
+            <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"24px"}}>
+              <h2 style={{fontFamily:"'Cormorant Garamond', serif", fontSize:"28px", fontWeight:"400", color:"white", margin:0}}>
                 Results
               </h2>
-              <span style={{background:"#E1F5EE", color:"#1D9E75", borderRadius:"20px", padding:"4px 12px", fontSize:"13px", fontWeight:"600"}}>
-                {papers.length} paper{papers.length !== 1 ? "s" : ""} found
+              <span style={{background:"rgba(29,158,117,0.1)", border:"1px solid rgba(29,158,117,0.3)", color:"#1D9E75", borderRadius:"2px", padding:"6px 14px", fontSize:"12px", fontWeight:"500", letterSpacing:"1px"}}>
+                {papers.length} PAPER{papers.length !== 1 ? "S" : ""} FOUND
               </span>
             </div>
 
             {papers.length === 0 ? (
-              <div style={{textAlign:"center", padding:"40px", color:"#94a3b8"}}>
-                <div style={{fontSize:"32px", marginBottom:"8px"}}>📭</div>
-                <div>No papers found for selected filters</div>
+              <div style={{textAlign:"center", padding:"60px 20px", color:"rgba(255,255,255,0.3)"}}>
+                <div style={{fontSize:"42px", marginBottom:"16px", opacity:0.5}}>📭</div>
+                <div style={{fontWeight:"300", letterSpacing:"1px"}}>No papers found for selected filters</div>
               </div>
             ) : (
               <div style={{display:"flex", flexDirection:"column", gap:"12px"}}>
                 {papers.map((paper, idx) => (
                   <div key={idx} className="paper-card">
                     <div>
-                      <div style={{fontWeight:"600", color:"#0F2A4A", fontSize:"15px"}}>
-                        {paper.subject} — {paper.academic_year}
+                      <div style={{fontWeight:"500", color:"white", fontSize:"16px", marginBottom:"6px"}}>
+                        {paper.subject} — <span style={{color:"#1D9E75"}}>{paper.academic_year}</span>
                       </div>
-                      <div style={{color:"#4A6080", fontSize:"13px", marginTop:"4px"}}>
+                      <div style={{color:"rgba(255,255,255,0.4)", fontSize:"13px", fontWeight:"300"}}>
                         {paper.department} · {paper.class_name} · {paper.semester} Semester
                       </div>
                     </div>
-                    <div style={{display:"flex", gap:"8px", flexWrap:"wrap"}}>
-                      <a
-                        href={viewUrl(paper.file_url)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn-view">
+                    <div style={{display:"flex", gap:"10px", flexWrap:"wrap"}}>
+                      <a href={viewUrl(paper.file_url)} target="_blank" rel="noreferrer" className="btn-view">
                         👁️ View
                       </a>
-                      <a
-                        href={downloadUrl(paper.file_url)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="btn-download">
+                      <a href={downloadUrl(paper.file_url)} target="_blank" rel="noreferrer" className="btn-download">
                         ⬇️ Download
                       </a>
                     </div>
