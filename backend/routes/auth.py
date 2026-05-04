@@ -7,9 +7,7 @@ from main import db
 import os
 import random
 from datetime import datetime, timedelta
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+from mailjet_rest import Client
 
 load_dotenv()
 
@@ -25,15 +23,16 @@ SUPER_ADMIN_EMAIL = "happyreehal584@gmail.com"
 
 def send_otp_email(to_email: str, otp: str, name: str):
     try:
-        GMAIL_USER = os.getenv("GMAIL_USER")       # tumhari gmail: abc@gmail.com
-        GMAIL_PASS = os.getenv("GMAIL_APP_PASS")   # 16-char app password
+        # Render ke environment variables se keys uthayega
+        api_key = os.getenv('MAILJET_API_KEY')
+        api_secret = os.getenv('MAILJET_SECRET_KEY')
+        
+        # Mailjet sender email (aapki registered email)
+        sender_email = "happyreehal584@gmail.com" 
 
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = "AcademiQ — Email Verification OTP"
-        msg["From"] = f"AcademiQ <{GMAIL_USER}>"
-        msg["To"] = to_email
-
-        html = f"""
+        mailjet = Client(auth=(api_key, api_secret), version='v3.1')
+        
+        html_content = f"""
         <div style="font-family:'DM Sans',sans-serif;max-width:480px;margin:0 auto;
                     background:#0F2A4A;border-radius:16px;overflow:hidden;">
           <div style="background:#1D9E75;padding:24px;text-align:center;">
@@ -61,17 +60,35 @@ def send_otp_email(to_email: str, otp: str, name: str):
         </div>
         """
 
-        msg.attach(MIMEText(html, "html"))
-
-        # --- UPDATED SMTP STARTTLS LOGIC ---
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()  # Port 587 ke liye TLS encryption start karna padta hai
-            server.login(GMAIL_USER, GMAIL_PASS)
-            server.sendmail(GMAIL_USER, to_email, msg.as_string())
-
-        return True
+        data = {
+          'Messages': [
+            {
+              "From": {
+                "Email": sender_email,
+                "Name": "AcademiQ"
+              },
+              "To": [
+                {
+                  "Email": to_email,
+                  "Name": name
+                }
+              ],
+              "Subject": "AcademiQ — Email Verification OTP",
+              "HTMLPart": html_content
+            }
+          ]
+        }
+        
+        result = mailjet.send.create(data=data)
+        
+        if result.status_code == 200:
+            return True
+        else:
+            print("Mailjet Error:", result.json())
+            return False
+            
     except Exception as e:
-        print("GMAIL SMTP ERROR:", str(e))
+        print("MAILJET ERROR:", str(e))
         return False
 
 def get_admin_secret():
