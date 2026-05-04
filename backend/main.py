@@ -6,7 +6,6 @@ import os
 
 load_dotenv()
 
-# Single shared MongoDB connection
 client = MongoClient(
     os.getenv("MONGO_URI"),
     maxPoolSize=10,
@@ -29,6 +28,7 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "https://academiq-sigma.vercel.app",
     ],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
