@@ -243,7 +243,7 @@ export default function Register() {
           </>
         )}
 
-        {/* STEP 2 — OTP Verification */}
+        { /* STEP 2 — OTP Verification */}
         {step === 2 && (
           <form onSubmit={handleVerifyAndRegister} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <div style={{ textAlign: "center", padding: "16px", background: "rgba(29,158,117,0.05)", border: "1px solid rgba(29,158,117,0.15)", borderRadius: "8px" }}>
