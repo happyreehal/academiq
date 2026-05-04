@@ -36,101 +36,112 @@ export default function Login() {
 
   return (
     <div style={{
-      minHeight:"100vh",
-      background:"linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 50%, #1e3a5f 100%)",
-      display:"flex", alignItems:"center", justifyContent:"center",
-      fontFamily:"'Segoe UI', sans-serif", padding:"20px"
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #030810 0%, #0d2035 50%, #030810 100%)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      fontFamily: "'DM Sans', sans-serif", padding: "20px"
     }}>
-      <div style={{
-        background:"rgba(255,255,255,0.97)", borderRadius:"24px",
-        padding:"48px 40px", width:"100%", maxWidth:"420px",
-        boxShadow:"0 25px 60px rgba(0,0,0,0.3)", animation:"slideUp 0.5s ease"
-      }}>
-        <style>{`
-          @keyframes slideUp {
-            from { opacity:0; transform:translateY(30px); }
-            to { opacity:1; transform:translateY(0); }
-          }
-          @keyframes shake {
-            0%,100% { transform:translateX(0); }
-            25% { transform:translateX(-8px); }
-            75% { transform:translateX(8px); }
-          }
-          .input-field {
-            width:100%; border:2px solid #e2e8f0; border-radius:12px;
-            padding:12px 16px; font-size:15px; outline:none;
-            transition:all 0.3s ease; box-sizing:border-box; background:#f8fafc;
-          }
-          .input-field:focus {
-            border-color:#1e3a5f; background:white;
-            box-shadow:0 0 0 4px rgba(30,58,95,0.1);
-          }
-          .login-btn {
-            width:100%; padding:14px;
-            background:linear-gradient(135deg,#1e3a5f,#2d6a9f);
-            color:white; border:none; border-radius:12px;
-            font-size:16px; font-weight:600; cursor:pointer; transition:all 0.3s ease;
-          }
-          .login-btn:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(30,58,95,0.4); }
-          .login-btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
-          .role-tab {
-            flex:1; padding:10px; border:2px solid #e2e8f0;
-            background:#f8fafc; border-radius:10px; cursor:pointer;
-            font-weight:600; font-size:14px; transition:all 0.3s ease;
-          }
-          .role-tab.active { background:#1e3a5f; color:white; border-color:#1e3a5f; }
-        `}</style>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+        @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes shake { 0%,100% { transform:translateX(0); } 25% { transform:translateX(-8px); } 75% { transform:translateX(8px); } }
+        .input-field {
+          width:100%; border:1px solid rgba(255,255,255,0.1); border-radius:8px;
+          padding:12px 16px; font-size:14px; outline:none;
+          transition:all 0.3s ease; box-sizing:border-box;
+          background:rgba(255,255,255,0.05); color:white;
+          font-family:'DM Sans',sans-serif;
+        }
+        .input-field::placeholder { color:rgba(255,255,255,0.25); }
+        .input-field:focus { border-color:#1D9E75; background:rgba(255,255,255,0.08); box-shadow:0 0 0 3px rgba(29,158,117,0.15); }
+        .login-btn {
+          width:100%; padding:14px;
+          background:linear-gradient(135deg,#1D9E75,#0d7a5a);
+          color:white; border:none; border-radius:8px;
+          font-size:14px; font-weight:600; cursor:pointer;
+          transition:all 0.3s ease; font-family:'DM Sans',sans-serif;
+          letter-spacing:1px;
+        }
+        .login-btn:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(29,158,117,0.3); }
+        .login-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+        .role-tab {
+          flex:1; padding:10px; border:1px solid rgba(255,255,255,0.1);
+          background:rgba(255,255,255,0.03); border-radius:8px; cursor:pointer;
+          font-weight:600; font-size:13px; transition:all 0.3s ease;
+          color:rgba(255,255,255,0.5); font-family:'DM Sans',sans-serif;
+        }
+        .role-tab.active { background:#1D9E75; color:white; border-color:#1D9E75; }
+        label { display:block; font-size:12px; font-weight:600; color:rgba(255,255,255,0.5); margin-bottom:6px; letter-spacing:1px; text-transform:uppercase; }
+      `}</style>
 
-        <div style={{textAlign:"center", marginBottom:"32px"}}>
+      <div style={{
+        background: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: "16px", padding: "48px 40px",
+        width: "100%", maxWidth: "420px",
+        backdropFilter: "blur(20px)",
+        animation: "slideUp 0.5s ease",
+        position: "relative", overflow: "hidden"
+      }}>
+        {/* Top accent line */}
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: "linear-gradient(90deg, #1D9E75, transparent)" }} />
+
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
           <div style={{
-            width:"64px", height:"64px",
-            background:"linear-gradient(135deg,#1e3a5f,#2d6a9f)",
-            borderRadius:"16px", display:"inline-flex",
-            alignItems:"center", justifyContent:"center",
-            marginBottom:"16px", fontSize:"28px"
+            width: "56px", height: "56px",
+            background: "linear-gradient(135deg,#1D9E75,#0d7a5a)",
+            borderRadius: "12px", display: "inline-flex",
+            alignItems: "center", justifyContent: "center",
+            marginBottom: "16px", fontSize: "24px"
           }}>🎓</div>
-          <h1 style={{fontSize:"28px", fontWeight:"800", color:"#1e3a5f", margin:"0 0 6px"}}>AcademiQ</h1>
-          <p style={{color:"#64748b", margin:0, fontSize:"15px"}}>Sign in to your account</p>
+          <h1 style={{ fontSize: "24px", fontWeight: "700", color: "white", margin: "0 0 4px", letterSpacing: "1px" }}>ACADEMIQ</h1>
+          <p style={{ color: "rgba(255,255,255,0.3)", margin: 0, fontSize: "13px", letterSpacing: "1px" }}>SIGN IN TO YOUR ACCOUNT</p>
         </div>
 
-        <div style={{display:"flex", gap:"10px", marginBottom:"24px"}}>
-          <button className={`role-tab ${form.role==="student"?"active":""}`}
-            onClick={() => setForm({...form, role:"student"})}>
+        {/* Role Tabs */}
+        <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
+          <button className={`role-tab ${form.role === "student" ? "active" : ""}`}
+            onClick={() => setForm({ ...form, role: "student" })}>
             👨‍🎓 Student
           </button>
-          <button className={`role-tab ${form.role==="admin"?"active":""}`}
-            onClick={() => setForm({...form, role:"admin"})}>
+          <button className={`role-tab ${form.role === "admin" ? "active" : ""}`}
+            onClick={() => setForm({ ...form, role: "admin" })}>
             👨‍💼 Admin
           </button>
         </div>
 
+        {/* Error */}
         {error && (
           <div style={{
-            background:"#fef2f2", border:"1px solid #fecaca", color:"#dc2626",
-            padding:"12px 16px", borderRadius:"10px", marginBottom:"20px",
-            fontSize:"14px", animation:"shake 0.3s ease"
+            background: "rgba(220,38,38,0.1)", border: "1px solid rgba(220,38,38,0.3)",
+            color: "#f87171", padding: "12px 16px", borderRadius: "8px",
+            marginBottom: "16px", fontSize: "13px", animation: "shake 0.3s ease"
           }}>⚠️ {error}</div>
         )}
 
-        <form onSubmit={handleSubmit} style={{display:"flex", flexDirection:"column", gap:"18px"}}>
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div>
-            <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Email Address</label>
+            <label>Email Address</label>
             <input type="email" className="input-field" value={form.email}
-              onChange={e => setForm({...form, email:e.target.value})} required placeholder="you@example.com" />
+              onChange={e => setForm({ ...form, email: e.target.value })}
+              required placeholder="you@example.com" />
           </div>
           <div>
-            <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Password</label>
+            <label>Password</label>
             <input type="password" className="input-field" value={form.password}
-              onChange={e => setForm({...form, password:e.target.value})} required placeholder="••••••••" />
+              onChange={e => setForm({ ...form, password: e.target.value })}
+              required placeholder="••••••••" />
           </div>
           <button type="submit" disabled={loading} className="login-btn">
             {loading ? "⏳ Signing in..." : "Sign In →"}
           </button>
         </form>
 
-        <p style={{textAlign:"center", fontSize:"14px", color:"#64748b", marginTop:"24px", marginBottom:0}}>
+        <p style={{ textAlign: "center", fontSize: "13px", color: "rgba(255,255,255,0.3)", marginTop: "24px", marginBottom: 0 }}>
           Don't have an account?{" "}
-          <Link to="/register" style={{color:"#1e3a5f", fontWeight:"700", textDecoration:"none"}}>Register here</Link>
+          <Link to="/register" style={{ color: "#1D9E75", fontWeight: "700", textDecoration: "none" }}>Register here</Link>
         </p>
       </div>
     </div>
