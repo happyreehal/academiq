@@ -93,142 +93,6 @@ This section contains the contents of the repository's files.
 
 </file>
 
-<file path="backend/requirements.txt">
-altair==6.0.0
-annotated-doc==0.0.4
-annotated-types==0.7.0
-anyio==4.13.0
-attrs==26.1.0
-bcrypt==4.0.1
-beautifulsoup4==4.14.3
-blinker==1.9.0
-blis==1.3.3
-cachetools==7.0.5
-catalogue==2.0.10
-certifi==2026.2.25
-cffi==2.0.0
-charset-normalizer==3.4.7
-click==8.3.2
-cloudinary==1.44.2
-cloudpathlib==0.23.0
-colorama==0.4.6
-confection==1.3.3
-cryptography==46.0.7
-cymem==2.0.13
-distro==1.9.0
-dnspython==2.8.0
-ecdsa==0.19.2
-en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl#sha256=1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85
-fastapi==0.136.1
-filelock==3.25.2
-Flask==3.1.3
-flask-cors==6.0.2
-fsspec==2026.3.0
-gitdb==4.0.12
-GitPython==3.1.46
-google-ai-generativelanguage==0.6.15
-google-api-core==2.25.2
-google-api-python-client==2.194.0
-google-auth==2.49.2
-google-auth-httplib2==0.3.1
-google-genai==1.73.1
-googleapis-common-protos==1.74.0
-groq==1.2.0
-grpcio==1.80.0
-grpcio-status==1.71.2
-h11==0.16.0
-hf-xet==1.4.3
-httpcore==1.0.9
-httplib2==0.31.2
-httpx==0.28.1
-huggingface_hub==1.10.1
-idna==3.11
-itsdangerous==2.2.0
-Jinja2==3.1.6
-joblib==1.5.3
-jsonschema==4.26.0
-jsonschema-specifications==2025.9.1
-markdown-it-py==4.0.0
-MarkupSafe==3.0.3
-mdurl==0.1.2
-mpmath==1.3.0
-murmurhash==1.0.15
-narwhals==2.19.0
-networkx==3.6.1
-nltk==3.9.4
-numpy==2.4.4
-packaging==26.0
-pandas==3.0.2
-passlib==1.7.4
-pdfminer.six==20251230
-pdfplumber==0.11.9
-pillow==12.2.0
-preshed==3.0.13
-proto-plus==1.27.2
-protobuf==5.29.6
-pyarrow==23.0.1
-pyasn1==0.6.3
-pyasn1_modules==0.4.2
-pycparser==3.0
-pydantic==2.13.2
-pydantic_core==2.46.2
-pydeck==0.9.2
-Pygments==2.20.0
-pymongo==4.17.0
-pyparsing==3.3.2
-PyPDF2==3.0.1
-pypdfium2==5.7.1
-python-dateutil==2.9.0.post0
-python-dotenv==1.2.2
-python-jose==3.5.0
-python-multipart==0.0.26
-PyYAML==6.0.3
-referencing==0.37.0
-regex==2026.4.4
-requests==2.33.1
-rich==14.3.4
-rpds-py==0.30.0
-rsa==4.9.1
-safetensors==0.7.0
-sentencepiece==0.2.1
-setuptools==81.0.0
-shellingham==1.5.4
-six==1.17.0
-smart_open==7.6.0
-smmap==5.0.3
-sniffio==1.3.1
-soupsieve==2.8.3
-spacy==3.8.13
-spacy-legacy==3.0.12
-spacy-loggers==1.0.5
-srsly==2.5.3
-starlette==1.0.0
-streamlit==1.56.0
-sympy==1.14.0
-tenacity==9.1.4
-thinc==8.3.13
-tiktoken==0.12.0
-tokenizers==0.22.2
-toml==0.10.2
-torch==2.11.0
-tornado==6.5.5
-tqdm==4.67.3
-transformers==5.5.3
-typer==0.24.1
-typing-inspection==0.4.2
-typing_extensions==4.15.0
-tzdata==2026.1
-uritemplate==4.2.0
-urllib3==2.6.3
-uvicorn==0.46.0
-wasabi==1.1.3
-watchdog==6.0.0
-weasel==1.0.0
-websockets==16.0
-Werkzeug==3.1.8
-wrapt==2.1.2
-</file>
-
 <file path="backend/routes/__init__.py">
 
 </file>
@@ -816,86 +680,141 @@ class UserLogin(BaseModel):
     role: str
 </file>
 
-<file path="backend/routes/ai.py">
-from fastapi import APIRouter, HTTPException, UploadFile, File
-from fastapi.responses import StreamingResponse
-from groq import Groq
-from dotenv import load_dotenv
-import os
-import pdfplumber
-import io
-
-load_dotenv()
-
-router = APIRouter()
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-
-def extract_text_from_pdf(file_bytes):
-    text = ""
-    try:
-        with pdfplumber.open(io.BytesIO(file_bytes)) as pdf:
-            for page in pdf.pages:
-                page_text = page.extract_text()
-                if page_text:
-                    text += page_text + "\n"
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"PDF reading failed: {str(e)}")
-    return text
-
-@router.post("/generate")
-async def generate_questions(
-    syllabus_pdf: UploadFile = File(...),
-    past_papers_pdf: UploadFile = File(None),
-):
-    syllabus_bytes = await syllabus_pdf.read()
-    syllabus_text = extract_text_from_pdf(syllabus_bytes)
-
-    if not syllabus_text.strip():
-        raise HTTPException(status_code=400, detail="Could not extract text from syllabus PDF. Please use a text-based PDF, not a scanned image.")
-
-    past_papers_text = ""
-    if past_papers_pdf and past_papers_pdf.filename:
-        past_bytes = await past_papers_pdf.read()
-        past_papers_text = extract_text_from_pdf(past_bytes)
-
-    prompt = f"""You are an expert academic question paper generator for college exams.
-
-You have been given:
-1. SYLLABUS: The topics covered in the course
-2. PAST PAPERS: Previous year exam questions
-
-SYLLABUS:
-{syllabus_text[:3000]}
-
-PAST PAPERS CONTENT:
-{past_papers_text[:3000]}
-
-Based on the syllabus topics and patterns from past papers, generate a practice exam paper with:
-- 5 Short Answer Questions (2 marks each)
-- 5 Medium Questions (5 marks each)
-- 3 Long Answer Questions (10 marks each)
-
-Focus on topics that appear frequently in past papers.
-Format the output clearly with section headings and question numbers.
-Also mention the probability/importance of each topic at the end."""
-
-    # Streaming generator function
-    def stream_response():
-        try:
-            stream = client.chat.completions.create(
-                model="llama-3.1-8b-instant",   # FIX: 70b → 8b, ~5x faster
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=1500,                 # FIX: 2000 → 1500, enough for full paper
-                stream=True,                     # FIX: streaming on
-            )
-            for chunk in stream:
-                delta = chunk.choices[0].delta.content
-                if delta:
-                    yield delta
-        except Exception as e:
-            yield f"\n\nError: {str(e)}"
-
-    return StreamingResponse(stream_response(), media_type="text/plain")
+<file path="backend/requirements.txt">
+altair==6.0.0
+annotated-doc==0.0.4
+annotated-types==0.7.0
+anyio==4.13.0
+attrs==26.1.0
+bcrypt==4.0.1
+beautifulsoup4==4.14.3
+blinker==1.9.0
+blis==1.3.3
+cachetools==7.0.5
+catalogue==2.0.10
+certifi==2026.2.25
+cffi==2.0.0
+charset-normalizer==3.4.7
+click==8.3.2
+cloudinary==1.44.2
+cloudpathlib==0.23.0
+colorama==0.4.6
+confection==1.3.3
+cryptography==46.0.7
+cymem==2.0.13
+distro==1.9.0
+dnspython==2.8.0
+ecdsa==0.19.2
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl#sha256=1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85
+fastapi==0.136.1
+filelock==3.25.2
+Flask==3.1.3
+flask-cors==6.0.2
+fsspec==2026.3.0
+gitdb==4.0.12
+GitPython==3.1.46
+google-ai-generativelanguage==0.6.15
+google-api-core==2.25.2
+google-api-python-client==2.194.0
+google-auth==2.49.2
+google-auth-httplib2==0.3.1
+google-genai==1.73.1
+googleapis-common-protos==1.74.0
+groq==1.2.0
+grpcio==1.80.0
+grpcio-status==1.71.2
+h11==0.16.0
+hf-xet==1.4.3
+httpcore==1.0.9
+httplib2==0.31.2
+httpx==0.28.1
+huggingface_hub==1.10.1
+idna==3.11
+itsdangerous==2.2.0
+Jinja2==3.1.6
+joblib==1.5.3
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+markdown-it-py==4.0.0
+MarkupSafe==3.0.3
+mdurl==0.1.2
+mpmath==1.3.0
+murmurhash==1.0.15
+narwhals==2.19.0
+networkx==3.6.1
+nltk==3.9.4
+numpy==2.4.4
+packaging==26.0
+pandas==3.0.2
+passlib==1.7.4
+pdfminer.six==20251230
+pdfplumber==0.11.9
+pillow==12.2.0
+preshed==3.0.13
+proto-plus==1.27.2
+protobuf==5.29.6
+pyarrow==23.0.1
+pyasn1==0.6.3
+pyasn1_modules==0.4.2
+pycparser==3.0
+pydantic==2.13.2
+pydantic_core==2.46.2
+pydeck==0.9.2
+Pygments==2.20.0
+pymongo==4.17.0
+pyparsing==3.3.2
+PyPDF2==3.0.1
+pypdfium2==5.7.1
+python-dateutil==2.9.0.post0
+python-dotenv==1.2.2
+python-jose==3.5.0
+python-multipart==0.0.26
+PyYAML==6.0.3
+referencing==0.37.0
+regex==2026.4.4
+requests==2.33.1
+rich==14.3.4
+rpds-py==0.30.0
+rsa==4.9.1
+safetensors==0.7.0
+sentencepiece==0.2.1
+setuptools==81.0.0
+shellingham==1.5.4
+six==1.17.0
+smart_open==7.6.0
+smmap==5.0.3
+sniffio==1.3.1
+soupsieve==2.8.3
+spacy==3.8.13
+spacy-legacy==3.0.12
+spacy-loggers==1.0.5
+srsly==2.5.3
+starlette==1.0.0
+streamlit==1.56.0
+sympy==1.14.0
+tenacity==9.1.4
+thinc==8.3.13
+tiktoken==0.12.0
+tokenizers==0.22.2
+toml==0.10.2
+torch==2.11.0
+tornado==6.5.5
+tqdm==4.67.3
+transformers==5.5.3
+typer==0.24.1
+typing-inspection==0.4.2
+typing_extensions==4.15.0
+tzdata==2026.1
+uritemplate==4.2.0
+urllib3==2.6.3
+uvicorn==0.46.0
+wasabi==1.1.3
+watchdog==6.0.0
+weasel==1.0.0
+websockets==16.0
+Werkzeug==3.1.8
+wrapt==2.1.2
+secure==0.3.0
 </file>
 
 <file path="frontend/package.json">
@@ -935,372 +854,6 @@ Also mention the probability/importance of each topic at the end."""
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-</file>
-
-<file path="frontend/src/pages/LandingPage.jsx">
-import { useNavigate } from "react-router-dom";
-
-export default function LandingPage() {
-  const navigate = useNavigate();
-
-  const COLLEGE_LOGO = "https://res.cloudinary.com/dshlu0r4n/image/upload/v1777613826/Screenshot_2026-05-01_105739_ffc3be.png";
-  const MY_PHOTO = "https://res.cloudinary.com/dshlu0r4n/image/upload/v1777604161/1_qpjnrg.jpg";
-
-  return (
-    <div style={{fontFamily:"'DM Sans', sans-serif", background:"#fff", overflowX:"hidden"}}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
-        * { margin:0; padding:0; box-sizing:border-box; }
-        @keyframes fadeUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-        @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-10px); } }
-        @keyframes shimmer { 0% { background-position:−200% center; } 100% { background-position:200% center; } }
-        .hero-btn-primary {
-          background:linear-gradient(135deg,#1D9E75,#16875f);
-          color:white; border:none; padding:16px 36px; border-radius:50px;
-          font-size:16px; font-weight:600; cursor:pointer;
-          font-family:'DM Sans',sans-serif; transition:all 0.3s ease;
-          box-shadow:0 8px 25px rgba(29,158,117,0.4);
-        }
-        .hero-btn-primary:hover { transform:translateY(-3px); box-shadow:0 12px 35px rgba(29,158,117,0.5); }
-        .hero-btn-secondary {
-          background:transparent; color:white;
-          border:2px solid rgba(255,255,255,0.5); padding:16px 36px;
-          border-radius:50px; font-size:16px; font-weight:600;
-          cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.3s ease;
-        }
-        .hero-btn-secondary:hover { background:rgba(255,255,255,0.1); border-color:white; transform:translateY(-3px); }
-        .feature-card {
-          background:white; border-radius:20px; padding:32px 28px;
-          box-shadow:0 4px 30px rgba(15,42,74,0.08);
-          border:1px solid rgba(15,42,74,0.06);
-          transition:all 0.3s ease; text-align:center;
-        }
-        .feature-card:hover { transform:translateY(-8px); box-shadow:0 20px 50px rgba(15,42,74,0.15); }
-        .nav-link {
-          color:rgba(255,255,255,0.8); text-decoration:none;
-          font-size:14px; font-weight:500; transition:color 0.2s;
-          cursor:pointer; background:none; border:none;
-        }
-        .nav-link:hover { color:white; }
-        .stat-item { text-align:center; }
-        .section-tag {
-          display:inline-block; background:rgba(29,158,117,0.1);
-          color:#1D9E75; padding:6px 16px; border-radius:50px;
-          font-size:13px; font-weight:600; margin-bottom:16px;
-          border:1px solid rgba(29,158,117,0.2);
-        }
-      `}</style>
-
-      {/* NAVBAR */}
-      <nav style={{
-        position:"fixed", top:0, left:0, right:0, zIndex:1000,
-        background:"rgba(15,42,74,0.95)", backdropFilter:"blur(20px)",
-        padding:"0 5%", height:"70px",
-        display:"flex", alignItems:"center", justifyContent:"space-between",
-        borderBottom:"1px solid rgba(255,255,255,0.1)"
-      }}>
-        <div style={{display:"flex", alignItems:"center", gap:"12px"}}>
-          <img src={COLLEGE_LOGO} alt="logo" style={{width:"42px", height:"42px", borderRadius:"8px", objectFit:"cover"}} />
-          <div>
-            <div style={{color:"white", fontWeight:"700", fontSize:"16px", lineHeight:"1.2"}}>AcademiQ</div>
-            <div style={{color:"rgba(255,255,255,0.5)", fontSize:"11px"}}>SGTB Khalsa College</div>
-          </div>
-        </div>
-        <div style={{display:"flex", alignItems:"center", gap:"32px"}}>
-          <button className="nav-link" onClick={() => document.getElementById("features").scrollIntoView({behavior:"smooth"})}>Features</button>
-          <button className="nav-link" onClick={() => document.getElementById("about").scrollIntoView({behavior:"smooth"})}>About</button>
-          <button className="nav-link" onClick={() => document.getElementById("developer").scrollIntoView({behavior:"smooth"})}>Developer</button>
-          <button onClick={() => navigate("/login")} style={{
-            background:"#1D9E75", color:"white", border:"none",
-            padding:"10px 24px", borderRadius:"50px", fontSize:"14px",
-            fontWeight:"600", cursor:"pointer", fontFamily:"'DM Sans',sans-serif",
-            transition:"all 0.3s ease"
-          }}>Login →</button>
-        </div>
-      </nav>
-
-      {/* HERO SECTION */}
-      <section style={{
-        minHeight:"100vh", paddingTop:"70px",
-        background:"linear-gradient(135deg, #0F2A4A 0%, #1a3d6b 40%, #0F2A4A 100%)",
-        display:"flex", alignItems:"center", justifyContent:"center",
-        position:"relative", overflow:"hidden"
-      }}>
-        {/* Background decorations */}
-        <div style={{position:"absolute", top:"10%", right:"5%", width:"400px", height:"400px", background:"rgba(29,158,117,0.08)", borderRadius:"50%", filter:"blur(80px)"}} />
-        <div style={{position:"absolute", bottom:"10%", left:"5%", width:"300px", height:"300px", background:"rgba(45,95,160,0.1)", borderRadius:"50%", filter:"blur(60px)"}} />
-
-        <div style={{maxWidth:"1100px", margin:"0 auto", padding:"60px 5%", display:"grid", gridTemplateColumns:"1fr 1fr", gap:"60px", alignItems:"center"}}>
-          <div style={{animation:"fadeUp 0.8s ease"}}>
-            <div className="section-tag">🎓 NAAC Grade A++ Certified</div>
-            <h1 style={{
-              fontFamily:"'Playfair Display',serif",
-              fontSize:"clamp(36px,5vw,58px)", fontWeight:"800",
-              color:"white", lineHeight:"1.15", marginBottom:"20px"
-            }}>
-              Your Academic Edge,<br/>
-              <span style={{
-                background:"linear-gradient(135deg,#1D9E75,#4ecba0)",
-                WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent"
-              }}>Powered by AI</span>
-            </h1>
-            <p style={{color:"rgba(255,255,255,0.7)", fontSize:"17px", lineHeight:"1.7", marginBottom:"36px", maxWidth:"480px"}}>
-              Access previous year question papers, get AI-generated practice papers, and ace your exams at Sri Guru Teg Bahadur Khalsa College, Sri Anandpur Sahib.
-            </p>
-            <div style={{display:"flex", gap:"16px", flexWrap:"wrap"}}>
-              <button className="hero-btn-primary" onClick={() => navigate("/register")}>
-                Get Started Free
-              </button>
-              <button className="hero-btn-secondary" onClick={() => navigate("/login")}>
-                Sign In →
-              </button>
-            </div>
-
-            {/* Stats */}
-            <div style={{display:"flex", gap:"40px", marginTop:"48px", paddingTop:"32px", borderTop:"1px solid rgba(255,255,255,0.1)"}}>
-              {[
-                {num:"10+", label:"Years of Papers"},
-                {num:"AI", label:"Question Generator"},
-                {num:"24/7", label:"Access Anywhere"},
-              ].map((s,i) => (
-                <div key={i} className="stat-item">
-                  <div style={{fontSize:"28px", fontWeight:"800", color:"#1D9E75"}}>{s.num}</div>
-                  <div style={{fontSize:"13px", color:"rgba(255,255,255,0.5)", marginTop:"4px"}}>{s.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Hero Right — College Logo */}
-          <div style={{display:"flex", justifyContent:"center", animation:"float 4s ease-in-out infinite"}}>
-            <div style={{
-              position:"relative", width:"320px", height:"320px",
-              display:"flex", alignItems:"center", justifyContent:"center"
-            }}>
-              <div style={{
-                position:"absolute", inset:0, borderRadius:"50%",
-                background:"linear-gradient(135deg,rgba(29,158,117,0.2),rgba(45,95,160,0.2))",
-                filter:"blur(20px)"
-              }} />
-              <img src={COLLEGE_LOGO} alt="SGTB Khalsa College"
-                style={{width:"280px", height:"280px", borderRadius:"50%", objectFit:"cover",
-                  border:"4px solid rgba(29,158,117,0.4)",
-                  boxShadow:"0 20px 60px rgba(0,0,0,0.4)"}} />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FEATURES SECTION */}
-      <section id="features" style={{padding:"100px 5%", background:"#F4F7FB"}}>
-        <div style={{maxWidth:"1100px", margin:"0 auto"}}>
-          <div style={{textAlign:"center", marginBottom:"60px"}}>
-            <div className="section-tag">✨ Features</div>
-            <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"clamp(28px,4vw,42px)", fontWeight:"700", color:"#0F2A4A", marginBottom:"16px"}}>
-              Everything You Need to Excel
-            </h2>
-            <p style={{color:"#4A6080", fontSize:"16px", maxWidth:"500px", margin:"0 auto"}}>
-              Designed specifically for students of SGTB Khalsa College
-            </p>
-          </div>
-
-          <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(280px, 1fr))", gap:"24px"}}>
-            {[
-              {icon:"📚", title:"Question Paper Repository", desc:"Access last 10 years of previous year question papers — filtered by department, class, semester and subject.", color:"#1D9E75"},
-              {icon:"🤖", title:"AI Practice Paper Generator", desc:"Upload your syllabus PDF and get AI-generated practice questions based on exam patterns and topic frequency.", color:"#2D5FA0"},
-              {icon:"🔍", title:"Smart Filter System", desc:"Find exactly what you need with department, class, semester and subject filters — results in seconds.", color:"#8B5CF6"},
-              {icon:"📱", title:"Mobile Friendly", desc:"Access AcademiQ from any device — desktop, tablet or mobile. Study anytime, anywhere.", color:"#F59E0B"},
-              {icon:"🔒", title:"Secure & Role-Based", desc:"Separate admin and student portals with JWT authentication. Your data is always safe.", color:"#EF4444"},
-              {icon:"⭐", title:"AI Feedback System", desc:"Rate and review AI-generated papers to help improve question quality for everyone.", color:"#10B981"},
-            ].map((f,i) => (
-              <div key={i} className="feature-card" style={{animationDelay:`${i*0.1}s`}}>
-                <div style={{fontSize:"40px", marginBottom:"16px"}}>{f.icon}</div>
-                <h3 style={{fontFamily:"'Playfair Display',serif", fontSize:"18px", fontWeight:"700", color:"#0F2A4A", marginBottom:"12px"}}>{f.title}</h3>
-                <p style={{color:"#4A6080", fontSize:"14px", lineHeight:"1.7"}}>{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ABOUT COLLEGE SECTION */}
-      <section id="about" style={{padding:"100px 5%", background:"white"}}>
-        <div style={{maxWidth:"1100px", margin:"0 auto", display:"grid", gridTemplateColumns:"1fr 1fr", gap:"80px", alignItems:"center"}}>
-          <div>
-            <div className="section-tag">🏛️ About</div>
-            <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"clamp(28px,4vw,40px)", fontWeight:"700", color:"#0F2A4A", marginBottom:"20px", lineHeight:"1.2"}}>
-              Sri Guru Teg Bahadur Khalsa College
-            </h2>
-            <p style={{color:"#4A6080", fontSize:"15px", lineHeight:"1.8", marginBottom:"16px"}}>
-              Sri Guru Teg Bahadur Khalsa College, Sri Anandpur Sahib is a premier institution of higher education in Punjab, India. Established with a vision to provide quality education, the college has grown into a center of academic excellence.
-            </p>
-            <p style={{color:"#4A6080", fontSize:"15px", lineHeight:"1.8", marginBottom:"32px"}}>
-              As an Autonomous Body accredited with <strong style={{color:"#1D9E75"}}>NAAC Grade A++</strong>, the college upholds the highest standards of academic quality and innovation.
-            </p>
-
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"32px"}}>
-              {[
-                {icon:"🏆", label:"NAAC Grade A++"},
-                {icon:"🎓", label:"Autonomous Body"},
-                {icon:"📍", label:"Sri Anandpur Sahib"},
-                {icon:"🌐", label:"sgtbcollege.org.in"},
-              ].map((item,i) => (
-                <div key={i} style={{display:"flex", alignItems:"center", gap:"10px", padding:"12px 16px", background:"#F4F7FB", borderRadius:"10px"}}>
-                  <span style={{fontSize:"20px"}}>{item.icon}</span>
-                  <span style={{fontSize:"13px", fontWeight:"600", color:"#0F2A4A"}}>{item.label}</span>
-                </div>
-              ))}
-            </div>
-
-            <a href="https://www.sgtbcollege.org.in/" target="_blank" rel="noreferrer"
-              style={{display:"inline-flex", alignItems:"center", gap:"8px", background:"#0F2A4A", color:"white", padding:"12px 24px", borderRadius:"50px", textDecoration:"none", fontSize:"14px", fontWeight:"600"}}>
-              Visit College Website →
-            </a>
-          </div>
-
-          <div style={{display:"flex", justifyContent:"center"}}>
-            <div style={{position:"relative"}}>
-              <div style={{
-                width:"300px", height:"300px", borderRadius:"30px",
-                background:"linear-gradient(135deg,#0F2A4A,#1D9E75)",
-                display:"flex", alignItems:"center", justifyContent:"center",
-                boxShadow:"0 30px 80px rgba(15,42,74,0.3)"
-              }}>
-                <img src={COLLEGE_LOGO} alt="College Logo"
-                  style={{width:"240px", height:"240px", objectFit:"contain"}} />
-              </div>
-              <div style={{
-                position:"absolute", bottom:"-20px", right:"-20px",
-                background:"#1D9E75", color:"white", padding:"16px 20px",
-                borderRadius:"16px", boxShadow:"0 10px 30px rgba(29,158,117,0.4)"
-              }}>
-                <div style={{fontSize:"24px", fontWeight:"800"}}>A++</div>
-                <div style={{fontSize:"11px", opacity:0.9}}>NAAC Grade</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section style={{padding:"100px 5%", background:"#F4F7FB"}}>
-        <div style={{maxWidth:"900px", margin:"0 auto"}}>
-          <div style={{textAlign:"center", marginBottom:"60px"}}>
-            <div className="section-tag">🚀 How It Works</div>
-            <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"clamp(28px,4vw,42px)", fontWeight:"700", color:"#0F2A4A"}}>
-              Get Started in 3 Simple Steps
-            </h2>
-          </div>
-          <div style={{display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"32px"}}>
-            {[
-              {step:"01", title:"Register", desc:"Create your student account and wait for admin approval.", icon:"📝"},
-              {step:"02", title:"Browse Papers", desc:"Filter by department, class, semester and find your papers.", icon:"🔍"},
-              {step:"03", title:"Generate with AI", desc:"Upload syllabus and get AI-powered practice questions.", icon:"🤖"},
-            ].map((s,i) => (
-              <div key={i} style={{textAlign:"center", padding:"32px 20px", background:"white", borderRadius:"20px", boxShadow:"0 4px 20px rgba(0,0,0,0.06)"}}>
-                <div style={{fontSize:"12px", fontWeight:"800", color:"#1D9E75", letterSpacing:"2px", marginBottom:"12px"}}>{s.step}</div>
-                <div style={{fontSize:"36px", marginBottom:"16px"}}>{s.icon}</div>
-                <h3 style={{fontFamily:"'Playfair Display',serif", fontSize:"18px", fontWeight:"700", color:"#0F2A4A", marginBottom:"10px"}}>{s.title}</h3>
-                <p style={{color:"#4A6080", fontSize:"14px", lineHeight:"1.6"}}>{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* DEVELOPER SECTION */}
-      <section id="developer" style={{padding:"100px 5%", background:"white"}}>
-        <div style={{maxWidth:"800px", margin:"0 auto", textAlign:"center"}}>
-          <div className="section-tag">👨‍💻 Developer</div>
-          <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"clamp(28px,4vw,42px)", fontWeight:"700", color:"#0F2A4A", marginBottom:"48px"}}>
-            Meet the Developer
-          </h2>
-
-          <div style={{
-            background:"linear-gradient(135deg,#0F2A4A,#1a3d6b)",
-            borderRadius:"30px", padding:"48px 40px",
-            boxShadow:"0 30px 80px rgba(15,42,74,0.2)",
-            display:"flex", flexDirection:"column", alignItems:"center", gap:"24px"
-          }}>
-            <div style={{position:"relative"}}>
-              <img src={MY_PHOTO} alt="Happy Reehal"
-                style={{width:"130px", height:"130px", borderRadius:"50%", objectFit:"cover",
-                  border:"4px solid #1D9E75", boxShadow:"0 10px 40px rgba(0,0,0,0.3)"}} />
-              <div style={{
-                position:"absolute", bottom:"4px", right:"4px",
-                width:"24px", height:"24px", background:"#1D9E75",
-                borderRadius:"50%", border:"2px solid white",
-                display:"flex", alignItems:"center", justifyContent:"center",
-                fontSize:"12px"
-              }}>✓</div>
-            </div>
-
-            <div>
-              <h3 style={{fontFamily:"'Playfair Display',serif", fontSize:"28px", fontWeight:"700", color:"white", marginBottom:"8px"}}>Happy Reehal</h3>
-              <p style={{color:"#1D9E75", fontSize:"15px", fontWeight:"600", marginBottom:"6px"}}>M.Sc — Artificial Intelligence & Data Science</p>
-              <p style={{color:"rgba(255,255,255,0.6)", fontSize:"14px", marginBottom:"4px"}}>P.G Department of Computer Science and Applications</p>
-              <p style={{color:"rgba(255,255,255,0.5)", fontSize:"13px"}}>Sri Guru Teg Bahadur Khalsa College • 2024–2026</p>
-            </div>
-
-            <p style={{color:"rgba(255,255,255,0.7)", fontSize:"15px", lineHeight:"1.7", maxWidth:"500px"}}>
-              Passionate about AI and building tools that make students' lives easier. AcademiQ is built with React, FastAPI, MongoDB, and powered by Groq's LLaMA AI model.
-            </p>
-
-            <div style={{display:"flex", gap:"16px"}}>
-              <a href="https://github.com/happyreehal" target="_blank" rel="noreferrer"
-                style={{display:"flex", alignItems:"center", gap:"8px", background:"rgba(255,255,255,0.1)", color:"white", padding:"12px 24px", borderRadius:"50px", textDecoration:"none", fontSize:"14px", fontWeight:"600", border:"1px solid rgba(255,255,255,0.2)", transition:"all 0.3s"}}>
-                GitHub
-              </a>
-              <a href="https://www.linkedin.com/in/happy-reehal-7225a4315" target="_blank" rel="noreferrer"
-                style={{display:"flex", alignItems:"center", gap:"8px", background:"#0A66C2", color:"white", padding:"12px 24px", borderRadius:"50px", textDecoration:"none", fontSize:"14px", fontWeight:"600", transition:"all 0.3s"}}>
-                LinkedIn
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA SECTION */}
-      <section style={{
-        padding:"100px 5%",
-        background:"linear-gradient(135deg,#0F2A4A,#1a3d6b)",
-        textAlign:"center"
-      }}>
-        <div style={{maxWidth:"600px", margin:"0 auto"}}>
-          <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"clamp(28px,4vw,42px)", fontWeight:"700", color:"white", marginBottom:"20px"}}>
-            Ready to Ace Your Exams?
-          </h2>
-          <p style={{color:"rgba(255,255,255,0.7)", fontSize:"16px", marginBottom:"36px", lineHeight:"1.7"}}>
-            Join AcademiQ today and get access to years of question papers and AI-powered practice tests.
-          </p>
-          <div style={{display:"flex", gap:"16px", justifyContent:"center", flexWrap:"wrap"}}>
-            <button className="hero-btn-primary" onClick={() => navigate("/register")}>
-              Register Now — It's Free
-            </button>
-            <button className="hero-btn-secondary" onClick={() => navigate("/login")}>
-              Sign In
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer style={{background:"#060f1a", padding:"40px 5%", textAlign:"center"}}>
-        <div style={{display:"flex", alignItems:"center", justifyContent:"center", gap:"10px", marginBottom:"16px"}}>
-          <img src={COLLEGE_LOGO} alt="logo" style={{width:"32px", height:"32px", borderRadius:"6px", objectFit:"cover"}} />
-          <span style={{color:"white", fontWeight:"700", fontSize:"16px"}}>AcademiQ</span>
-        </div>
-        <p style={{color:"rgba(255,255,255,0.4)", fontSize:"13px", marginBottom:"8px"}}>
-          Sri Guru Teg Bahadur Khalsa College, Sri Anandpur Sahib (An Autonomous Body) • NAAC Grade A++
-        </p>
-        <p style={{color:"rgba(255,255,255,0.3)", fontSize:"12px"}}>
-          Developed by Happy Reehal • M.Sc AI & Data Science • 2024–2026
-        </p>
-      </footer>
-    </div>
-  );
 }
 </file>
 
@@ -1351,106 +904,6 @@ frontend/node_modules/
 Thumbs.db
 </file>
 
-<file path="backend/routes/auth.py">
-from fastapi import APIRouter, HTTPException
-from pymongo import MongoClient
-from passlib.context import CryptContext
-from models.user import UserRegister, UserLogin
-from utils.jwt_handler import create_token
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-
-router = APIRouter()
-
-MONGO_URI = os.getenv("MONGO_URI")
-client = MongoClient(MONGO_URI)
-db = client["academiq"]
-users_col = db["users"]
-settings_col = db["settings"]
-
-pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-SUPER_ADMIN_EMAIL = "happyreehal584@gmail.com"
-
-def get_admin_secret():
-    doc = settings_col.find_one({"_id": "main"})
-    if doc and "admin_secret" in doc:
-        return doc["admin_secret"]
-    return os.getenv("ADMIN_SECRET", "academiq_admin_2026")
-
-@router.post("/register")
-def register(user: UserRegister):
-    if user.role == "superadmin":
-        raise HTTPException(status_code=403, detail="Cannot register as superadmin")
-
-    if user.role == "admin":
-        if not user.admin_code:
-            raise HTTPException(status_code=403, detail="Admin secret code required")
-        if user.admin_code != get_admin_secret():
-            raise HTTPException(status_code=403, detail="Invalid admin secret code")
-
-    if users_col.find_one({"email": user.email, "role": user.role}):
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    hashed_pw = pwd_ctx.hash(user.password)
-
-    if user.email == SUPER_ADMIN_EMAIL and user.role == "admin":
-        status = "active"
-    elif user.role == "admin":
-        status = "pending"
-    else:
-        status = "pending"
-
-    user_doc = {
-        "name": user.name,
-        "email": user.email,
-        "password": hashed_pw,
-        "role": user.role,
-        "college_id": user.college_id,
-        "status": status,
-    }
-    users_col.insert_one(user_doc)
-
-    if status == "pending":
-        return {"message": "Registration successful. Please wait for approval."}
-    return {"message": "Registration successful"}
-
-
-@router.post("/login")
-def login(user: UserLogin):
-    db_user = users_col.find_one({"email": user.email, "role": user.role})
-
-    if not db_user:
-        raise HTTPException(status_code=401, detail="User not found")
-
-    if not pwd_ctx.verify(user.password, db_user["password"]):
-        raise HTTPException(status_code=401, detail="Incorrect password")
-
-    status = db_user.get("status", "active")
-    if status == "pending":
-        raise HTTPException(status_code=403, detail="Account pending approval. Please wait for admin to approve.")
-    if status == "rejected":
-        raise HTTPException(status_code=403, detail="Account rejected. Contact admin.")
-
-    is_super = user.email == SUPER_ADMIN_EMAIL and user.role == "admin"
-
-    token = create_token({
-        "email": db_user["email"],
-        "role": db_user["role"],
-        "name": db_user["name"],
-        "is_super": is_super,
-    })
-
-    return {
-        "token": token,
-        "role": db_user["role"],
-        "name": db_user["name"],
-        "is_super": is_super,
-    }
-</file>
-
 <file path="frontend/src/App.jsx">
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
@@ -1492,41 +945,6 @@ function App() {
 }
 
 export default App;
-</file>
-
-<file path="backend/main.py">
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
-from routes.auth import router as auth_router
-from routes.papers import router as papers_router
-from routes.ai import router as ai_router
-from routes.settings import router as settings_router
-
-load_dotenv()
-
-app = FastAPI(title="AcademiQ API")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "https://academiq-sigma.vercel.app",
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.include_router(auth_router, prefix="/auth", tags=["Auth"])
-app.include_router(papers_router, prefix="/papers", tags=["Papers"])
-app.include_router(ai_router, prefix="/ai", tags=["AI"])
-app.include_router(settings_router, prefix="/settings", tags=["Settings"])
-
-@app.get("/")
-def root():
-    return {"message": "AcademiQ API is running"}
 </file>
 
 <file path="frontend/src/pages/AIGenerator.jsx">
@@ -1695,6 +1113,551 @@ export default function AIGenerator() {
 }
 </file>
 
+<file path="frontend/src/pages/LandingPage.jsx">
+import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+
+export default function LandingPage() {
+  const navigate = useNavigate();
+  const [scrollY, setScrollY] = useState(0);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [visibleSections, setVisibleSections] = useState({});
+  const canvasRef = useRef(null);
+
+  const COLLEGE_LOGO = "https://res.cloudinary.com/dshlu0r4n/image/upload/v1777613826/Screenshot_2026-05-01_105739_ffc3be.png";
+  const MY_PHOTO = "https://res.cloudinary.com/dshlu0r4n/image/upload/v1777604161/1_qpjnrg.jpg";
+
+  // Particle canvas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = Array.from({ length: 80 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.3,
+      dx: (Math.random() - 0.5) * 0.4,
+      dy: (Math.random() - 0.5) * 0.4,
+      opacity: Math.random() * 0.5 + 0.1,
+    }));
+
+    let animId;
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.dx; p.y += p.dy;
+        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(29,158,117,${p.opacity})`;
+        ctx.fill();
+      });
+      // Connect nearby particles
+      particles.forEach((a, i) => {
+        particles.slice(i + 1).forEach(b => {
+          const dist = Math.hypot(a.x - b.x, a.y - b.y);
+          if (dist < 100) {
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = `rgba(29,158,117,${0.08 * (1 - dist / 100)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        });
+      });
+      animId = requestAnimationFrame(animate);
+    };
+    animate();
+
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    window.addEventListener("resize", resize);
+    return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", resize); };
+  }, []);
+
+  // Scroll + mouse tracking
+  useEffect(() => {
+    const onScroll = () => setScrollY(window.scrollY);
+    const onMouse = (e) => setMousePos({ x: e.clientX, y: e.clientY });
+    window.addEventListener("scroll", onScroll);
+    window.addEventListener("mousemove", onMouse);
+    setTimeout(() => setIsLoaded(true), 100);
+    return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("mousemove", onMouse); };
+  }, []);
+
+  // Intersection Observer for scroll animations
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) setVisibleSections(prev => ({ ...prev, [e.target.id]: true }));
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll("[data-animate]").forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  const isVisible = (id) => visibleSections[id];
+
+  return (
+    <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#030810", overflowX: "hidden", cursor: "none" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        /* Custom Cursor */
+        .cursor-dot {
+          width: 8px; height: 8px; background: #1D9E75;
+          border-radius: 50%; position: fixed; pointer-events: none;
+          z-index: 9999; transition: transform 0.1s ease;
+          transform: translate(-50%, -50%);
+        }
+        .cursor-ring {
+          width: 36px; height: 36px;
+          border: 1px solid rgba(29,158,117,0.5);
+          border-radius: 50%; position: fixed; pointer-events: none;
+          z-index: 9998; transition: all 0.15s ease;
+          transform: translate(-50%, -50%);
+        }
+
+        /* Scroll animations */
+        .fade-up { opacity: 0; transform: translateY(60px); transition: all 0.9s cubic-bezier(0.16,1,0.3,1); }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+        .fade-left { opacity: 0; transform: translateX(-60px); transition: all 0.9s cubic-bezier(0.16,1,0.3,1); }
+        .fade-left.visible { opacity: 1; transform: translateX(0); }
+        .fade-right { opacity: 0; transform: translateX(60px); transition: all 0.9s cubic-bezier(0.16,1,0.3,1); }
+        .fade-right.visible { opacity: 1; transform: translateX(0); }
+
+        /* Glassmorphism */
+        .glass {
+          background: rgba(255,255,255,0.03);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        /* Buttons */
+        .btn-primary {
+          background: linear-gradient(135deg, #1D9E75, #0d7a5a);
+          color: white; border: none; padding: 16px 36px;
+          border-radius: 4px; font-size: 14px; font-weight: 600;
+          cursor: pointer; font-family: 'DM Sans', sans-serif;
+          letter-spacing: 2px; text-transform: uppercase;
+          transition: all 0.4s ease; position: relative; overflow: hidden;
+        }
+        .btn-primary::before {
+          content: ''; position: absolute; inset: 0;
+          background: linear-gradient(135deg, #4ecba0, #1D9E75);
+          opacity: 0; transition: opacity 0.4s;
+        }
+        .btn-primary:hover::before { opacity: 1; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 20px 40px rgba(29,158,117,0.3); }
+        .btn-primary span { position: relative; z-index: 1; }
+
+        .btn-outline {
+          background: transparent; color: rgba(255,255,255,0.8);
+          border: 1px solid rgba(255,255,255,0.2); padding: 16px 36px;
+          border-radius: 4px; font-size: 14px; font-weight: 500;
+          cursor: pointer; font-family: 'DM Sans', sans-serif;
+          letter-spacing: 2px; text-transform: uppercase;
+          transition: all 0.4s ease;
+        }
+        .btn-outline:hover { border-color: #1D9E75; color: #1D9E75; transform: translateY(-2px); }
+
+        /* Feature cards */
+        .feat-card {
+          background: rgba(255,255,255,0.02);
+          border: 1px solid rgba(255,255,255,0.06);
+          border-radius: 2px; padding: 36px 28px;
+          transition: all 0.4s ease; position: relative; overflow: hidden;
+        }
+        .feat-card::before {
+          content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+          height: 2px; background: linear-gradient(90deg, #1D9E75, transparent);
+          transform: scaleX(0); transform-origin: left;
+          transition: transform 0.4s ease;
+        }
+        .feat-card:hover { background: rgba(29,158,117,0.04); border-color: rgba(29,158,117,0.2); transform: translateY(-4px); }
+        .feat-card:hover::before { transform: scaleX(1); }
+
+        /* Nav */
+        .nav-link {
+          color: rgba(255,255,255,0.5); text-decoration: none;
+          font-size: 12px; font-weight: 500; letter-spacing: 2px;
+          text-transform: uppercase; transition: color 0.3s;
+          cursor: pointer; background: none; border: none;
+        }
+        .nav-link:hover { color: #1D9E75; }
+
+        /* Number counter */
+        .stat-num {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 56px; font-weight: 300; color: #1D9E75;
+          line-height: 1;
+        }
+
+        /* Divider line */
+        .divider {
+          width: 60px; height: 1px; background: #1D9E75; margin: 20px 0;
+        }
+
+        /* Step number */
+        .step-num {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 80px; font-weight: 300;
+          color: rgba(29,158,117,0.1); line-height: 1;
+          position: absolute; top: -10px; right: 20px;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+          .hero-grid { grid-template-columns: 1fr !important; }
+          .hero-visual { display: none !important; }
+          .about-grid { grid-template-columns: 1fr !important; }
+          .about-visual { display: none !important; }
+          .steps-grid { grid-template-columns: 1fr !important; }
+          .nav-links { display: none !important; }
+          .stats-row { gap: 24px !important; }
+          .cta-btns { flex-direction: column !important; align-items: flex-start !important; }
+          .dev-card { padding: 32px 20px !important; }
+          .dev-inner { flex-direction: column !important; text-align: center !important; }
+          .feat-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+
+      {/* Custom Cursor */}
+      <div className="cursor-dot" style={{ left: mousePos.x, top: mousePos.y }} />
+      <div className="cursor-ring" style={{ left: mousePos.x, top: mousePos.y }} />
+
+      {/* Particle Canvas */}
+      <canvas ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, zIndex: 0, pointerEvents: "none" }} />
+
+      {/* NAVBAR */}
+      <nav style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
+        padding: "0 6%", height: "72px",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        background: scrollY > 50 ? "rgba(3,8,16,0.95)" : "transparent",
+        backdropFilter: scrollY > 50 ? "blur(20px)" : "none",
+        borderBottom: scrollY > 50 ? "1px solid rgba(255,255,255,0.06)" : "none",
+        transition: "all 0.4s ease",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+          <img src={COLLEGE_LOGO} alt="logo" style={{ width: "38px", height: "38px", borderRadius: "4px", objectFit: "cover" }} />
+          <div>
+            <div style={{ color: "white", fontWeight: "600", fontSize: "15px", letterSpacing: "1px" }}>ACADEMIQ</div>
+            <div style={{ color: "rgba(255,255,255,0.35)", fontSize: "10px", letterSpacing: "1px" }}>SGTB KHALSA COLLEGE</div>
+          </div>
+        </div>
+
+        <div className="nav-links" style={{ display: "flex", alignItems: "center", gap: "40px" }}>
+          <button className="nav-link" onClick={() => document.getElementById("features").scrollIntoView({ behavior: "smooth" })}>Features</button>
+          <button className="nav-link" onClick={() => document.getElementById("about").scrollIntoView({ behavior: "smooth" })}>About</button>
+          <button className="nav-link" onClick={() => document.getElementById("developer").scrollIntoView({ behavior: "smooth" })}>Developer</button>
+        </div>
+
+        <button className="btn-primary" onClick={() => navigate("/login")} style={{ padding: "10px 24px", fontSize: "11px" }}>
+          <span>Login →</span>
+        </button>
+      </nav>
+
+      {/* HERO */}
+      <section style={{
+        minHeight: "100vh", paddingTop: "72px",
+        display: "flex", alignItems: "center",
+        position: "relative", overflow: "hidden",
+        background: "linear-gradient(135deg, #030810 0%, #06121f 50%, #030810 100%)",
+      }}>
+        {/* Gradient orbs */}
+        <div style={{ position: "absolute", top: "20%", right: "10%", width: "600px", height: "600px", background: "radial-gradient(circle, rgba(29,158,117,0.06) 0%, transparent 70%)", borderRadius: "50%", transform: `translate(${(mousePos.x - window.innerWidth / 2) * 0.02}px, ${(mousePos.y - window.innerHeight / 2) * 0.02}px)`, transition: "transform 0.3s ease" }} />
+        <div style={{ position: "absolute", bottom: "10%", left: "5%", width: "400px", height: "400px", background: "radial-gradient(circle, rgba(45,95,160,0.06) 0%, transparent 70%)", borderRadius: "50%" }} />
+
+        {/* Horizontal line decoration */}
+        <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: "1px", background: "linear-gradient(90deg, transparent, rgba(29,158,117,0.1), transparent)" }} />
+
+        <div className="hero-grid" style={{ maxWidth: "1200px", margin: "0 auto", padding: "80px 6%", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "center", width: "100%", position: "relative", zIndex: 1 }}>
+          <div style={{ opacity: isLoaded ? 1 : 0, transform: isLoaded ? "translateY(0)" : "translateY(40px)", transition: "all 1s cubic-bezier(0.16,1,0.3,1)" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", marginBottom: "28px", padding: "6px 16px", border: "1px solid rgba(29,158,117,0.3)", borderRadius: "2px" }}>
+              <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#1D9E75", animation: "pulse 2s infinite" }} />
+              <span style={{ color: "#1D9E75", fontSize: "11px", fontWeight: "600", letterSpacing: "2px", textTransform: "uppercase" }}>NAAC Grade A++ Certified</span>
+            </div>
+
+            <h1 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "clamp(42px, 5.5vw, 72px)", fontWeight: "300",
+              color: "white", lineHeight: "1.1", marginBottom: "28px",
+              letterSpacing: "-1px"
+            }}>
+              Your Academic<br />
+              Edge,{" "}
+              <span style={{ fontStyle: "italic", color: "#1D9E75" }}>Powered</span><br />
+              by AI
+            </h1>
+
+            <div className="divider" />
+
+            <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "15px", lineHeight: "1.8", marginBottom: "44px", maxWidth: "420px", fontWeight: "300" }}>
+              Access previous year question papers, get AI-generated practice papers, and ace your exams at Sri Guru Teg Bahadur Khalsa College.
+            </p>
+
+            <div className="cta-btns" style={{ display: "flex", gap: "16px", flexWrap: "wrap", marginBottom: "60px" }}>
+              <button className="btn-primary" onClick={() => navigate("/register")}><span>Get Started Free</span></button>
+              <button className="btn-outline" onClick={() => navigate("/login")}>Sign In →</button>
+            </div>
+
+            <div className="stats-row" style={{ display: "flex", gap: "48px", paddingTop: "32px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+              {[{ num: "10+", label: "Years of Papers" }, { num: "AI", label: "Question Generator" }, { num: "24/7", label: "Access Anywhere" }].map((s, i) => (
+                <div key={i}>
+                  <div className="stat-num">{s.num}</div>
+                  <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.3)", marginTop: "6px", letterSpacing: "1px", textTransform: "uppercase" }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Hero Visual */}
+          <div className="hero-visual" style={{ display: "flex", justifyContent: "center", alignItems: "center", opacity: isLoaded ? 1 : 0, transition: "opacity 1.2s ease 0.3s" }}>
+            <div style={{ position: "relative", width: "360px", height: "360px" }}>
+              {/* Rotating ring */}
+              <div style={{
+                position: "absolute", inset: "-20px",
+                border: "1px solid rgba(29,158,117,0.15)",
+                borderRadius: "50%",
+                animation: "spin 20s linear infinite"
+              }} />
+              <div style={{
+                position: "absolute", inset: "-40px",
+                border: "1px dashed rgba(29,158,117,0.08)",
+                borderRadius: "50%",
+                animation: "spin 30s linear infinite reverse"
+              }} />
+              <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }`}</style>
+
+              {/* Center image */}
+              <div style={{
+                width: "100%", height: "100%", borderRadius: "50%",
+                overflow: "hidden", border: "1px solid rgba(29,158,117,0.2)",
+                boxShadow: "0 0 80px rgba(29,158,117,0.1), inset 0 0 80px rgba(0,0,0,0.5)"
+              }}>
+                <img src={COLLEGE_LOGO} alt="College" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.9)" }} />
+              </div>
+
+              {/* Floating badge */}
+              <div style={{
+                position: "absolute", bottom: "20px", right: "-20px",
+                background: "#1D9E75", color: "white",
+                padding: "12px 18px", borderRadius: "2px",
+                boxShadow: "0 20px 40px rgba(29,158,117,0.3)"
+              }}>
+                <div style={{ fontFamily: "'Cormorant Garamond'", fontSize: "28px", fontWeight: "300", lineHeight: 1 }}>A++</div>
+                <div style={{ fontSize: "10px", letterSpacing: "1px", opacity: 0.8 }}>NAAC GRADE</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div style={{ position: "absolute", bottom: "40px", left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+          <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.25)", letterSpacing: "2px" }}>SCROLL</div>
+          <div style={{ width: "1px", height: "40px", background: "linear-gradient(to bottom, rgba(29,158,117,0.5), transparent)", animation: "fadeIn 2s infinite" }} />
+        </div>
+      </section>
+
+      {/* FEATURES */}
+      <section id="features" style={{ padding: "120px 6%", background: "#040b14", position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "1px", background: "linear-gradient(90deg, transparent, rgba(29,158,117,0.3), transparent)" }} />
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <div id="feat-title" data-animate style={{ marginBottom: "80px" }}
+            className={`fade-up ${isVisible("feat-title") ? "visible" : ""}`}>
+            <div style={{ fontSize: "11px", color: "#1D9E75", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "20px" }}>— Features</div>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px,4vw,52px)", fontWeight: "300", color: "white", maxWidth: "500px", lineHeight: "1.2" }}>
+              Everything You Need<br /><span style={{ fontStyle: "italic", color: "#1D9E75" }}>to Excel</span>
+            </h2>
+          </div>
+
+          <div className="feat-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1px", background: "rgba(255,255,255,0.04)" }}>
+            {[
+              { icon: "📚", title: "Question Repository", desc: "10 years of past papers filtered by department, course, semester and subject.", num: "01" },
+              { icon: "🤖", title: "AI Paper Generator", desc: "Upload syllabus and get practice papers based on exam patterns.", num: "02" },
+              { icon: "🔍", title: "Smart Filters", desc: "Find exactly what you need — results in seconds.", num: "03" },
+              { icon: "📱", title: "Mobile First", desc: "Seamless experience on any device, anywhere.", num: "04" },
+              { icon: "🔒", title: "Secure Access", desc: "JWT auth with separate admin and student portals.", num: "05" },
+              { icon: "⭐", title: "AI Feedback", desc: "Rate papers to continuously improve AI quality.", num: "06" },
+            ].map((f, i) => (
+              <div key={i} className="feat-card" style={{ background: "#040b14", animationDelay: `${i * 0.1}s` }}>
+                <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.2)", letterSpacing: "2px", marginBottom: "20px" }}>{f.num}</div>
+                <div style={{ fontSize: "28px", marginBottom: "16px" }}>{f.icon}</div>
+                <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: "400", color: "white", marginBottom: "12px" }}>{f.title}</h3>
+                <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "13px", lineHeight: "1.8", fontWeight: "300" }}>{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ABOUT */}
+      <section id="about" style={{ padding: "120px 6%", background: "#030810", position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "1px", background: "linear-gradient(90deg, transparent, rgba(29,158,117,0.3), transparent)" }} />
+        <div className="about-grid" style={{ maxWidth: "1200px", margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "100px", alignItems: "center" }}>
+          <div id="about-text" data-animate className={`fade-left ${isVisible("about-text") ? "visible" : ""}`}>
+            <div style={{ fontSize: "11px", color: "#1D9E75", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "20px" }}>— About</div>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(28px,4vw,48px)", fontWeight: "300", color: "white", marginBottom: "24px", lineHeight: "1.2" }}>
+              Sri Guru Teg Bahadur<br /><span style={{ fontStyle: "italic", color: "#1D9E75" }}>Khalsa College</span>
+            </h2>
+            <div className="divider" />
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "14px", lineHeight: "1.9", marginBottom: "16px", fontWeight: "300" }}>
+              A premier institution of higher education in Punjab, India. Established with a vision to provide quality education, accredited with NAAC Grade A++.
+            </p>
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "14px", lineHeight: "1.9", marginBottom: "40px", fontWeight: "300" }}>
+              AcademiQ was built to digitize academic resources and empower students with AI-driven learning tools.
+            </p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "40px" }}>
+              {[{ icon: "🏆", label: "NAAC Grade A++" }, { icon: "🎓", label: "Autonomous Body" }, { icon: "📍", label: "Sri Anandpur Sahib" }, { icon: "🌐", label: "sgtbcollege.org.in" }].map((item, i) => (
+                <div key={i} style={{ padding: "14px 16px", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "2px", display: "flex", alignItems: "center", gap: "10px" }}>
+                  <span style={{ fontSize: "16px" }}>{item.icon}</span>
+                  <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)", letterSpacing: "0.5px" }}>{item.label}</span>
+                </div>
+              ))}
+            </div>
+            <a href="https://www.sgtbcollege.org.in/" target="_blank" rel="noreferrer" className="btn-outline" style={{ display: "inline-block", textDecoration: "none", padding: "12px 28px", fontSize: "11px" }}>
+              Visit Website →
+            </a>
+          </div>
+
+          <div className="about-visual" id="about-visual" data-animate style={{ display: "flex", justifyContent: "center" }}
+            className={`about-visual fade-right ${isVisible("about-visual") ? "visible" : ""}`}>
+            <div style={{ position: "relative", width: "320px", height: "400px" }}>
+              <div style={{ width: "100%", height: "100%", border: "1px solid rgba(29,158,117,0.2)", borderRadius: "2px", overflow: "hidden", background: "linear-gradient(135deg, #0d2035, #1D9E75)" }}>
+                <img src={COLLEGE_LOGO} alt="College" style={{ width: "100%", height: "100%", objectFit: "contain", padding: "40px" }} />
+              </div>
+              <div style={{ position: "absolute", top: "-16px", left: "-16px", width: "80px", height: "80px", border: "1px solid rgba(29,158,117,0.3)", borderRadius: "2px" }} />
+              <div style={{ position: "absolute", bottom: "-16px", right: "-16px", width: "120px", height: "60px", background: "#1D9E75", borderRadius: "2px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ fontFamily: "'Cormorant Garamond'", fontSize: "32px", color: "white", fontWeight: "300" }}>A++</div>
+                <div style={{ fontSize: "9px", color: "rgba(255,255,255,0.7)", letterSpacing: "1px" }}>NAAC GRADE</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section style={{ padding: "120px 6%", background: "#040b14", position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "1px", background: "linear-gradient(90deg, transparent, rgba(29,158,117,0.3), transparent)" }} />
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+          <div id="steps-title" data-animate style={{ textAlign: "center", marginBottom: "80px" }}
+            className={`fade-up ${isVisible("steps-title") ? "visible" : ""}`}>
+            <div style={{ fontSize: "11px", color: "#1D9E75", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "20px" }}>— How It Works</div>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(28px,4vw,52px)", fontWeight: "300", color: "white" }}>
+              Three Simple <span style={{ fontStyle: "italic", color: "#1D9E75" }}>Steps</span>
+            </h2>
+          </div>
+          <div className="steps-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "2px", background: "rgba(255,255,255,0.04)" }}>
+            {[
+              { step: "01", title: "Register", desc: "Create your student account and wait for admin approval.", icon: "📝" },
+              { step: "02", title: "Browse Papers", desc: "Filter by department, course, semester and find your papers.", icon: "🔍" },
+              { step: "03", title: "Generate with AI", desc: "Upload syllabus and get AI-powered practice questions.", icon: "🤖" },
+            ].map((s, i) => (
+              <div key={i} style={{ background: "#040b14", padding: "48px 36px", position: "relative", overflow: "hidden", borderTop: "2px solid transparent", transition: "border-color 0.3s" }}
+                onMouseEnter={e => e.currentTarget.style.borderTopColor = "#1D9E75"}
+                onMouseLeave={e => e.currentTarget.style.borderTopColor = "transparent"}>
+                <div className="step-num">{s.step}</div>
+                <div style={{ fontSize: "32px", marginBottom: "20px" }}>{s.icon}</div>
+                <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: "400", color: "white", marginBottom: "14px" }}>{s.title}</h3>
+                <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "13px", lineHeight: "1.8", fontWeight: "300" }}>{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* DEVELOPER */}
+      <section id="developer" style={{ padding: "120px 6%", background: "#030810", position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "1px", background: "linear-gradient(90deg, transparent, rgba(29,158,117,0.3), transparent)" }} />
+        <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+          <div id="dev-title" data-animate style={{ marginBottom: "60px" }}
+            className={`fade-up ${isVisible("dev-title") ? "visible" : ""}`}>
+            <div style={{ fontSize: "11px", color: "#1D9E75", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "20px" }}>— Developer</div>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(28px,4vw,52px)", fontWeight: "300", color: "white" }}>
+              Meet the <span style={{ fontStyle: "italic", color: "#1D9E75" }}>Developer</span>
+            </h2>
+          </div>
+
+          <div className="dev-card" id="dev-card" data-animate style={{ border: "1px solid rgba(255,255,255,0.06)", padding: "60px", position: "relative", overflow: "hidden" }}
+            className={`dev-card fade-up ${isVisible("dev-card") ? "visible" : ""}`}>
+            <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "2px", background: "linear-gradient(90deg, #1D9E75, transparent)" }} />
+            <div style={{ position: "absolute", top: "-100px", right: "-100px", width: "300px", height: "300px", background: "radial-gradient(circle, rgba(29,158,117,0.04) 0%, transparent 70%)", borderRadius: "50%" }} />
+
+            <div className="dev-inner" style={{ display: "flex", gap: "48px", alignItems: "center", position: "relative" }}>
+              <div style={{ flexShrink: 0 }}>
+                <div style={{ position: "relative", width: "140px", height: "140px" }}>
+                  <img src={MY_PHOTO} alt="Happy Reehal" style={{ width: "100%", height: "100%", borderRadius: "2px", objectFit: "cover", filter: "grayscale(20%)" }} />
+                  <div style={{ position: "absolute", bottom: "-8px", right: "-8px", width: "28px", height: "28px", background: "#1D9E75", borderRadius: "2px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px" }}>✓</div>
+                </div>
+              </div>
+              <div>
+                <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "36px", fontWeight: "300", color: "white", marginBottom: "8px" }}>Happy Reehal</h3>
+                <div style={{ color: "#1D9E75", fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "6px" }}>M.Sc — AI & Data Science</div>
+                <div style={{ color: "rgba(255,255,255,0.3)", fontSize: "12px", marginBottom: "4px" }}>P.G Department of Computer Science</div>
+                <div style={{ color: "rgba(255,255,255,0.2)", fontSize: "11px", marginBottom: "24px" }}>SGTB Khalsa College • 2024–2026</div>
+                <div className="divider" />
+                <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", lineHeight: "1.8", maxWidth: "400px", marginBottom: "28px", fontWeight: "300" }}>
+                  Passionate about AI and building tools that make students' lives easier. Built with React, FastAPI, MongoDB and Groq LLaMA.
+                </p>
+                <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                  <a href="https://github.com/happyreehal" target="_blank" rel="noreferrer" className="btn-outline" style={{ textDecoration: "none", padding: "10px 20px", fontSize: "11px" }}>GitHub</a>
+                  <a href="https://www.linkedin.com/in/happy-reehal-7225a4315" target="_blank" rel="noreferrer" className="btn-primary" style={{ textDecoration: "none", padding: "10px 20px", fontSize: "11px" }}>
+                    <span>LinkedIn</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section style={{ padding: "120px 6%", background: "#040b14", position: "relative", textAlign: "center" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "1px", background: "linear-gradient(90deg, transparent, rgba(29,158,117,0.3), transparent)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, rgba(29,158,117,0.04) 0%, transparent 70%)" }} />
+        <div style={{ maxWidth: "600px", margin: "0 auto", position: "relative" }}>
+          <div style={{ fontSize: "11px", color: "#1D9E75", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>— Get Started</div>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px,5vw,64px)", fontWeight: "300", color: "white", marginBottom: "24px", lineHeight: "1.1" }}>
+            Ready to Ace<br /><span style={{ fontStyle: "italic", color: "#1D9E75" }}>Your Exams?</span>
+          </h2>
+          <div className="divider" style={{ margin: "0 auto 32px" }} />
+          <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "14px", marginBottom: "48px", lineHeight: "1.8", fontWeight: "300" }}>
+            Join AcademiQ and access years of question papers with AI-powered practice tests.
+          </p>
+          <div className="cta-btns" style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
+            <button className="btn-primary" onClick={() => navigate("/register")}><span>Register Now — It's Free</span></button>
+            <button className="btn-outline" onClick={() => navigate("/login")}>Sign In →</button>
+          </div>
+        </div>
+      </section>
+
+      {/*  FOOTER */}
+      <footer style={{ background: "#020609", padding: "40px 6%", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <img src={COLLEGE_LOGO} alt="logo" style={{ width: "30px", height: "30px", borderRadius: "3px", objectFit: "cover" }} />
+            <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", letterSpacing: "2px" }}>ACADEMIQ</span>
+          </div>
+          <p style={{ color: "rgba(255,255,255,0.2)", fontSize: "11px", textAlign: "center" }}>
+            SGTB Khalsa College, Sri Anandpur Sahib • NAAC A++
+          </p>
+          <p style={{ color: "rgba(255,255,255,0.2)", fontSize: "11px" }}>
+            Developed by Happy Reehal © 2026
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+}
+</file>
+
 <file path="frontend/src/pages/Login.jsx">
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -1836,185 +1799,266 @@ export default function Login() {
 }
 </file>
 
-<file path="frontend/src/pages/Register.jsx">
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+<file path="backend/main.py">
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+from pymongo import MongoClient
+import os
 
-const API = "https://academiq-jenb.onrender.com";
+load_dotenv()
 
-export default function Register() {
-  const navigate = useNavigate();
-  const [form, setForm] = useState({
-    name: "", email: "", password: "", role: "student",
-    college_id: "", admin_code: "",
-  });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+# Single shared MongoDB connection
+client = MongoClient(
+    os.getenv("MONGO_URI"),
+    maxPoolSize=10,
+    serverSelectionTimeoutMS=5000,
+    connectTimeoutMS=5000,
+)
+db = client["academiq"]
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      await axios.post(`${API}/auth/register`, form);
-      navigate("/login");
-    } catch (err) {
-      setError(err.response?.data?.detail || "Registration failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+from routes.auth import router as auth_router
+from routes.papers import router as papers_router
+from routes.ai import router as ai_router
+from routes.settings import router as settings_router
 
-  return (
-    <div style={{
-      minHeight:"100vh",
-      background:"linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 50%, #1e3a5f 100%)",
-      display:"flex", alignItems:"center", justifyContent:"center",
-      fontFamily:"'Segoe UI', sans-serif", padding:"20px"
-    }}>
-      <div style={{
-        background:"rgba(255,255,255,0.97)", borderRadius:"24px",
-        padding:"48px 40px", width:"100%", maxWidth:"420px",
-        boxShadow:"0 25px 60px rgba(0,0,0,0.3)", animation:"slideUp 0.5s ease"
-      }}>
-        <style>{`
-          @keyframes slideUp {
-            from { opacity:0; transform:translateY(30px); }
-            to { opacity:1; transform:translateY(0); }
-          }
-          @keyframes shake {
-            0%,100% { transform:translateX(0); }
-            25% { transform:translateX(-8px); }
-            75% { transform:translateX(8px); }
-          }
-          .input-field {
-            width:100%; border:2px solid #e2e8f0; border-radius:12px;
-            padding:12px 16px; font-size:15px; outline:none;
-            transition:all 0.3s ease; box-sizing:border-box; background:#f8fafc;
-          }
-          .input-field:focus {
-            border-color:#1e3a5f; background:white;
-            box-shadow:0 0 0 4px rgba(30,58,95,0.1);
-          }
-          .reg-btn {
-            width:100%; padding:14px;
-            background:linear-gradient(135deg,#1e3a5f,#2d6a9f);
-            color:white; border:none; border-radius:12px;
-            font-size:16px; font-weight:600; cursor:pointer; transition:all 0.3s ease;
-          }
-          .reg-btn:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(30,58,95,0.4); }
-          .reg-btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
-          .role-tab {
-            flex:1; padding:10px; border:2px solid #e2e8f0;
-            background:#f8fafc; border-radius:10px; cursor:pointer;
-            font-weight:600; font-size:14px; transition:all 0.3s ease;
-          }
-          .role-tab.active { background:#1e3a5f; color:white; border-color:#1e3a5f; }
-        `}</style>
+app = FastAPI(title="AcademiQ API")
 
-        <div style={{textAlign:"center", marginBottom:"28px"}}>
-          <div style={{
-            width:"64px", height:"64px",
-            background:"linear-gradient(135deg,#1e3a5f,#2d6a9f)",
-            borderRadius:"16px", display:"inline-flex",
-            alignItems:"center", justifyContent:"center",
-            marginBottom:"16px", fontSize:"28px"
-          }}>🎓</div>
-          <h1 style={{fontSize:"28px", fontWeight:"800", color:"#1e3a5f", margin:"0 0 6px"}}>AcademiQ</h1>
-          <p style={{color:"#64748b", margin:0, fontSize:"15px"}}>Create your account</p>
-        </div>
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://academiq-sigma.vercel.app",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-        <div style={{display:"flex", gap:"10px", marginBottom:"20px"}}>
-          <button className={`role-tab ${form.role==="student"?"active":""}`}
-            onClick={() => setForm({...form, role:"student", admin_code:""})}>
-            👨‍🎓 Student
-          </button>
-          <button className={`role-tab ${form.role==="admin"?"active":""}`}
-            onClick={() => setForm({...form, role:"admin"})}>
-            👨‍💼 Admin
-          </button>
-        </div>
+app.include_router(auth_router, prefix="/auth", tags=["Auth"])
+app.include_router(papers_router, prefix="/papers", tags=["Papers"])
+app.include_router(ai_router, prefix="/ai", tags=["AI"])
+app.include_router(settings_router, prefix="/settings", tags=["Settings"])
 
-        {error && (
-          <div style={{
-            background:"#fef2f2", border:"1px solid #fecaca", color:"#dc2626",
-            padding:"12px 16px", borderRadius:"10px", marginBottom:"16px",
-            fontSize:"14px", animation:"shake 0.3s ease"
-          }}>⚠️ {error}</div>
-        )}
+@app.get("/")
+def root():
+    return {"message": "AcademiQ API is running"}
+</file>
 
-        <form onSubmit={handleSubmit} style={{display:"flex", flexDirection:"column", gap:"16px"}}>
-          <div>
-            <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Full Name</label>
-            <input type="text" className="input-field" value={form.name}
-              onChange={e => setForm({...form, name:e.target.value})} required placeholder="Your full name" />
+<file path="backend/routes/auth.py">
+from fastapi import APIRouter, HTTPException
+from passlib.context import CryptContext
+from models.user import UserRegister, UserLogin
+from utils.jwt_handler import create_token
+from dotenv import load_dotenv
+from main import db
+import os
+import random
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from datetime import datetime, timedelta
+
+load_dotenv()
+
+router = APIRouter()
+
+users_col = db["users"]
+settings_col = db["settings"]
+otp_col = db["otps"]
+
+pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+SUPER_ADMIN_EMAIL = "happyreehal584@gmail.com"
+GMAIL_USER = os.getenv("GMAIL_USER")
+GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
+
+def send_otp_email(to_email: str, otp: str, name: str):
+    try:
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = "AcademiQ — Email Verification OTP"
+        msg["From"] = GMAIL_USER
+        msg["To"] = to_email
+
+        html = f"""
+        <div style="font-family:'DM Sans',sans-serif;max-width:480px;margin:0 auto;background:#0F2A4A;border-radius:16px;overflow:hidden;">
+          <div style="background:#1D9E75;padding:24px;text-align:center;">
+            <h1 style="color:white;margin:0;font-size:24px;">AcademiQ</h1>
+            <p style="color:rgba(255,255,255,0.8);margin:4px 0 0;font-size:13px;">SGTB Khalsa College</p>
           </div>
-
-          <div>
-            <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Email Address</label>
-            <input type="email" className="input-field" value={form.email}
-              onChange={e => setForm({...form, email:e.target.value})} required placeholder="you@example.com" />
-          </div>
-
-          <div>
-            <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>College ID (optional)</label>
-            <input type="text" className="input-field" value={form.college_id}
-              onChange={e => setForm({...form, college_id:e.target.value})} placeholder="e.g. CSE2024001" />
-          </div>
-
-          <div>
-            <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Password</label>
-            <input type="password" className="input-field" value={form.password}
-              onChange={e => setForm({...form, password:e.target.value})} required placeholder="••••••••" />
-          </div>
-
-          {form.role === "admin" && (
-            <div style={{
-              background:"#fef9c3", border:"1px solid #fde047",
-              borderRadius:"12px", padding:"16px"
-            }}>
-              <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>
-                🔐 Admin Secret Code
-              </label>
-              <input type="password" className="input-field" value={form.admin_code}
-                onChange={e => setForm({...form, admin_code:e.target.value})}
-                required={form.role==="admin"} placeholder="Enter admin secret code" />
-              <p style={{fontSize:"12px", color:"#92400e", marginTop:"6px", marginBottom:0}}>
-                Contact your institution admin for the secret code
-              </p>
+          <div style="padding:36px 32px;">
+            <h2 style="color:white;margin:0 0 12px;">Hi {name}! 👋</h2>
+            <p style="color:rgba(255,255,255,0.6);font-size:14px;line-height:1.7;margin-bottom:28px;">
+              Use the OTP below to verify your email address. This OTP is valid for <strong style="color:#1D9E75;">10 minutes</strong>.
+            </p>
+            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(29,158,117,0.3);border-radius:12px;padding:24px;text-align:center;margin-bottom:28px;">
+              <div style="font-size:42px;font-weight:800;color:#1D9E75;letter-spacing:12px;">{otp}</div>
             </div>
-          )}
+            <p style="color:rgba(255,255,255,0.3);font-size:12px;">If you didn't create an AcademiQ account, ignore this email.</p>
+          </div>
+        </div>
+        """
 
-          <button type="submit" disabled={loading} className="reg-btn">
-            {loading ? "⏳ Creating account..." : "Create Account →"}
-          </button>
-        </form>
+        msg.attach(MIMEText(html, "html"))
 
-        <p style={{textAlign:"center", fontSize:"14px", color:"#64748b", marginTop:"20px", marginBottom:0}}>
-          Already have an account?{" "}
-          <Link to="/login" style={{color:"#1e3a5f", fontWeight:"700", textDecoration:"none"}}>Sign in</Link>
-        </p>
-      </div>
-    </div>
-  );
-}
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+            server.sendmail(GMAIL_USER, to_email, msg.as_string())
+        return True
+    except Exception as e:
+        print("EMAIL ERROR:", str(e))
+        return False
+
+def get_admin_secret():
+    doc = settings_col.find_one({"_id": "main"})
+    if doc and "admin_secret" in doc:
+        return doc["admin_secret"]
+    return os.getenv("ADMIN_SECRET", "academiq_admin_2026")
+
+@router.post("/send-otp")
+def send_otp(body: dict):
+    email = body.get("email")
+    name = body.get("name", "Student")
+    role = body.get("role", "student")
+
+    if not email:
+        raise HTTPException(400, "Email required")
+
+    # Check if already registered
+    if users_col.find_one({"email": email, "role": role}):
+        raise HTTPException(400, "Email already registered")
+
+    # Generate 6 digit OTP
+    otp = str(random.randint(100000, 999999))
+    expires_at = datetime.utcnow() + timedelta(minutes=10)
+
+    # Save OTP in DB (upsert)
+    otp_col.update_one(
+        {"email": email, "role": role},
+        {"$set": {"otp": otp, "expires_at": expires_at, "verified": False}},
+        upsert=True
+    )
+
+    # Send email
+    sent = send_otp_email(email, otp, name)
+    if not sent:
+        raise HTTPException(500, "Failed to send OTP email. Please check your email address.")
+
+    return {"message": "OTP sent successfully"}
+
+@router.post("/verify-otp")
+def verify_otp(body: dict):
+    email = body.get("email")
+    otp = body.get("otp")
+    role = body.get("role", "student")
+
+    record = otp_col.find_one({"email": email, "role": role})
+    if not record:
+        raise HTTPException(400, "OTP not found. Please request again.")
+
+    if datetime.utcnow() > record["expires_at"]:
+        raise HTTPException(400, "OTP expired. Please request again.")
+
+    if record["otp"] != otp:
+        raise HTTPException(400, "Invalid OTP. Please try again.")
+
+    # Mark as verified
+    otp_col.update_one({"email": email, "role": role}, {"$set": {"verified": True}})
+    return {"message": "Email verified successfully"}
+
+@router.post("/register")
+def register(user: UserRegister):
+    if user.role == "superadmin":
+        raise HTTPException(status_code=403, detail="Cannot register as superadmin")
+
+    if user.role == "admin":
+        if not user.admin_code:
+            raise HTTPException(status_code=403, detail="Admin secret code required")
+        if user.admin_code != get_admin_secret():
+            raise HTTPException(status_code=403, detail="Invalid admin secret code")
+
+    if users_col.find_one({"email": user.email, "role": user.role}):
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    # Check OTP verified (super admin skip)
+    if user.email != SUPER_ADMIN_EMAIL:
+        otp_record = otp_col.find_one({"email": user.email, "role": user.role})
+        if not otp_record or not otp_record.get("verified"):
+            raise HTTPException(status_code=400, detail="Email not verified. Please verify OTP first.")
+
+    hashed_pw = pwd_ctx.hash(user.password)
+
+    if user.email == SUPER_ADMIN_EMAIL and user.role == "admin":
+        status = "active"
+    elif user.role == "admin":
+        status = "pending"
+    else:
+        status = "pending"
+
+    user_doc = {
+        "name": user.name,
+        "email": user.email,
+        "password": hashed_pw,
+        "role": user.role,
+        "college_id": user.college_id,
+        "status": status,
+    }
+    users_col.insert_one(user_doc)
+
+    # Clean up OTP
+    otp_col.delete_one({"email": user.email, "role": user.role})
+
+    if status == "pending":
+        return {"message": "Registration successful. Please wait for approval."}
+    return {"message": "Registration successful"}
+
+@router.post("/login")
+def login(user: UserLogin):
+    db_user = users_col.find_one({"email": user.email, "role": user.role})
+
+    if not db_user:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    if not pwd_ctx.verify(user.password, db_user["password"]):
+        raise HTTPException(status_code=401, detail="Incorrect password")
+
+    status = db_user.get("status", "active")
+    if status == "pending":
+        raise HTTPException(status_code=403, detail="Account pending approval. Please wait for admin to approve.")
+    if status == "rejected":
+        raise HTTPException(status_code=403, detail="Account rejected. Contact admin.")
+
+    is_super = user.email == SUPER_ADMIN_EMAIL and user.role == "admin"
+
+    token = create_token({
+        "email": db_user["email"],
+        "role": db_user["role"],
+        "name": db_user["name"],
+        "is_super": is_super,
+    })
+
+    return {
+        "token": token,
+        "role": db_user["role"],
+        "name": db_user["name"],
+        "is_super": is_super,
+    }
 </file>
 
 <file path="backend/routes/settings.py">
 from fastapi import APIRouter, HTTPException, Depends
-from pymongo import MongoClient
 from utils.dependencies import admin_only, get_current_user
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from main import db
 import os
 import urllib.parse
 
 load_dotenv()
 
 router = APIRouter()
-client = MongoClient(os.getenv("MONGO_URI"))
-db = client["academiq"]
+
 settings_col = db["settings"]
 users_col = db["users"]
 
@@ -2061,7 +2105,6 @@ class DeptCourseModel(BaseModel):
 class SecretModel(BaseModel):
     new_secret: str
 
-# ── DEPARTMENTS ──
 @router.get("/departments")
 def get_departments():
     return {"departments": get_settings().get("departments", [])}
@@ -2088,7 +2131,6 @@ def delete_department(name: str, user=Depends(admin_only)):
     save_settings({"departments": depts, "subjects": subjects, "dept_courses": dept_courses})
     return {"departments": depts}
 
-# ── COURSES ──
 @router.get("/courses")
 def get_courses():
     return {"courses": get_settings().get("courses", [])}
@@ -2111,7 +2153,6 @@ def delete_course(name: str, user=Depends(admin_only)):
     save_settings({"courses": courses})
     return {"courses": courses}
 
-# ── SUBJECTS (Department → Course → Semester → Subjects) ──
 @router.get("/subjects")
 def get_subjects():
     return {"subjects": get_settings().get("subjects", {})}
@@ -2149,7 +2190,6 @@ def delete_subject(department: str, course: str, semester: str, subject: str, us
     save_settings({"subjects": subjects})
     return {"subjects": subjects}
 
-# ── DEPT-COURSE MAPPING ──
 @router.get("/dept-courses")
 def get_dept_courses():
     return {"dept_courses": get_settings().get("dept_courses", {})}
@@ -2177,7 +2217,6 @@ def delete_dept_course(department: str, course: str, user=Depends(admin_only)):
     save_settings({"dept_courses": dept_courses})
     return {"dept_courses": dept_courses}
 
-# ── STUDENTS ──
 @router.get("/students")
 def get_students(user=Depends(admin_only)):
     students = list(users_col.find({"role": "student"}, {"_id": 0, "password": 0}))
@@ -2201,7 +2240,6 @@ def delete_student(email: str, user=Depends(admin_only)):
     users_col.delete_one({"email": email, "role": "student"})
     return {"message": "Student removed"}
 
-# ── ADMINS (Super Admin Only) ──
 @router.get("/admins")
 def get_admins(user=Depends(super_only)):
     admins = list(users_col.find({"role": "admin"}, {"_id": 0, "password": 0}))
@@ -2227,7 +2265,6 @@ def delete_admin(email: str, user=Depends(super_only)):
     users_col.delete_one({"email": email, "role": "admin"})
     return {"message": "Admin removed"}
 
-# ── SECRET KEY ──
 @router.get("/admin-secret")
 def get_admin_secret(user=Depends(super_only)):
     doc = get_settings()
@@ -2239,161 +2276,6 @@ def update_admin_secret(body: SecretModel, user=Depends(super_only)):
         raise HTTPException(400, "Secret must be at least 8 characters")
     save_settings({"admin_secret": body.new_secret})
     return {"message": "Admin secret updated successfully"}
-</file>
-
-<file path="backend/routes/papers.py">
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
-from pymongo import MongoClient
-from utils.dependencies import admin_only
-import cloudinary
-import cloudinary.uploader
-from dotenv import load_dotenv
-import os
-from datetime import datetime
-import urllib.parse
-from fastapi.responses import StreamingResponse
-import httpx
-
-load_dotenv()
-
-cloudinary.config(
-    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.getenv("CLOUDINARY_API_KEY"),
-    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
-)
-
-MONGO_URI = os.getenv("MONGO_URI")
-client = MongoClient(MONGO_URI)
-db = client["academiq"]
-papers_col = db["papers"]
-
-router = APIRouter()
-
-def clean_public_id(text):
-    return text.replace(" ", "_").replace("&", "and").replace(".", "").replace(",", "").replace("/", "-")
-
-@router.post("/upload")
-def upload_paper(
-    department: str = Form(...),
-    class_name: str = Form(...),
-    semester: str = Form(...),
-    subject: str = Form(...),
-    academic_year: int = Form(...),
-    file: UploadFile = File(...),
-    user=Depends(admin_only)
-):
-    if not file.filename.endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Only PDF files allowed")
-
-    current_year = datetime.now().year
-    if academic_year < current_year - 10:
-        raise HTTPException(status_code=400, detail="Paper older than 10 years not allowed")
-
-    safe_id = f"{clean_public_id(department)}_{clean_public_id(class_name)}_{clean_public_id(semester)}_{clean_public_id(subject)}_{academic_year}"
-
-    upload_result = cloudinary.uploader.upload(
-        file.file,
-        resource_type="raw",
-        folder="academiq/papers",
-        public_id=safe_id,
-        overwrite=True,
-    )
-
-    # PDF URL fix - browser mein view ho sake
-    secure_url = upload_result["secure_url"]
-    if not secure_url.endswith(".pdf"):
-        secure_url = secure_url + ".pdf"
-
-    paper_doc = {
-        "department": department,
-        "class_name": class_name,
-        "semester": semester,
-        "subject": subject,
-        "academic_year": academic_year,
-        "file_url": secure_url,
-        "public_id": upload_result["public_id"],
-        "uploaded_by": user["email"],
-        "uploaded_at": datetime.utcnow(),
-    }
-    papers_col.insert_one(paper_doc)
-    return {"message": "Paper uploaded successfully", "url": secure_url}
-
-
-@router.get("/list")
-def list_papers(
-    department: str = None,
-    class_name: str = None,
-    semester: str = None,
-    subject: str = None,
-):
-    current_year = datetime.now().year
-    cutoff_year = current_year - 10
-
-    query = {"academic_year": {"$gt": cutoff_year}}
-    if department:
-        query["department"] = department
-    if class_name:
-        query["class_name"] = class_name
-    if semester:
-        query["semester"] = semester
-    if subject:
-        query["subject"] = subject
-
-    papers = list(papers_col.find(query, {"_id": 0}))
-    return {"papers": papers}
-
-
-@router.get("/all")
-def all_papers(user=Depends(admin_only)):
-    papers = list(papers_col.find({}, {"_id": 0}))
-    return {"papers": papers}
-
-
-@router.delete("/delete/{public_id:path}")
-def delete_paper(public_id: str, user=Depends(admin_only)):
-    public_id = urllib.parse.unquote(public_id)
-    paper = papers_col.find_one({"public_id": public_id})
-    if not paper:
-        raise HTTPException(status_code=404, detail="Paper not found")
-    try:
-        cloudinary.uploader.destroy(public_id, resource_type="raw")
-    except Exception:
-        pass
-    papers_col.delete_one({"public_id": public_id})
-    return {"message": "Paper deleted successfully"}
-
-
-@router.post("/fix-urls-remove")
-def fix_pdf_urls_remove(user=Depends(admin_only)):
-    papers = list(papers_col.find({}))
-    fixed = 0
-    for paper in papers:
-        url = paper.get("file_url", "")
-        if url.endswith(".pdf") and "/raw/upload/" in url:
-            new_url = url[:-4]  # remove .pdf
-            papers_col.update_one(
-                {"_id": paper["_id"]},
-                {"$set": {"file_url": new_url}}
-            )
-            fixed += 1
-    return {"message": f"Fixed {fixed} paper URLs"}
-@router.get("/download")
-async def download_paper(url: str):
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url, follow_redirects=True)
-    
-    filename = url.split("/")[-1]
-    if not filename.endswith(".pdf"):
-        filename = filename + ".pdf"
-    
-    return StreamingResponse(
-        iter([response.content]),
-        media_type="application/pdf",
-        headers={
-            "Content-Disposition": f"attachment; filename={filename}",
-            "Content-Type": "application/pdf",
-        }
-    )
 </file>
 
 <file path="frontend/src/pages/AdminDashboard.jsx">
@@ -3110,6 +2992,441 @@ export default function AdminDashboard() {
 }
 </file>
 
+<file path="frontend/src/pages/Register.jsx">
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+
+const API = "https://academiq-jenb.onrender.com";
+
+export default function Register() {
+  const navigate = useNavigate();
+  const [step, setStep] = useState(1); // 1=form, 2=otp
+  const [form, setForm] = useState({
+    name: "", email: "", password: "", role: "student",
+    college_id: "", admin_code: "",
+  });
+  const [otp, setOtp] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
+
+  const startTimer = () => {
+    setResendTimer(60);
+    const interval = setInterval(() => {
+      setResendTimer(prev => {
+        if (prev <= 1) { clearInterval(interval); return 0; }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handleSendOtp = async (e) => {
+    e.preventDefault();
+    if (!form.name || !form.email || !form.password) {
+      setError("Please fill all required fields"); return;
+    }
+    if (form.role === "admin" && !form.admin_code) {
+      setError("Admin secret code required"); return;
+    }
+    setLoading(true); setError(""); setSuccess("");
+    try {
+      await axios.post(`${API}/auth/send-otp`, {
+        email: form.email, name: form.name, role: form.role
+      });
+      setStep(2);
+      setSuccess(`OTP sent to ${form.email}`);
+      startTimer();
+    } catch (err) {
+      setError(err.response?.data?.detail || "Failed to send OTP");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (resendTimer > 0) return;
+    setLoading(true); setError(""); setSuccess("");
+    try {
+      await axios.post(`${API}/auth/send-otp`, {
+        email: form.email, name: form.name, role: form.role
+      });
+      setSuccess("OTP resent successfully!");
+      startTimer();
+    } catch (err) {
+      setError(err.response?.data?.detail || "Failed to resend OTP");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyAndRegister = async (e) => {
+    e.preventDefault();
+    if (otp.length !== 6) { setError("Enter 6 digit OTP"); return; }
+    setLoading(true); setError(""); setSuccess("");
+    try {
+      // Step 1: Verify OTP
+      await axios.post(`${API}/auth/verify-otp`, {
+        email: form.email, otp, role: form.role
+      });
+      // Step 2: Register
+      await axios.post(`${API}/auth/register`, form);
+      setSuccess("Account created successfully! Redirecting...");
+      setTimeout(() => navigate("/login"), 1500);
+    } catch (err) {
+      setError(err.response?.data?.detail || "Verification failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #030810 0%, #0d2035 50%, #030810 100%)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      fontFamily: "'DM Sans', sans-serif", padding: "20px"
+    }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+        @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes shake { 0%,100% { transform:translateX(0); } 25% { transform:translateX(-8px); } 75% { transform:translateX(8px); } }
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+        .input-field {
+          width:100%; border:1px solid rgba(255,255,255,0.1); border-radius:8px;
+          padding:12px 16px; font-size:14px; outline:none;
+          transition:all 0.3s ease; box-sizing:border-box;
+          background:rgba(255,255,255,0.05); color:white;
+          font-family:'DM Sans',sans-serif;
+        }
+        .input-field::placeholder { color:rgba(255,255,255,0.25); }
+        .input-field:focus { border-color:#1D9E75; background:rgba(255,255,255,0.08); box-shadow:0 0 0 3px rgba(29,158,117,0.15); }
+        .reg-btn {
+          width:100%; padding:14px;
+          background:linear-gradient(135deg,#1D9E75,#0d7a5a);
+          color:white; border:none; border-radius:8px;
+          font-size:14px; font-weight:600; cursor:pointer;
+          transition:all 0.3s ease; font-family:'DM Sans',sans-serif;
+          letter-spacing:1px;
+        }
+        .reg-btn:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(29,158,117,0.3); }
+        .reg-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+        .role-tab {
+          flex:1; padding:10px; border:1px solid rgba(255,255,255,0.1);
+          background:rgba(255,255,255,0.03); border-radius:8px; cursor:pointer;
+          font-weight:600; font-size:13px; transition:all 0.3s ease;
+          color:rgba(255,255,255,0.5); font-family:'DM Sans',sans-serif;
+        }
+        .role-tab.active { background:#1D9E75; color:white; border-color:#1D9E75; }
+        .otp-input {
+          width:100%; border:1px solid rgba(29,158,117,0.4); border-radius:8px;
+          padding:18px; font-size:28px; outline:none; text-align:center;
+          letter-spacing:16px; font-weight:700;
+          transition:all 0.3s ease; box-sizing:border-box;
+          background:rgba(29,158,117,0.05); color:#1D9E75;
+          font-family:'DM Sans',sans-serif;
+        }
+        .otp-input:focus { border-color:#1D9E75; box-shadow:0 0 0 3px rgba(29,158,117,0.2); }
+        label { display:block; font-size:12px; font-weight:600; color:rgba(255,255,255,0.5); margin-bottom:6px; letter-spacing:1px; text-transform:uppercase; }
+      `}</style>
+
+      <div style={{
+        background: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: "16px", padding: "48px 40px",
+        width: "100%", maxWidth: "420px",
+        backdropFilter: "blur(20px)",
+        animation: "slideUp 0.5s ease",
+        position: "relative", overflow: "hidden"
+      }}>
+        {/* Top accent line */}
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: "linear-gradient(90deg, #1D9E75, transparent)" }} />
+
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <div style={{
+            width: "56px", height: "56px",
+            background: "linear-gradient(135deg,#1D9E75,#0d7a5a)",
+            borderRadius: "12px", display: "inline-flex",
+            alignItems: "center", justifyContent: "center",
+            marginBottom: "16px", fontSize: "24px"
+          }}>🎓</div>
+          <h1 style={{ fontSize: "24px", fontWeight: "700", color: "white", margin: "0 0 4px", letterSpacing: "1px" }}>ACADEMIQ</h1>
+          <p style={{ color: "rgba(255,255,255,0.3)", margin: 0, fontSize: "13px", letterSpacing: "1px" }}>
+            {step === 1 ? "CREATE YOUR ACCOUNT" : "VERIFY YOUR EMAIL"}
+          </p>
+        </div>
+
+        {/* Progress indicator */}
+        <div style={{ display: "flex", gap: "8px", marginBottom: "28px" }}>
+          <div style={{ flex: 1, height: "3px", borderRadius: "2px", background: "#1D9E75", transition: "all 0.3s" }} />
+          <div style={{ flex: 1, height: "3px", borderRadius: "2px", background: step === 2 ? "#1D9E75" : "rgba(255,255,255,0.1)", transition: "all 0.3s" }} />
+        </div>
+
+        {/* Messages */}
+        {error && (
+          <div style={{
+            background: "rgba(220,38,38,0.1)", border: "1px solid rgba(220,38,38,0.3)",
+            color: "#f87171", padding: "12px 16px", borderRadius: "8px",
+            marginBottom: "16px", fontSize: "13px", animation: "shake 0.3s ease"
+          }}>⚠️ {error}</div>
+        )}
+        {success && (
+          <div style={{
+            background: "rgba(29,158,117,0.1)", border: "1px solid rgba(29,158,117,0.3)",
+            color: "#1D9E75", padding: "12px 16px", borderRadius: "8px",
+            marginBottom: "16px", fontSize: "13px"
+          }}>✅ {success}</div>
+        )}
+
+        {/* STEP 1 — Registration Form */}
+        {step === 1 && (
+          <>
+            <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
+              <button className={`role-tab ${form.role === "student" ? "active" : ""}`}
+                onClick={() => setForm({ ...form, role: "student", admin_code: "" })}>
+                👨‍🎓 Student
+              </button>
+              <button className={`role-tab ${form.role === "admin" ? "active" : ""}`}
+                onClick={() => setForm({ ...form, role: "admin" })}>
+                👨‍💼 Admin
+              </button>
+            </div>
+
+            <form onSubmit={handleSendOtp} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div>
+                <label>Full Name</label>
+                <input type="text" className="input-field" value={form.name}
+                  onChange={e => setForm({ ...form, name: e.target.value })} required placeholder="Your full name" />
+              </div>
+
+              <div>
+                <label>Email Address</label>
+                <input type="email" className="input-field" value={form.email}
+                  onChange={e => setForm({ ...form, email: e.target.value })} required placeholder="you@example.com" />
+              </div>
+
+              <div>
+                <label>College ID (Optional)</label>
+                <input type="text" className="input-field" value={form.college_id}
+                  onChange={e => setForm({ ...form, college_id: e.target.value })} placeholder="e.g. CSE2024001" />
+              </div>
+
+              <div>
+                <label>Password</label>
+                <input type="password" className="input-field" value={form.password}
+                  onChange={e => setForm({ ...form, password: e.target.value })} required placeholder="••••••••" />
+              </div>
+
+              {form.role === "admin" && (
+                <div style={{ background: "rgba(234,179,8,0.08)", border: "1px solid rgba(234,179,8,0.2)", borderRadius: "8px", padding: "16px" }}>
+                  <label>🔐 Admin Secret Code</label>
+                  <input type="password" className="input-field" value={form.admin_code}
+                    onChange={e => setForm({ ...form, admin_code: e.target.value })}
+                    required={form.role === "admin"} placeholder="Enter admin secret code" />
+                  <p style={{ fontSize: "12px", color: "rgba(234,179,8,0.6)", marginTop: "6px", marginBottom: 0 }}>
+                    Contact your institution admin for the secret code
+                  </p>
+                </div>
+              )}
+
+              <button type="submit" disabled={loading} className="reg-btn">
+                {loading ? "⏳ Sending OTP..." : "Send Verification OTP →"}
+              </button>
+            </form>
+          </>
+        )}
+
+        { /* STEP 2 — OTP Verification */}
+        {step === 2 && (
+          <form onSubmit={handleVerifyAndRegister} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div style={{ textAlign: "center", padding: "16px", background: "rgba(29,158,117,0.05)", border: "1px solid rgba(29,158,117,0.15)", borderRadius: "8px" }}>
+              <div style={{ fontSize: "32px", marginBottom: "8px" }}>📧</div>
+              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", margin: 0 }}>
+                OTP sent to<br />
+                <strong style={{ color: "white" }}>{form.email}</strong>
+              </p>
+            </div>
+
+            <div>
+              <label style={{ textAlign: "center", display: "block" }}>Enter 6-Digit OTP</label>
+              <input
+                type="text" className="otp-input"
+                value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                placeholder="------" maxLength={6} required
+              />
+              <p style={{ textAlign: "center", fontSize: "12px", color: "rgba(255,255,255,0.25)", marginTop: "8px" }}>
+                OTP valid for 10 minutes
+              </p>
+            </div>
+
+            <button type="submit" disabled={loading || otp.length !== 6} className="reg-btn">
+              {loading ? "⏳ Verifying..." : "✅ Verify & Create Account"}
+            </button>
+
+            <div style={{ textAlign: "center" }}>
+              <button type="button" onClick={handleResendOtp} disabled={resendTimer > 0 || loading}
+                style={{ background: "none", border: "none", cursor: resendTimer > 0 ? "not-allowed" : "pointer", color: resendTimer > 0 ? "rgba(255,255,255,0.2)" : "#1D9E75", fontSize: "13px", fontFamily: "'DM Sans',sans-serif" }}>
+                {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : "Resend OTP"}
+              </button>
+            </div>
+
+            <button type="button" onClick={() => { setStep(1); setOtp(""); setError(""); setSuccess(""); }}
+              style={{ background: "none", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.4)", padding: "10px", borderRadius: "8px", cursor: "pointer", fontSize: "13px", fontFamily: "'DM Sans',sans-serif" }}>
+              ← Change Details
+            </button>
+          </form>
+        )}
+
+        <p style={{ textAlign: "center", fontSize: "13px", color: "rgba(255,255,255,0.3)", marginTop: "24px", marginBottom: 0 }}>
+          Already have an account?{" "}
+          <Link to="/login" style={{ color: "#1D9E75", fontWeight: "700", textDecoration: "none" }}>Sign in</Link>
+        </p>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="backend/routes/papers.py">
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
+from utils.dependencies import admin_only
+import cloudinary
+import cloudinary.uploader
+from dotenv import load_dotenv
+import os
+from datetime import datetime
+import urllib.parse
+from fastapi.responses import StreamingResponse
+import httpx
+from main import db
+
+load_dotenv()
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+)
+
+papers_col = db["papers"]
+
+router = APIRouter()
+
+def clean_public_id(text):
+    return text.replace(" ", "_").replace("&", "and").replace(".", "").replace(",", "").replace("/", "-")
+
+@router.post("/upload")
+def upload_paper(
+    department: str = Form(...),
+    class_name: str = Form(...),
+    semester: str = Form(...),
+    subject: str = Form(...),
+    academic_year: int = Form(...),
+    file: UploadFile = File(...),
+    user=Depends(admin_only)
+):
+    if not file.filename.endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files allowed")
+
+    current_year = datetime.now().year
+    if academic_year < current_year - 10:
+        raise HTTPException(status_code=400, detail="Paper older than 10 years not allowed")
+
+    safe_id = f"{clean_public_id(department)}_{clean_public_id(class_name)}_{clean_public_id(semester)}_{clean_public_id(subject)}_{academic_year}"
+
+    upload_result = cloudinary.uploader.upload(
+        file.file,
+        resource_type="raw",
+        folder="academiq/papers",
+        public_id=safe_id,
+        overwrite=True,
+    )
+
+    paper_doc = {
+        "department": department,
+        "class_name": class_name,
+        "semester": semester,
+        "subject": subject,
+        "academic_year": academic_year,
+        "file_url": upload_result["secure_url"],
+        "public_id": upload_result["public_id"],
+        "uploaded_by": user["email"],
+        "uploaded_at": datetime.utcnow(),
+    }
+    papers_col.insert_one(paper_doc)
+    return {"message": "Paper uploaded successfully", "url": upload_result["secure_url"]}
+
+
+@router.get("/list")
+def list_papers(
+    department: str = None,
+    class_name: str = None,
+    semester: str = None,
+    subject: str = None,
+):
+    current_year = datetime.now().year
+    cutoff_year = current_year - 10
+
+    query = {"academic_year": {"$gt": cutoff_year}}
+    if department:
+        query["department"] = department
+    if class_name:
+        query["class_name"] = class_name
+    if semester:
+        query["semester"] = semester
+    if subject:
+        query["subject"] = subject
+
+    papers = list(papers_col.find(query, {"_id": 0}))
+    return {"papers": papers}
+
+
+@router.get("/all")
+def all_papers(user=Depends(admin_only)):
+    papers = list(papers_col.find({}, {"_id": 0}))
+    return {"papers": papers}
+
+
+@router.delete("/delete/{public_id:path}")
+def delete_paper(public_id: str, user=Depends(admin_only)):
+    public_id = urllib.parse.unquote(public_id)
+    paper = papers_col.find_one({"public_id": public_id})
+    if not paper:
+        raise HTTPException(status_code=404, detail="Paper not found")
+    try:
+        cloudinary.uploader.destroy(public_id, resource_type="raw")
+    except Exception:
+        try:
+            cloudinary.uploader.destroy(public_id, resource_type="image")
+        except Exception:
+            pass
+    papers_col.delete_one({"public_id": public_id})
+    return {"message": "Paper deleted successfully"}
+
+
+@router.get("/download")
+async def download_paper(url: str, inline: bool = False):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, follow_redirects=True)
+
+    filename = url.split("/")[-1]
+    if not filename.endswith(".pdf"):
+        filename = filename + ".pdf"
+
+    disposition = "inline" if inline else "attachment"
+
+    return StreamingResponse(
+        iter([response.content]),
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"{disposition}; filename={filename}",
+            "Content-Type": "application/pdf",
+        }
+    )
+</file>
+
 <file path="frontend/src/pages/StudentDashboard.jsx">
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -3172,11 +3489,21 @@ export default function StudentDashboard() {
     }
   };
 
-  const viewUrl = (url) =>
-    `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
+  const viewUrl = (url) => {
+  // Google Docs viewer - mobile pe bhi perfectly kaam karta hai
+  // koi conversion nahi, raw URL as-is pass karo
+  const cleanUrl = url.replace("/image/upload/fl_attachment/", "/raw/upload/")
+                      .replace("/image/upload/", "/raw/upload/");
+  return `https://docs.google.com/viewer?url=${encodeURIComponent(cleanUrl)}`;
+};
 
-  const downloadUrl = (url) =>
-  `${API}/papers/download?url=${encodeURIComponent(url)}`;
+const viewUrl = (url) => {
+  return `${API}/papers/download?url=${encodeURIComponent(url)}&inline=true`;
+};
+
+const downloadUrl = (url) => {
+  return `${API}/papers/download?url=${encodeURIComponent(url)}`;
+};
 
   return (
     <div style={{minHeight:"100vh", background:"#F4F7FB", fontFamily:"'DM Sans', sans-serif"}}>
@@ -3321,6 +3648,209 @@ export default function StudentDashboard() {
     </div>
   );
 }
+</file>
+
+<file path="backend/routes/ai.py">
+from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi.responses import StreamingResponse
+from groq import Groq
+from dotenv import load_dotenv
+import os
+import pdfplumber
+import io
+import base64
+import pypdfium2 as pdfium
+
+load_dotenv()
+
+router = APIRouter()
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+def extract_text_pdfplumber(file_bytes):
+    text = ""
+    try:
+        with pdfplumber.open(io.BytesIO(file_bytes)) as pdf:
+            for page in pdf.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
+    except Exception:
+        pass
+    return text.strip()
+
+def extract_text_groq_vision(file_bytes):
+    try:
+        pdf = pdfium.PdfDocument(io.BytesIO(file_bytes))
+        all_text = ""
+        for i in range(min(3, len(pdf))):
+            page = pdf[i]
+            bitmap = page.render(scale=1.5)
+            img = bitmap.to_pil()
+            buf = io.BytesIO()
+            img.save(buf, format="JPEG", quality=85)
+            b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+            response = client.chat.completions.create(
+                model="meta-llama/llama-4-scout-17b-16e-instruct",
+                messages=[{
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": f"data:image/jpeg;base64,{b64}"}
+                        },
+                        {
+                            "type": "text",
+                            "text": "Extract all text from this image exactly as it appears. Include all headings, instructions, topics, marks, and any other text visible."
+                        }
+                    ]
+                }],
+                max_tokens=2000,
+            )
+            all_text += response.choices[0].message.content + "\n"
+        return all_text.strip()
+    except Exception as e:
+        print("GROQ VISION ERROR:", str(e))
+        return ""
+
+async def extract_text_from_pdf(file_bytes, filename="syllabus.pdf", required=True):
+    text = extract_text_pdfplumber(file_bytes)
+    print("PDFPLUMBER TEXT LENGTH:", len(text))
+
+    if len(text) < 100:
+        print("Falling back to Groq Vision OCR...")
+        text = extract_text_groq_vision(file_bytes)
+        print("GROQ VISION TEXT LENGTH:", len(text))
+
+    if not text.strip():
+        if required:
+            raise HTTPException(
+                status_code=400,
+                detail="Could not extract text from syllabus PDF. Please ensure the PDF is not password protected."
+            )
+        else:
+            print("PDF extraction failed - skipping")
+            return ""
+
+    return text
+
+@router.post("/generate")
+async def generate_questions(
+    syllabus_pdf: UploadFile = File(...),
+    past_papers_pdf: UploadFile = File(None),
+):
+    syllabus_bytes = await syllabus_pdf.read()
+    syllabus_text = await extract_text_from_pdf(syllabus_bytes, syllabus_pdf.filename, required=True)
+
+    past_papers_text = ""
+    if past_papers_pdf and past_papers_pdf.filename:
+        past_bytes = await past_papers_pdf.read()
+        past_papers_text = await extract_text_from_pdf(past_bytes, past_papers_pdf.filename, required=False)
+
+    prompt = f"""You are an expert academic question paper generator for Indian university college exams.
+
+SYLLABUS CONTENT:
+{syllabus_text[:3000]}
+
+PAST PAPERS FOR REFERENCE ONLY - DO NOT COPY THESE QUESTIONS:
+{past_papers_text[:2000]}
+
+YOUR TASK:
+
+Step 1 - READ the syllabus carefully and identify:
+- Course name and subject code
+- Time allowed, pass percentage
+- Number of sections and topics under each section
+
+Step 2 - CALCULATE MARKS LIKE THIS:
+- Find "External Examination" marks in syllabus — this is your TOTAL
+- Find "Instruction for Paper Setter" — it tells section wise breakdown
+- Example from a typical syllabus:
+  * "Sections A & B will have FOUR questions each carrying 10 marks"
+  * "Attempt any TWO from each section" → Section A = 2x10 = 20 marks, Section B = 2x10 = 20 marks
+  * "Section C will have 10 short-answer questions carrying 30 marks" → Section C = 30 marks
+  * Total = 20 + 20 + 30 = 70 marks ✓ matches External marks
+- ALWAYS verify: Section A + Section B + Section C = External marks total
+- NEVER use Internal Assessment marks
+
+Step 3 - STRICTLY follow this question count:
+- Section A: EXACTLY 4 questions, student attempts ANY 2, each question = (Section A marks / 2)
+- Section B: EXACTLY 4 questions, student attempts ANY 2, each question = (Section B marks / 2)
+- Section C: EXACTLY 10 questions, ALL compulsory, each question = (Section C marks / 10)
+- Double check: 2 x (marks per question in A) + 2 x (marks per question in B) + 10 x (marks per question in C) = External total
+
+Step 4 - If past papers provided, use ONLY to:
+- Identify frequently asked topics
+- Understand question style
+- NEVER copy or reuse any question from past papers
+- NEVER use same wording as past papers
+
+Step 5 - Generate BRAND NEW practice questions:
+- Completely different from past paper questions
+- Section A topics only in Section A of syllabus
+- Section B topics only in Section B of syllabus
+- Questions must be university-level and detailed
+
+FORMAT (follow EXACTLY):
+[Subject Name and Code]
+Time Allowed: [X Hours] | Maximum Marks: [External Marks ONLY] | Pass Percentage: [X%]
+
+Note: Attempt any two questions each from Section A & B. Attempt all questions in Section C.
+
+SECTION A ([total attempted marks] Marks)
+Attempt any 2 questions. Each question carries [X] marks.
+1. [Fresh question on Section A topic] ([X] Marks)
+2. [Fresh question on Section A topic] ([X] Marks)
+3. [Fresh question on Section A topic] ([X] Marks)
+4. [Fresh question on Section A topic] ([X] Marks)
+
+SECTION B ([total attempted marks] Marks)
+Attempt any 2 questions. Each question carries [X] marks.
+1. [Fresh question on Section B topic] ([X] Marks)
+2. [Fresh question on Section B topic] ([X] Marks)
+3. [Fresh question on Section B topic] ([X] Marks)
+4. [Fresh question on Section B topic] ([X] Marks)
+
+SECTION C ([X] Marks)
+Attempt ALL 10 questions. Each question carries [X] marks.
+1. [Fresh short answer] ([X] Marks)
+2. [Fresh short answer] ([X] Marks)
+3. [Fresh short answer] ([X] Marks)
+4. [Fresh short answer] ([X] Marks)
+5. [Fresh short answer] ([X] Marks)
+6. [Fresh short answer] ([X] Marks)
+7. [Fresh short answer] ([X] Marks)
+8. [Fresh short answer] ([X] Marks)
+9. [Fresh short answer] ([X] Marks)
+10. [Fresh short answer] ([X] Marks)
+
+--- Important Topics (based on past papers) ---
+[Topics by importance/frequency]
+
+Generate the complete practice paper now:"""
+
+    def stream_response():
+        try:
+            stream = client.chat.completions.create(
+                model="llama-3.1-8b-instant",
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=2000,
+                stream=True,
+            )
+            for chunk in stream:
+                delta = chunk.choices[0].delta.content
+                if delta:
+                    yield delta.encode("utf-8")
+        except Exception as e:
+            yield f"\n\nError: {str(e)}".encode("utf-8")
+
+    return StreamingResponse(
+        stream_response(),
+        media_type="text/plain; charset=utf-8",
+        headers={
+            "X-Accel-Buffering": "no",
+            "Cache-Control": "no-cache",
+        }
+    )
 </file>
 
 </files>
