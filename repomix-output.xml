@@ -1,0 +1,3326 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.gitignore
+backend/.gitignore
+backend/main.py
+backend/models/__init__.py
+backend/models/user.py
+backend/requirements.txt
+backend/routes/__init__.py
+backend/routes/ai.py
+backend/routes/auth.py
+backend/routes/papers.py
+backend/routes/settings.py
+backend/utils/__init__.py
+backend/utils/dependencies.py
+backend/utils/jwt_handler.py
+frontend/.gitignore
+frontend/eslint.config.js
+frontend/index.html
+frontend/package.json
+frontend/public/favicon.svg
+frontend/public/icons.svg
+frontend/README.md
+frontend/src/App.css
+frontend/src/App.jsx
+frontend/src/assets/hero.png
+frontend/src/assets/react.svg
+frontend/src/assets/vite.svg
+frontend/src/components/ProtectedRoute.jsx
+frontend/src/context/AuthContext.jsx
+frontend/src/index.css
+frontend/src/main.jsx
+frontend/src/pages/AdminDashboard.jsx
+frontend/src/pages/AIGenerator.jsx
+frontend/src/pages/LandingPage.jsx
+frontend/src/pages/Login.jsx
+frontend/src/pages/Register.jsx
+frontend/src/pages/StudentDashboard.jsx
+frontend/vercel.json
+frontend/vite.config.js
+package.json
+requirements.txt
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="backend/.gitignore">
+
+</file>
+
+<file path="backend/models/__init__.py">
+
+</file>
+
+<file path="backend/requirements.txt">
+altair==6.0.0
+annotated-doc==0.0.4
+annotated-types==0.7.0
+anyio==4.13.0
+attrs==26.1.0
+bcrypt==4.0.1
+beautifulsoup4==4.14.3
+blinker==1.9.0
+blis==1.3.3
+cachetools==7.0.5
+catalogue==2.0.10
+certifi==2026.2.25
+cffi==2.0.0
+charset-normalizer==3.4.7
+click==8.3.2
+cloudinary==1.44.2
+cloudpathlib==0.23.0
+colorama==0.4.6
+confection==1.3.3
+cryptography==46.0.7
+cymem==2.0.13
+distro==1.9.0
+dnspython==2.8.0
+ecdsa==0.19.2
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl#sha256=1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85
+fastapi==0.136.1
+filelock==3.25.2
+Flask==3.1.3
+flask-cors==6.0.2
+fsspec==2026.3.0
+gitdb==4.0.12
+GitPython==3.1.46
+google-ai-generativelanguage==0.6.15
+google-api-core==2.25.2
+google-api-python-client==2.194.0
+google-auth==2.49.2
+google-auth-httplib2==0.3.1
+google-genai==1.73.1
+googleapis-common-protos==1.74.0
+groq==1.2.0
+grpcio==1.80.0
+grpcio-status==1.71.2
+h11==0.16.0
+hf-xet==1.4.3
+httpcore==1.0.9
+httplib2==0.31.2
+httpx==0.28.1
+huggingface_hub==1.10.1
+idna==3.11
+itsdangerous==2.2.0
+Jinja2==3.1.6
+joblib==1.5.3
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+markdown-it-py==4.0.0
+MarkupSafe==3.0.3
+mdurl==0.1.2
+mpmath==1.3.0
+murmurhash==1.0.15
+narwhals==2.19.0
+networkx==3.6.1
+nltk==3.9.4
+numpy==2.4.4
+packaging==26.0
+pandas==3.0.2
+passlib==1.7.4
+pdfminer.six==20251230
+pdfplumber==0.11.9
+pillow==12.2.0
+preshed==3.0.13
+proto-plus==1.27.2
+protobuf==5.29.6
+pyarrow==23.0.1
+pyasn1==0.6.3
+pyasn1_modules==0.4.2
+pycparser==3.0
+pydantic==2.13.2
+pydantic_core==2.46.2
+pydeck==0.9.2
+Pygments==2.20.0
+pymongo==4.17.0
+pyparsing==3.3.2
+PyPDF2==3.0.1
+pypdfium2==5.7.1
+python-dateutil==2.9.0.post0
+python-dotenv==1.2.2
+python-jose==3.5.0
+python-multipart==0.0.26
+PyYAML==6.0.3
+referencing==0.37.0
+regex==2026.4.4
+requests==2.33.1
+rich==14.3.4
+rpds-py==0.30.0
+rsa==4.9.1
+safetensors==0.7.0
+sentencepiece==0.2.1
+setuptools==81.0.0
+shellingham==1.5.4
+six==1.17.0
+smart_open==7.6.0
+smmap==5.0.3
+sniffio==1.3.1
+soupsieve==2.8.3
+spacy==3.8.13
+spacy-legacy==3.0.12
+spacy-loggers==1.0.5
+srsly==2.5.3
+starlette==1.0.0
+streamlit==1.56.0
+sympy==1.14.0
+tenacity==9.1.4
+thinc==8.3.13
+tiktoken==0.12.0
+tokenizers==0.22.2
+toml==0.10.2
+torch==2.11.0
+tornado==6.5.5
+tqdm==4.67.3
+transformers==5.5.3
+typer==0.24.1
+typing-inspection==0.4.2
+typing_extensions==4.15.0
+tzdata==2026.1
+uritemplate==4.2.0
+urllib3==2.6.3
+uvicorn==0.46.0
+wasabi==1.1.3
+watchdog==6.0.0
+weasel==1.0.0
+websockets==16.0
+Werkzeug==3.1.8
+wrapt==2.1.2
+</file>
+
+<file path="backend/routes/__init__.py">
+
+</file>
+
+<file path="backend/utils/__init__.py">
+
+</file>
+
+<file path="backend/utils/dependencies.py">
+from fastapi import Header, HTTPException
+from utils.jwt_handler import verify_token
+
+def get_current_user(authorization: str = Header(...)):
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid token format")
+    token = authorization.split(" ")[1]
+    payload = verify_token(token)
+    if not payload:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    return payload
+
+def admin_only(authorization: str = Header(...)):
+    user = get_current_user(authorization)
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admins only")
+    return user
+</file>
+
+<file path="backend/utils/jwt_handler.py">
+from jose import JWTError, jwt
+from datetime import datetime, timedelta
+import os
+
+SECRET_KEY = os.getenv("JWT_SECRET", "academiq_default_secret")
+ALGORITHM = "HS256"
+EXPIRE_MINUTES = 60 * 24  # 24 hours
+
+def create_token(data: dict):
+    payload = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=EXPIRE_MINUTES)
+    payload.update({"exp": expire})
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+
+def verify_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except JWTError:
+        return None
+</file>
+
+<file path="frontend/.gitignore">
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+</file>
+
+<file path="frontend/eslint.config.js">
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      globals: globals.browser,
+      parserOptions: { ecmaFeatures: { jsx: true } },
+    },
+  },
+])
+</file>
+
+<file path="frontend/index.html">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>frontend</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+</file>
+
+<file path="frontend/public/favicon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="46" fill="none" viewBox="0 0 48 46"><path fill="#863bff" d="M25.946 44.938c-.664.845-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.287c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.497 0-3.578-1.842-3.578H1.237c-.92 0-1.456-1.04-.92-1.788L10.013.474c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.579 1.842 3.579h11.377c.943 0 1.473 1.088.89 1.83L25.947 44.94z" style="fill:#863bff;fill:color(display-p3 .5252 .23 1);fill-opacity:1"/><mask id="a" width="48" height="46" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M25.842 44.938c-.664.844-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.183c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.498 0-3.579-1.842-3.579H1.133c-.92 0-1.456-1.04-.92-1.787L9.91.473c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.578 1.842 3.578h11.377c.943 0 1.473 1.088.89 1.832L25.843 44.94z" style="fill:#000;fill-opacity:1"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#ede6ff" rx="5.508" ry="14.704" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -4.47 31.516)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#ede6ff" rx="10.399" ry="29.851" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -39.328 7.883)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#7e14ff" rx="5.508" ry="30.487" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.814 -25.913 -14.639)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#7e14ff" rx="5.508" ry="30.599" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.814 -32.644 -3.334)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#7e14ff" rx="5.508" ry="30.599" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -34.34 30.47)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#ede6ff" rx="14.072" ry="22.078" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="rotate(93.35 24.506 48.493)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#7e14ff" rx="3.47" ry="21.501" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.009 28.708 47.59)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#7e14ff" rx="3.47" ry="21.501" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.009 28.708 47.59)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx=".387" cy="8.972" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(39.51 .387 8.972)"/></g><g filter="url(#k)"><ellipse cx="47.523" cy="-6.092" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 47.523 -6.092)"/></g><g filter="url(#l)"><ellipse cx="41.412" cy="6.333" fill="#47bfff" rx="5.971" ry="9.665" style="fill:#47bfff;fill:color(display-p3 .2799 .748 1);fill-opacity:1" transform="rotate(37.892 41.412 6.333)"/></g><g filter="url(#m)"><ellipse cx="-1.879" cy="38.332" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 -1.88 38.332)"/></g><g filter="url(#n)"><ellipse cx="-1.879" cy="38.332" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 -1.88 38.332)"/></g><g filter="url(#o)"><ellipse cx="35.651" cy="29.907" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 35.651 29.907)"/></g><g filter="url(#p)"><ellipse cx="38.418" cy="32.4" fill="#47bfff" rx="5.971" ry="15.297" style="fill:#47bfff;fill:color(display-p3 .2799 .748 1);fill-opacity:1" transform="rotate(37.892 38.418 32.4)"/></g></g><defs><filter id="b" width="60.045" height="41.654" x="-19.77" y="16.149" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-54.613" y="-7.533" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-49.64" y="2.03" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-45.045" y="20.029" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-43.513" y="21.178" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="15.756" y="-17.901" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="23.548" y="2.284" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="23.548" y="2.284" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-27.636" y="-22.853" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="20.116" y="-38.415" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="24.641" y="-11.323" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-29.286" y="6.009" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-29.286" y="6.009" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="8.244" y="-2.416" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="18.713" y="10.588" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter></defs></svg>
+</file>
+
+<file path="frontend/public/icons.svg">
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="bluesky-icon" viewBox="0 0 16 17">
+    <g clip-path="url(#bluesky-clip)"><path fill="#08060d" d="M7.75 7.735c-.693-1.348-2.58-3.86-4.334-5.097-1.68-1.187-2.32-.981-2.74-.79C.188 2.065.1 2.812.1 3.251s.241 3.602.398 4.13c.52 1.744 2.367 2.333 4.07 2.145-2.495.37-4.71 1.278-1.805 4.512 3.196 3.309 4.38-.71 4.987-2.746.608 2.036 1.307 5.91 4.93 2.746 2.72-2.746.747-4.143-1.747-4.512 1.702.189 3.55-.4 4.07-2.145.156-.528.397-3.691.397-4.13s-.088-1.186-.575-1.406c-.42-.19-1.06-.395-2.741.79-1.755 1.24-3.64 3.752-4.334 5.099"/></g>
+    <defs><clipPath id="bluesky-clip"><path fill="#fff" d="M.1.85h15.3v15.3H.1z"/></clipPath></defs>
+  </symbol>
+  <symbol id="discord-icon" viewBox="0 0 20 19">
+    <path fill="#08060d" d="M16.224 3.768a14.5 14.5 0 0 0-3.67-1.153c-.158.286-.343.67-.47.976a13.5 13.5 0 0 0-4.067 0c-.128-.306-.317-.69-.476-.976A14.4 14.4 0 0 0 3.868 3.77C1.546 7.28.916 10.703 1.231 14.077a14.7 14.7 0 0 0 4.5 2.306q.545-.748.965-1.587a9.5 9.5 0 0 1-1.518-.74q.191-.14.372-.293c2.927 1.369 6.107 1.369 8.999 0q.183.152.372.294-.723.437-1.52.74.418.838.963 1.588a14.6 14.6 0 0 0 4.504-2.308c.37-3.911-.63-7.302-2.644-10.309m-9.13 8.234c-.878 0-1.599-.82-1.599-1.82 0-.998.705-1.82 1.6-1.82.894 0 1.614.82 1.599 1.82.001 1-.705 1.82-1.6 1.82m5.91 0c-.878 0-1.599-.82-1.599-1.82 0-.998.705-1.82 1.6-1.82.893 0 1.614.82 1.599 1.82 0 1-.706 1.82-1.6 1.82"/>
+  </symbol>
+  <symbol id="documentation-icon" viewBox="0 0 21 20">
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="m15.5 13.333 1.533 1.322c.645.555.967.833.967 1.178s-.322.623-.967 1.179L15.5 18.333m-3.333-5-1.534 1.322c-.644.555-.966.833-.966 1.178s.322.623.966 1.179l1.534 1.321"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M17.167 10.836v-4.32c0-1.41 0-2.117-.224-2.68-.359-.906-1.118-1.621-2.08-1.96-.599-.21-1.349-.21-2.848-.21-2.623 0-3.935 0-4.983.369-1.684.591-3.013 1.842-3.641 3.428C3 6.449 3 7.684 3 10.154v2.122c0 2.558 0 3.838.706 4.726q.306.383.713.671c.76.536 1.79.64 3.581.66"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M3 10a2.78 2.78 0 0 1 2.778-2.778c.555 0 1.209.097 1.748-.047.48-.129.854-.503.982-.982.145-.54.048-1.194.048-1.749a2.78 2.78 0 0 1 2.777-2.777"/>
+  </symbol>
+  <symbol id="github-icon" viewBox="0 0 19 19">
+    <path fill="#08060d" fill-rule="evenodd" d="M9.356 1.85C5.05 1.85 1.57 5.356 1.57 9.694a7.84 7.84 0 0 0 5.324 7.44c.387.079.528-.168.528-.376 0-.182-.013-.805-.013-1.454-2.165.467-2.616-.935-2.616-.935-.349-.91-.864-1.143-.864-1.143-.71-.48.051-.48.051-.48.787.051 1.2.805 1.2.805.695 1.194 1.817.857 2.268.649.064-.507.27-.857.49-1.052-1.728-.182-3.545-.857-3.545-3.87 0-.857.31-1.558.8-2.104-.078-.195-.349-1 .077-2.078 0 0 .657-.208 2.14.805a7.5 7.5 0 0 1 1.946-.26c.657 0 1.328.092 1.946.26 1.483-1.013 2.14-.805 2.14-.805.426 1.078.155 1.883.078 2.078.502.546.799 1.247.799 2.104 0 3.013-1.818 3.675-3.558 3.87.284.247.528.714.528 1.454 0 1.052-.012 1.896-.012 2.156 0 .208.142.455.528.377a7.84 7.84 0 0 0 5.324-7.441c.013-4.338-3.48-7.844-7.773-7.844" clip-rule="evenodd"/>
+  </symbol>
+  <symbol id="social-icon" viewBox="0 0 20 20">
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M12.5 6.667a4.167 4.167 0 1 0-8.334 0 4.167 4.167 0 0 0 8.334 0"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M2.5 16.667a5.833 5.833 0 0 1 8.75-5.053m3.837.474.513 1.035c.07.144.257.282.414.309l.93.155c.596.1.736.536.307.965l-.723.73a.64.64 0 0 0-.152.531l.207.903c.164.715-.213.991-.84.618l-.872-.52a.63.63 0 0 0-.577 0l-.872.52c-.624.373-1.003.094-.84-.618l.207-.903a.64.64 0 0 0-.152-.532l-.723-.729c-.426-.43-.289-.864.306-.964l.93-.156a.64.64 0 0 0 .412-.31l.513-1.034c.28-.562.735-.562 1.012 0"/>
+  </symbol>
+  <symbol id="x-icon" viewBox="0 0 19 19">
+    <path fill="#08060d" fill-rule="evenodd" d="M1.893 1.98c.052.072 1.245 1.769 2.653 3.77l2.892 4.114c.183.261.333.48.333.486s-.068.089-.152.183l-.522.593-.765.867-3.597 4.087c-.375.426-.734.834-.798.905a1 1 0 0 0-.118.148c0 .01.236.017.664.017h.663l.729-.83c.4-.457.796-.906.879-.999a692 692 0 0 0 1.794-2.038c.034-.037.301-.34.594-.675l.551-.624.345-.392a7 7 0 0 1 .34-.374c.006 0 .93 1.306 2.052 2.903l2.084 2.965.045.063h2.275c1.87 0 2.273-.003 2.266-.021-.008-.02-1.098-1.572-3.894-5.547-2.013-2.862-2.28-3.246-2.273-3.266.008-.019.282-.332 2.085-2.38l2-2.274 1.567-1.782c.022-.028-.016-.03-.65-.03h-.674l-.3.342a871 871 0 0 1-1.782 2.025c-.067.075-.405.458-.75.852a100 100 0 0 1-.803.91c-.148.172-.299.344-.99 1.127-.304.343-.32.358-.345.327-.015-.019-.904-1.282-1.976-2.808L6.365 1.85H1.8zm1.782.91 8.078 11.294c.772 1.08 1.413 1.973 1.425 1.984.016.017.241.02 1.05.017l1.03-.004-2.694-3.766L7.796 5.75 5.722 2.852l-1.039-.004-1.039-.004z" clip-rule="evenodd"/>
+  </symbol>
+</svg>
+</file>
+
+<file path="frontend/README.md">
+# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+</file>
+
+<file path="frontend/src/App.css">
+.counter {
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+  margin-bottom: 24px;
+
+  &:hover {
+    border-color: var(--accent-border);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+.hero {
+  position: relative;
+
+  .base,
+  .framework,
+  .vite {
+    inset-inline: 0;
+    margin: 0 auto;
+  }
+
+  .base {
+    width: 170px;
+    position: relative;
+    z-index: 0;
+  }
+
+  .framework,
+  .vite {
+    position: absolute;
+  }
+
+  .framework {
+    z-index: 1;
+    top: 34px;
+    height: 28px;
+    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
+      scale(1.4);
+  }
+
+  .vite {
+    z-index: 0;
+    top: 107px;
+    height: 26px;
+    width: auto;
+    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
+      scale(0.8);
+  }
+}
+
+#center {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  place-content: center;
+  place-items: center;
+  flex-grow: 1;
+
+  @media (max-width: 1024px) {
+    padding: 32px 20px 24px;
+    gap: 18px;
+  }
+}
+
+#next-steps {
+  display: flex;
+  border-top: 1px solid var(--border);
+  text-align: left;
+
+  & > div {
+    flex: 1 1 0;
+    padding: 32px;
+    @media (max-width: 1024px) {
+      padding: 24px 20px;
+    }
+  }
+
+  .icon {
+    margin-bottom: 16px;
+    width: 22px;
+    height: 22px;
+  }
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+#docs {
+  border-right: 1px solid var(--border);
+
+  @media (max-width: 1024px) {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+#next-steps ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 8px;
+  margin: 32px 0 0;
+
+  .logo {
+    height: 18px;
+  }
+
+  a {
+    color: var(--text-h);
+    font-size: 16px;
+    border-radius: 6px;
+    background: var(--social-bg);
+    display: flex;
+    padding: 6px 12px;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: box-shadow 0.3s;
+
+    &:hover {
+      box-shadow: var(--shadow);
+    }
+    .button-icon {
+      height: 18px;
+      width: 18px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    li {
+      flex: 1 1 calc(50% - 8px);
+    }
+
+    a {
+      width: 100%;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+  }
+}
+
+#spacer {
+  height: 88px;
+  border-top: 1px solid var(--border);
+  @media (max-width: 1024px) {
+    height: 48px;
+  }
+}
+
+.ticks {
+  position: relative;
+  width: 100%;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: -4.5px;
+    border: 5px solid transparent;
+  }
+
+  &::before {
+    left: 0;
+    border-left-color: var(--border);
+  }
+  &::after {
+    right: 0;
+    border-right-color: var(--border);
+  }
+}
+</file>
+
+<file path="frontend/src/assets/react.svg">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="35.93" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 228"><path fill="#00D8FF" d="M210.483 73.824a171.49 171.49 0 0 0-8.24-2.597c.465-1.9.893-3.777 1.273-5.621c6.238-30.281 2.16-54.676-11.769-62.708c-13.355-7.7-35.196.329-57.254 19.526a171.23 171.23 0 0 0-6.375 5.848a155.866 155.866 0 0 0-4.241-3.917C100.759 3.829 77.587-4.822 63.673 3.233C50.33 10.957 46.379 33.89 51.995 62.588a170.974 170.974 0 0 0 1.892 8.48c-3.28.932-6.445 1.924-9.474 2.98C17.309 83.498 0 98.307 0 113.668c0 15.865 18.582 31.778 46.812 41.427a145.52 145.52 0 0 0 6.921 2.165a167.467 167.467 0 0 0-2.01 9.138c-5.354 28.2-1.173 50.591 12.134 58.266c13.744 7.926 36.812-.22 59.273-19.855a145.567 145.567 0 0 0 5.342-4.923a168.064 168.064 0 0 0 6.92 6.314c21.758 18.722 43.246 26.282 56.54 18.586c13.731-7.949 18.194-32.003 12.4-61.268a145.016 145.016 0 0 0-1.535-6.842c1.62-.48 3.21-.974 4.76-1.488c29.348-9.723 48.443-25.443 48.443-41.52c0-15.417-17.868-30.326-45.517-39.844Zm-6.365 70.984c-1.4.463-2.836.91-4.3 1.345c-3.24-10.257-7.612-21.163-12.963-32.432c5.106-11 9.31-21.767 12.459-31.957c2.619.758 5.16 1.557 7.61 2.4c23.69 8.156 38.14 20.213 38.14 29.504c0 9.896-15.606 22.743-40.946 31.14Zm-10.514 20.834c2.562 12.94 2.927 24.64 1.23 33.787c-1.524 8.219-4.59 13.698-8.382 15.893c-8.067 4.67-25.32-1.4-43.927-17.412a156.726 156.726 0 0 1-6.437-5.87c7.214-7.889 14.423-17.06 21.459-27.246c12.376-1.098 24.068-2.894 34.671-5.345a134.17 134.17 0 0 1 1.386 6.193ZM87.276 214.515c-7.882 2.783-14.16 2.863-17.955.675c-8.075-4.657-11.432-22.636-6.853-46.752a156.923 156.923 0 0 1 1.869-8.499c10.486 2.32 22.093 3.988 34.498 4.994c7.084 9.967 14.501 19.128 21.976 27.15a134.668 134.668 0 0 1-4.877 4.492c-9.933 8.682-19.886 14.842-28.658 17.94ZM50.35 144.747c-12.483-4.267-22.792-9.812-29.858-15.863c-6.35-5.437-9.555-10.836-9.555-15.216c0-9.322 13.897-21.212 37.076-29.293c2.813-.98 5.757-1.905 8.812-2.773c3.204 10.42 7.406 21.315 12.477 32.332c-5.137 11.18-9.399 22.249-12.634 32.792a134.718 134.718 0 0 1-6.318-1.979Zm12.378-84.26c-4.811-24.587-1.616-43.134 6.425-47.789c8.564-4.958 27.502 2.111 47.463 19.835a144.318 144.318 0 0 1 3.841 3.545c-7.438 7.987-14.787 17.08-21.808 26.988c-12.04 1.116-23.565 2.908-34.161 5.309a160.342 160.342 0 0 1-1.76-7.887Zm110.427 27.268a347.8 347.8 0 0 0-7.785-12.803c8.168 1.033 15.994 2.404 23.343 4.08c-2.206 7.072-4.956 14.465-8.193 22.045a381.151 381.151 0 0 0-7.365-13.322Zm-45.032-43.861c5.044 5.465 10.096 11.566 15.065 18.186a322.04 322.04 0 0 0-30.257-.006c4.974-6.559 10.069-12.652 15.192-18.18ZM82.802 87.83a323.167 323.167 0 0 0-7.227 13.238c-3.184-7.553-5.909-14.98-8.134-22.152c7.304-1.634 15.093-2.97 23.209-3.984a321.524 321.524 0 0 0-7.848 12.897Zm8.081 65.352c-8.385-.936-16.291-2.203-23.593-3.793c2.26-7.3 5.045-14.885 8.298-22.6a321.187 321.187 0 0 0 7.257 13.246c2.594 4.48 5.28 8.868 8.038 13.147Zm37.542 31.03c-5.184-5.592-10.354-11.779-15.403-18.433c4.902.192 9.899.29 14.978.29c5.218 0 10.376-.117 15.453-.343c-4.985 6.774-10.018 12.97-15.028 18.486Zm52.198-57.817c3.422 7.8 6.306 15.345 8.596 22.52c-7.422 1.694-15.436 3.058-23.88 4.071a382.417 382.417 0 0 0 7.859-13.026a347.403 347.403 0 0 0 7.425-13.565Zm-16.898 8.101a358.557 358.557 0 0 1-12.281 19.815a329.4 329.4 0 0 1-23.444.823c-7.967 0-15.716-.248-23.178-.732a310.202 310.202 0 0 1-12.513-19.846h.001a307.41 307.41 0 0 1-10.923-20.627a310.278 310.278 0 0 1 10.89-20.637l-.001.001a307.318 307.318 0 0 1 12.413-19.761c7.613-.576 15.42-.876 23.31-.876H128c7.926 0 15.743.303 23.354.883a329.357 329.357 0 0 1 12.335 19.695a358.489 358.489 0 0 1 11.036 20.54a329.472 329.472 0 0 1-11 20.722Zm22.56-122.124c8.572 4.944 11.906 24.881 6.52 51.026c-.344 1.668-.73 3.367-1.15 5.09c-10.622-2.452-22.155-4.275-34.23-5.408c-7.034-10.017-14.323-19.124-21.64-27.008a160.789 160.789 0 0 1 5.888-5.4c18.9-16.447 36.564-22.941 44.612-18.3ZM128 90.808c12.625 0 22.86 10.235 22.86 22.86s-10.235 22.86-22.86 22.86s-22.86-10.235-22.86-22.86s10.235-22.86 22.86-22.86Z"></path></svg>
+</file>
+
+<file path="frontend/src/assets/vite.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="77" height="47" fill="none" aria-labelledby="vite-logo-title" viewBox="0 0 77 47"><title id="vite-logo-title">Vite</title><style>.parenthesis{fill:#000}@media (prefers-color-scheme:dark){.parenthesis{fill:#fff}}</style><path fill="#9135ff" d="M40.151 45.71c-.663.844-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.493c-.92 0-1.457-1.04-.92-1.788l7.479-10.471c1.07-1.498 0-3.578-1.842-3.578H15.443c-.92 0-1.456-1.04-.92-1.788l9.696-13.576c.213-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.472c-1.07 1.497 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.087.89 1.83L40.153 45.712z"/><mask id="a" width="48" height="47" x="14" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M40.047 45.71c-.663.843-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.389c-.92 0-1.457-1.04-.92-1.788l7.479-10.472c1.07-1.497 0-3.578-1.842-3.578H15.34c-.92 0-1.456-1.04-.92-1.788l9.696-13.575c.213-.297.556-.474.92-.474H53.93c.92 0 1.456 1.04.92 1.788L47.37 13.03c-1.07 1.498 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.088.89 1.831L40.049 45.712z"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#eee6ff" rx="5.508" ry="14.704" transform="rotate(269.814 20.96 11.29)scale(-1 1)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#eee6ff" rx="10.399" ry="29.851" transform="rotate(89.814 -16.902 -8.275)scale(1 -1)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#8900ff" rx="5.508" ry="30.487" transform="rotate(89.814 -19.197 -7.127)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.928 4.177)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.738 5.52)scale(1 -1)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#eee6ff" rx="14.072" ry="22.078" transform="rotate(93.35 31.245 55.578)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx="14.592" cy="9.743" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(39.51 14.592 9.743)"/></g><g filter="url(#k)"><ellipse cx="61.728" cy="-5.321" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 61.728 -5.32)"/></g><g filter="url(#l)"><ellipse cx="55.618" cy="7.104" fill="#00c2ff" rx="5.971" ry="9.665" transform="rotate(37.892 55.618 7.104)"/></g><g filter="url(#m)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#n)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#o)"><ellipse cx="49.857" cy="30.678" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 49.857 30.678)"/></g><g filter="url(#p)"><ellipse cx="52.623" cy="33.171" fill="#00c2ff" rx="5.971" ry="15.297" transform="rotate(37.892 52.623 33.17)"/></g></g><path d="M6.919 0c-9.198 13.166-9.252 33.575 0 46.789h6.215c-9.25-13.214-9.196-33.623 0-46.789zm62.424 0h-6.215c9.198 13.166 9.252 33.575 0 46.789h6.215c9.25-13.214 9.196-33.623 0-46.789" class="parenthesis"/><defs><filter id="b" width="60.045" height="41.654" x="-5.564" y="16.92" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-40.407" y="-6.762" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-35.435" y="2.801" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-30.84" y="20.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-29.307" y="21.949" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="29.961" y="-17.13" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-13.43" y="-22.082" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="34.321" y="-37.644" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="38.847" y="-10.552" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="22.45" y="-1.645" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="32.919" y="11.36" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter></defs></svg>
+</file>
+
+<file path="frontend/src/components/ProtectedRoute.jsx">
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+
+export default function ProtectedRoute({ children, role }) {
+  const { user } = useAuth();
+
+  if (!user) return <Navigate to="/login" />;
+  if (role && user.role !== role) return <Navigate to="/login" />;
+
+  return children;
+}
+</file>
+
+<file path="frontend/src/context/AuthContext.jsx">
+import { createContext, useContext, useState } from "react";
+
+const AuthContext = createContext();
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem("academiq_user");
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  const login = (userData, token) => {
+    localStorage.setItem("academiq_token", token);
+    localStorage.setItem("academiq_user", JSON.stringify(userData));
+    setUser(userData);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("academiq_token");
+    localStorage.removeItem("academiq_user");
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  return useContext(AuthContext);
+}
+</file>
+
+<file path="frontend/src/main.jsx">
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App.jsx";
+
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
+</file>
+
+<file path="frontend/vercel.json">
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
+</file>
+
+<file path="requirements.txt">
+altair==6.0.0
+annotated-doc==0.0.4
+annotated-types==0.7.0
+anyio==4.13.0
+attrs==26.1.0
+bcrypt==4.0.1
+beautifulsoup4==4.14.3
+blinker==1.9.0
+blis==1.3.3
+cachetools==7.0.5
+catalogue==2.0.10
+certifi==2026.2.25
+cffi==2.0.0
+charset-normalizer==3.4.7
+click==8.3.2
+cloudinary==1.44.2
+cloudpathlib==0.23.0
+colorama==0.4.6
+confection==1.3.3
+cryptography==46.0.7
+cymem==2.0.13
+distro==1.9.0
+dnspython==2.8.0
+ecdsa==0.19.2
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl#sha256=1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85
+fastapi==0.136.1
+filelock==3.25.2
+Flask==3.1.3
+flask-cors==6.0.2
+fsspec==2026.3.0
+gitdb==4.0.12
+GitPython==3.1.46
+google-ai-generativelanguage==0.6.15
+google-api-core==2.25.2
+google-api-python-client==2.194.0
+google-auth==2.49.2
+google-auth-httplib2==0.3.1
+google-genai==1.73.1
+googleapis-common-protos==1.74.0
+groq==1.2.0
+grpcio==1.80.0
+grpcio-status==1.71.2
+h11==0.16.0
+hf-xet==1.4.3
+httpcore==1.0.9
+httplib2==0.31.2
+httpx==0.28.1
+huggingface_hub==1.10.1
+idna==3.11
+itsdangerous==2.2.0
+Jinja2==3.1.6
+joblib==1.5.3
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+markdown-it-py==4.0.0
+MarkupSafe==3.0.3
+mdurl==0.1.2
+mpmath==1.3.0
+murmurhash==1.0.15
+narwhals==2.19.0
+networkx==3.6.1
+nltk==3.9.4
+numpy==2.4.4
+packaging==26.0
+pandas==3.0.2
+passlib==1.7.4
+pdfminer.six==20251230
+pdfplumber==0.11.9
+pillow==12.2.0
+preshed==3.0.13
+proto-plus==1.27.2
+protobuf==5.29.6
+pyarrow==23.0.1
+pyasn1==0.6.3
+pyasn1_modules==0.4.2
+pycparser==3.0
+pydantic==2.13.2
+pydantic_core==2.46.2
+pydeck==0.9.2
+Pygments==2.20.0
+pymongo==4.17.0
+pyparsing==3.3.2
+PyPDF2==3.0.1
+pypdfium2==5.7.1
+python-dateutil==2.9.0.post0
+python-dotenv==1.2.2
+python-jose==3.5.0
+python-multipart==0.0.26
+PyYAML==6.0.3
+referencing==0.37.0
+regex==2026.4.4
+requests==2.33.1
+rich==14.3.4
+rpds-py==0.30.0
+rsa==4.9.1
+safetensors==0.7.0
+sentencepiece==0.2.1
+setuptools==81.0.0
+shellingham==1.5.4
+six==1.17.0
+smart_open==7.6.0
+smmap==5.0.3
+sniffio==1.3.1
+soupsieve==2.8.3
+spacy==3.8.13
+spacy-legacy==3.0.12
+spacy-loggers==1.0.5
+srsly==2.5.3
+starlette==1.0.0
+streamlit==1.56.0
+sympy==1.14.0
+tenacity==9.1.4
+thinc==8.3.13
+tiktoken==0.12.0
+tokenizers==0.22.2
+toml==0.10.2
+torch==2.11.0
+tornado==6.5.5
+tqdm==4.67.3
+transformers==5.5.3
+typer==0.24.1
+typing-inspection==0.4.2
+typing_extensions==4.15.0
+tzdata==2026.1
+uritemplate==4.2.0
+urllib3==2.6.3
+uvicorn==0.46.0
+wasabi==1.1.3
+watchdog==6.0.0
+weasel==1.0.0
+websockets==16.0
+Werkzeug==3.1.8
+wrapt==2.1.2
+</file>
+
+<file path="backend/models/user.py">
+from pydantic import BaseModel
+from typing import Optional
+
+class UserRegister(BaseModel):
+    name: str
+    email: str
+    password: str
+    role: str
+    college_id: Optional[str] = None
+    admin_code: Optional[str] = None
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+    role: str
+</file>
+
+<file path="backend/routes/ai.py">
+from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi.responses import StreamingResponse
+from groq import Groq
+from dotenv import load_dotenv
+import os
+import pdfplumber
+import io
+
+load_dotenv()
+
+router = APIRouter()
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+def extract_text_from_pdf(file_bytes):
+    text = ""
+    try:
+        with pdfplumber.open(io.BytesIO(file_bytes)) as pdf:
+            for page in pdf.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"PDF reading failed: {str(e)}")
+    return text
+
+@router.post("/generate")
+async def generate_questions(
+    syllabus_pdf: UploadFile = File(...),
+    past_papers_pdf: UploadFile = File(None),
+):
+    syllabus_bytes = await syllabus_pdf.read()
+    syllabus_text = extract_text_from_pdf(syllabus_bytes)
+
+    if not syllabus_text.strip():
+        raise HTTPException(status_code=400, detail="Could not extract text from syllabus PDF. Please use a text-based PDF, not a scanned image.")
+
+    past_papers_text = ""
+    if past_papers_pdf and past_papers_pdf.filename:
+        past_bytes = await past_papers_pdf.read()
+        past_papers_text = extract_text_from_pdf(past_bytes)
+
+    prompt = f"""You are an expert academic question paper generator for college exams.
+
+You have been given:
+1. SYLLABUS: The topics covered in the course
+2. PAST PAPERS: Previous year exam questions
+
+SYLLABUS:
+{syllabus_text[:3000]}
+
+PAST PAPERS CONTENT:
+{past_papers_text[:3000]}
+
+Based on the syllabus topics and patterns from past papers, generate a practice exam paper with:
+- 5 Short Answer Questions (2 marks each)
+- 5 Medium Questions (5 marks each)
+- 3 Long Answer Questions (10 marks each)
+
+Focus on topics that appear frequently in past papers.
+Format the output clearly with section headings and question numbers.
+Also mention the probability/importance of each topic at the end."""
+
+    # Streaming generator function
+    def stream_response():
+        try:
+            stream = client.chat.completions.create(
+                model="llama-3.1-8b-instant",   # FIX: 70b → 8b, ~5x faster
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=1500,                 # FIX: 2000 → 1500, enough for full paper
+                stream=True,                     # FIX: streaming on
+            )
+            for chunk in stream:
+                delta = chunk.choices[0].delta.content
+                if delta:
+                    yield delta
+        except Exception as e:
+            yield f"\n\nError: {str(e)}"
+
+    return StreamingResponse(stream_response(), media_type="text/plain")
+</file>
+
+<file path="frontend/package.json">
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-router-dom": "^6.8.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^10.2.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.5.0",
+    "vite": "^8.0.10"
+  }
+}
+</file>
+
+<file path="frontend/src/index.css">
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+</file>
+
+<file path="frontend/src/pages/LandingPage.jsx">
+import { useNavigate } from "react-router-dom";
+
+export default function LandingPage() {
+  const navigate = useNavigate();
+
+  const COLLEGE_LOGO = "https://res.cloudinary.com/dshlu0r4n/image/upload/v1777613826/Screenshot_2026-05-01_105739_ffc3be.png";
+  const MY_PHOTO = "https://res.cloudinary.com/dshlu0r4n/image/upload/v1777604161/1_qpjnrg.jpg";
+
+  return (
+    <div style={{fontFamily:"'DM Sans', sans-serif", background:"#fff", overflowX:"hidden"}}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
+        * { margin:0; padding:0; box-sizing:border-box; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+        @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-10px); } }
+        @keyframes shimmer { 0% { background-position:−200% center; } 100% { background-position:200% center; } }
+        .hero-btn-primary {
+          background:linear-gradient(135deg,#1D9E75,#16875f);
+          color:white; border:none; padding:16px 36px; border-radius:50px;
+          font-size:16px; font-weight:600; cursor:pointer;
+          font-family:'DM Sans',sans-serif; transition:all 0.3s ease;
+          box-shadow:0 8px 25px rgba(29,158,117,0.4);
+        }
+        .hero-btn-primary:hover { transform:translateY(-3px); box-shadow:0 12px 35px rgba(29,158,117,0.5); }
+        .hero-btn-secondary {
+          background:transparent; color:white;
+          border:2px solid rgba(255,255,255,0.5); padding:16px 36px;
+          border-radius:50px; font-size:16px; font-weight:600;
+          cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.3s ease;
+        }
+        .hero-btn-secondary:hover { background:rgba(255,255,255,0.1); border-color:white; transform:translateY(-3px); }
+        .feature-card {
+          background:white; border-radius:20px; padding:32px 28px;
+          box-shadow:0 4px 30px rgba(15,42,74,0.08);
+          border:1px solid rgba(15,42,74,0.06);
+          transition:all 0.3s ease; text-align:center;
+        }
+        .feature-card:hover { transform:translateY(-8px); box-shadow:0 20px 50px rgba(15,42,74,0.15); }
+        .nav-link {
+          color:rgba(255,255,255,0.8); text-decoration:none;
+          font-size:14px; font-weight:500; transition:color 0.2s;
+          cursor:pointer; background:none; border:none;
+        }
+        .nav-link:hover { color:white; }
+        .stat-item { text-align:center; }
+        .section-tag {
+          display:inline-block; background:rgba(29,158,117,0.1);
+          color:#1D9E75; padding:6px 16px; border-radius:50px;
+          font-size:13px; font-weight:600; margin-bottom:16px;
+          border:1px solid rgba(29,158,117,0.2);
+        }
+      `}</style>
+
+      {/* NAVBAR */}
+      <nav style={{
+        position:"fixed", top:0, left:0, right:0, zIndex:1000,
+        background:"rgba(15,42,74,0.95)", backdropFilter:"blur(20px)",
+        padding:"0 5%", height:"70px",
+        display:"flex", alignItems:"center", justifyContent:"space-between",
+        borderBottom:"1px solid rgba(255,255,255,0.1)"
+      }}>
+        <div style={{display:"flex", alignItems:"center", gap:"12px"}}>
+          <img src={COLLEGE_LOGO} alt="logo" style={{width:"42px", height:"42px", borderRadius:"8px", objectFit:"cover"}} />
+          <div>
+            <div style={{color:"white", fontWeight:"700", fontSize:"16px", lineHeight:"1.2"}}>AcademiQ</div>
+            <div style={{color:"rgba(255,255,255,0.5)", fontSize:"11px"}}>SGTB Khalsa College</div>
+          </div>
+        </div>
+        <div style={{display:"flex", alignItems:"center", gap:"32px"}}>
+          <button className="nav-link" onClick={() => document.getElementById("features").scrollIntoView({behavior:"smooth"})}>Features</button>
+          <button className="nav-link" onClick={() => document.getElementById("about").scrollIntoView({behavior:"smooth"})}>About</button>
+          <button className="nav-link" onClick={() => document.getElementById("developer").scrollIntoView({behavior:"smooth"})}>Developer</button>
+          <button onClick={() => navigate("/login")} style={{
+            background:"#1D9E75", color:"white", border:"none",
+            padding:"10px 24px", borderRadius:"50px", fontSize:"14px",
+            fontWeight:"600", cursor:"pointer", fontFamily:"'DM Sans',sans-serif",
+            transition:"all 0.3s ease"
+          }}>Login →</button>
+        </div>
+      </nav>
+
+      {/* HERO SECTION */}
+      <section style={{
+        minHeight:"100vh", paddingTop:"70px",
+        background:"linear-gradient(135deg, #0F2A4A 0%, #1a3d6b 40%, #0F2A4A 100%)",
+        display:"flex", alignItems:"center", justifyContent:"center",
+        position:"relative", overflow:"hidden"
+      }}>
+        {/* Background decorations */}
+        <div style={{position:"absolute", top:"10%", right:"5%", width:"400px", height:"400px", background:"rgba(29,158,117,0.08)", borderRadius:"50%", filter:"blur(80px)"}} />
+        <div style={{position:"absolute", bottom:"10%", left:"5%", width:"300px", height:"300px", background:"rgba(45,95,160,0.1)", borderRadius:"50%", filter:"blur(60px)"}} />
+
+        <div style={{maxWidth:"1100px", margin:"0 auto", padding:"60px 5%", display:"grid", gridTemplateColumns:"1fr 1fr", gap:"60px", alignItems:"center"}}>
+          <div style={{animation:"fadeUp 0.8s ease"}}>
+            <div className="section-tag">🎓 NAAC Grade A++ Certified</div>
+            <h1 style={{
+              fontFamily:"'Playfair Display',serif",
+              fontSize:"clamp(36px,5vw,58px)", fontWeight:"800",
+              color:"white", lineHeight:"1.15", marginBottom:"20px"
+            }}>
+              Your Academic Edge,<br/>
+              <span style={{
+                background:"linear-gradient(135deg,#1D9E75,#4ecba0)",
+                WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent"
+              }}>Powered by AI</span>
+            </h1>
+            <p style={{color:"rgba(255,255,255,0.7)", fontSize:"17px", lineHeight:"1.7", marginBottom:"36px", maxWidth:"480px"}}>
+              Access previous year question papers, get AI-generated practice papers, and ace your exams at Sri Guru Teg Bahadur Khalsa College, Sri Anandpur Sahib.
+            </p>
+            <div style={{display:"flex", gap:"16px", flexWrap:"wrap"}}>
+              <button className="hero-btn-primary" onClick={() => navigate("/register")}>
+                Get Started Free
+              </button>
+              <button className="hero-btn-secondary" onClick={() => navigate("/login")}>
+                Sign In →
+              </button>
+            </div>
+
+            {/* Stats */}
+            <div style={{display:"flex", gap:"40px", marginTop:"48px", paddingTop:"32px", borderTop:"1px solid rgba(255,255,255,0.1)"}}>
+              {[
+                {num:"10+", label:"Years of Papers"},
+                {num:"AI", label:"Question Generator"},
+                {num:"24/7", label:"Access Anywhere"},
+              ].map((s,i) => (
+                <div key={i} className="stat-item">
+                  <div style={{fontSize:"28px", fontWeight:"800", color:"#1D9E75"}}>{s.num}</div>
+                  <div style={{fontSize:"13px", color:"rgba(255,255,255,0.5)", marginTop:"4px"}}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Hero Right — College Logo */}
+          <div style={{display:"flex", justifyContent:"center", animation:"float 4s ease-in-out infinite"}}>
+            <div style={{
+              position:"relative", width:"320px", height:"320px",
+              display:"flex", alignItems:"center", justifyContent:"center"
+            }}>
+              <div style={{
+                position:"absolute", inset:0, borderRadius:"50%",
+                background:"linear-gradient(135deg,rgba(29,158,117,0.2),rgba(45,95,160,0.2))",
+                filter:"blur(20px)"
+              }} />
+              <img src={COLLEGE_LOGO} alt="SGTB Khalsa College"
+                style={{width:"280px", height:"280px", borderRadius:"50%", objectFit:"cover",
+                  border:"4px solid rgba(29,158,117,0.4)",
+                  boxShadow:"0 20px 60px rgba(0,0,0,0.4)"}} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FEATURES SECTION */}
+      <section id="features" style={{padding:"100px 5%", background:"#F4F7FB"}}>
+        <div style={{maxWidth:"1100px", margin:"0 auto"}}>
+          <div style={{textAlign:"center", marginBottom:"60px"}}>
+            <div className="section-tag">✨ Features</div>
+            <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"clamp(28px,4vw,42px)", fontWeight:"700", color:"#0F2A4A", marginBottom:"16px"}}>
+              Everything You Need to Excel
+            </h2>
+            <p style={{color:"#4A6080", fontSize:"16px", maxWidth:"500px", margin:"0 auto"}}>
+              Designed specifically for students of SGTB Khalsa College
+            </p>
+          </div>
+
+          <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(280px, 1fr))", gap:"24px"}}>
+            {[
+              {icon:"📚", title:"Question Paper Repository", desc:"Access last 10 years of previous year question papers — filtered by department, class, semester and subject.", color:"#1D9E75"},
+              {icon:"🤖", title:"AI Practice Paper Generator", desc:"Upload your syllabus PDF and get AI-generated practice questions based on exam patterns and topic frequency.", color:"#2D5FA0"},
+              {icon:"🔍", title:"Smart Filter System", desc:"Find exactly what you need with department, class, semester and subject filters — results in seconds.", color:"#8B5CF6"},
+              {icon:"📱", title:"Mobile Friendly", desc:"Access AcademiQ from any device — desktop, tablet or mobile. Study anytime, anywhere.", color:"#F59E0B"},
+              {icon:"🔒", title:"Secure & Role-Based", desc:"Separate admin and student portals with JWT authentication. Your data is always safe.", color:"#EF4444"},
+              {icon:"⭐", title:"AI Feedback System", desc:"Rate and review AI-generated papers to help improve question quality for everyone.", color:"#10B981"},
+            ].map((f,i) => (
+              <div key={i} className="feature-card" style={{animationDelay:`${i*0.1}s`}}>
+                <div style={{fontSize:"40px", marginBottom:"16px"}}>{f.icon}</div>
+                <h3 style={{fontFamily:"'Playfair Display',serif", fontSize:"18px", fontWeight:"700", color:"#0F2A4A", marginBottom:"12px"}}>{f.title}</h3>
+                <p style={{color:"#4A6080", fontSize:"14px", lineHeight:"1.7"}}>{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ABOUT COLLEGE SECTION */}
+      <section id="about" style={{padding:"100px 5%", background:"white"}}>
+        <div style={{maxWidth:"1100px", margin:"0 auto", display:"grid", gridTemplateColumns:"1fr 1fr", gap:"80px", alignItems:"center"}}>
+          <div>
+            <div className="section-tag">🏛️ About</div>
+            <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"clamp(28px,4vw,40px)", fontWeight:"700", color:"#0F2A4A", marginBottom:"20px", lineHeight:"1.2"}}>
+              Sri Guru Teg Bahadur Khalsa College
+            </h2>
+            <p style={{color:"#4A6080", fontSize:"15px", lineHeight:"1.8", marginBottom:"16px"}}>
+              Sri Guru Teg Bahadur Khalsa College, Sri Anandpur Sahib is a premier institution of higher education in Punjab, India. Established with a vision to provide quality education, the college has grown into a center of academic excellence.
+            </p>
+            <p style={{color:"#4A6080", fontSize:"15px", lineHeight:"1.8", marginBottom:"32px"}}>
+              As an Autonomous Body accredited with <strong style={{color:"#1D9E75"}}>NAAC Grade A++</strong>, the college upholds the highest standards of academic quality and innovation.
+            </p>
+
+            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px", marginBottom:"32px"}}>
+              {[
+                {icon:"🏆", label:"NAAC Grade A++"},
+                {icon:"🎓", label:"Autonomous Body"},
+                {icon:"📍", label:"Sri Anandpur Sahib"},
+                {icon:"🌐", label:"sgtbcollege.org.in"},
+              ].map((item,i) => (
+                <div key={i} style={{display:"flex", alignItems:"center", gap:"10px", padding:"12px 16px", background:"#F4F7FB", borderRadius:"10px"}}>
+                  <span style={{fontSize:"20px"}}>{item.icon}</span>
+                  <span style={{fontSize:"13px", fontWeight:"600", color:"#0F2A4A"}}>{item.label}</span>
+                </div>
+              ))}
+            </div>
+
+            <a href="https://www.sgtbcollege.org.in/" target="_blank" rel="noreferrer"
+              style={{display:"inline-flex", alignItems:"center", gap:"8px", background:"#0F2A4A", color:"white", padding:"12px 24px", borderRadius:"50px", textDecoration:"none", fontSize:"14px", fontWeight:"600"}}>
+              Visit College Website →
+            </a>
+          </div>
+
+          <div style={{display:"flex", justifyContent:"center"}}>
+            <div style={{position:"relative"}}>
+              <div style={{
+                width:"300px", height:"300px", borderRadius:"30px",
+                background:"linear-gradient(135deg,#0F2A4A,#1D9E75)",
+                display:"flex", alignItems:"center", justifyContent:"center",
+                boxShadow:"0 30px 80px rgba(15,42,74,0.3)"
+              }}>
+                <img src={COLLEGE_LOGO} alt="College Logo"
+                  style={{width:"240px", height:"240px", objectFit:"contain"}} />
+              </div>
+              <div style={{
+                position:"absolute", bottom:"-20px", right:"-20px",
+                background:"#1D9E75", color:"white", padding:"16px 20px",
+                borderRadius:"16px", boxShadow:"0 10px 30px rgba(29,158,117,0.4)"
+              }}>
+                <div style={{fontSize:"24px", fontWeight:"800"}}>A++</div>
+                <div style={{fontSize:"11px", opacity:0.9}}>NAAC Grade</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section style={{padding:"100px 5%", background:"#F4F7FB"}}>
+        <div style={{maxWidth:"900px", margin:"0 auto"}}>
+          <div style={{textAlign:"center", marginBottom:"60px"}}>
+            <div className="section-tag">🚀 How It Works</div>
+            <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"clamp(28px,4vw,42px)", fontWeight:"700", color:"#0F2A4A"}}>
+              Get Started in 3 Simple Steps
+            </h2>
+          </div>
+          <div style={{display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"32px"}}>
+            {[
+              {step:"01", title:"Register", desc:"Create your student account and wait for admin approval.", icon:"📝"},
+              {step:"02", title:"Browse Papers", desc:"Filter by department, class, semester and find your papers.", icon:"🔍"},
+              {step:"03", title:"Generate with AI", desc:"Upload syllabus and get AI-powered practice questions.", icon:"🤖"},
+            ].map((s,i) => (
+              <div key={i} style={{textAlign:"center", padding:"32px 20px", background:"white", borderRadius:"20px", boxShadow:"0 4px 20px rgba(0,0,0,0.06)"}}>
+                <div style={{fontSize:"12px", fontWeight:"800", color:"#1D9E75", letterSpacing:"2px", marginBottom:"12px"}}>{s.step}</div>
+                <div style={{fontSize:"36px", marginBottom:"16px"}}>{s.icon}</div>
+                <h3 style={{fontFamily:"'Playfair Display',serif", fontSize:"18px", fontWeight:"700", color:"#0F2A4A", marginBottom:"10px"}}>{s.title}</h3>
+                <p style={{color:"#4A6080", fontSize:"14px", lineHeight:"1.6"}}>{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* DEVELOPER SECTION */}
+      <section id="developer" style={{padding:"100px 5%", background:"white"}}>
+        <div style={{maxWidth:"800px", margin:"0 auto", textAlign:"center"}}>
+          <div className="section-tag">👨‍💻 Developer</div>
+          <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"clamp(28px,4vw,42px)", fontWeight:"700", color:"#0F2A4A", marginBottom:"48px"}}>
+            Meet the Developer
+          </h2>
+
+          <div style={{
+            background:"linear-gradient(135deg,#0F2A4A,#1a3d6b)",
+            borderRadius:"30px", padding:"48px 40px",
+            boxShadow:"0 30px 80px rgba(15,42,74,0.2)",
+            display:"flex", flexDirection:"column", alignItems:"center", gap:"24px"
+          }}>
+            <div style={{position:"relative"}}>
+              <img src={MY_PHOTO} alt="Happy Reehal"
+                style={{width:"130px", height:"130px", borderRadius:"50%", objectFit:"cover",
+                  border:"4px solid #1D9E75", boxShadow:"0 10px 40px rgba(0,0,0,0.3)"}} />
+              <div style={{
+                position:"absolute", bottom:"4px", right:"4px",
+                width:"24px", height:"24px", background:"#1D9E75",
+                borderRadius:"50%", border:"2px solid white",
+                display:"flex", alignItems:"center", justifyContent:"center",
+                fontSize:"12px"
+              }}>✓</div>
+            </div>
+
+            <div>
+              <h3 style={{fontFamily:"'Playfair Display',serif", fontSize:"28px", fontWeight:"700", color:"white", marginBottom:"8px"}}>Happy Reehal</h3>
+              <p style={{color:"#1D9E75", fontSize:"15px", fontWeight:"600", marginBottom:"6px"}}>M.Sc — Artificial Intelligence & Data Science</p>
+              <p style={{color:"rgba(255,255,255,0.6)", fontSize:"14px", marginBottom:"4px"}}>P.G Department of Computer Science and Applications</p>
+              <p style={{color:"rgba(255,255,255,0.5)", fontSize:"13px"}}>Sri Guru Teg Bahadur Khalsa College • 2024–2026</p>
+            </div>
+
+            <p style={{color:"rgba(255,255,255,0.7)", fontSize:"15px", lineHeight:"1.7", maxWidth:"500px"}}>
+              Passionate about AI and building tools that make students' lives easier. AcademiQ is built with React, FastAPI, MongoDB, and powered by Groq's LLaMA AI model.
+            </p>
+
+            <div style={{display:"flex", gap:"16px"}}>
+              <a href="https://github.com/happyreehal" target="_blank" rel="noreferrer"
+                style={{display:"flex", alignItems:"center", gap:"8px", background:"rgba(255,255,255,0.1)", color:"white", padding:"12px 24px", borderRadius:"50px", textDecoration:"none", fontSize:"14px", fontWeight:"600", border:"1px solid rgba(255,255,255,0.2)", transition:"all 0.3s"}}>
+                GitHub
+              </a>
+              <a href="https://www.linkedin.com/in/happy-reehal-7225a4315" target="_blank" rel="noreferrer"
+                style={{display:"flex", alignItems:"center", gap:"8px", background:"#0A66C2", color:"white", padding:"12px 24px", borderRadius:"50px", textDecoration:"none", fontSize:"14px", fontWeight:"600", transition:"all 0.3s"}}>
+                LinkedIn
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA SECTION */}
+      <section style={{
+        padding:"100px 5%",
+        background:"linear-gradient(135deg,#0F2A4A,#1a3d6b)",
+        textAlign:"center"
+      }}>
+        <div style={{maxWidth:"600px", margin:"0 auto"}}>
+          <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"clamp(28px,4vw,42px)", fontWeight:"700", color:"white", marginBottom:"20px"}}>
+            Ready to Ace Your Exams?
+          </h2>
+          <p style={{color:"rgba(255,255,255,0.7)", fontSize:"16px", marginBottom:"36px", lineHeight:"1.7"}}>
+            Join AcademiQ today and get access to years of question papers and AI-powered practice tests.
+          </p>
+          <div style={{display:"flex", gap:"16px", justifyContent:"center", flexWrap:"wrap"}}>
+            <button className="hero-btn-primary" onClick={() => navigate("/register")}>
+              Register Now — It's Free
+            </button>
+            <button className="hero-btn-secondary" onClick={() => navigate("/login")}>
+              Sign In
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer style={{background:"#060f1a", padding:"40px 5%", textAlign:"center"}}>
+        <div style={{display:"flex", alignItems:"center", justifyContent:"center", gap:"10px", marginBottom:"16px"}}>
+          <img src={COLLEGE_LOGO} alt="logo" style={{width:"32px", height:"32px", borderRadius:"6px", objectFit:"cover"}} />
+          <span style={{color:"white", fontWeight:"700", fontSize:"16px"}}>AcademiQ</span>
+        </div>
+        <p style={{color:"rgba(255,255,255,0.4)", fontSize:"13px", marginBottom:"8px"}}>
+          Sri Guru Teg Bahadur Khalsa College, Sri Anandpur Sahib (An Autonomous Body) • NAAC Grade A++
+        </p>
+        <p style={{color:"rgba(255,255,255,0.3)", fontSize:"12px"}}>
+          Developed by Happy Reehal • M.Sc AI & Data Science • 2024–2026
+        </p>
+      </footer>
+    </div>
+  );
+}
+</file>
+
+<file path="frontend/vite.config.js">
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [
+    react(),
+  ],
+})
+</file>
+
+<file path="package.json">
+{
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0",
+    "axios": "^1.15.2",
+    "react-router-dom": "^7.14.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.2.4",
+    "tailwindcss": "^4.2.4"
+  }
+}
+</file>
+
+<file path=".gitignore">
+# Python
+__pycache__/
+*.pyc
+*.pyo
+backend/.env
+venv/
+
+# Node
+node_modules/
+dist/
+frontend/.env.local
+frontend/node_modules/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+</file>
+
+<file path="backend/routes/auth.py">
+from fastapi import APIRouter, HTTPException
+from pymongo import MongoClient
+from passlib.context import CryptContext
+from models.user import UserRegister, UserLogin
+from utils.jwt_handler import create_token
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+router = APIRouter()
+
+MONGO_URI = os.getenv("MONGO_URI")
+client = MongoClient(MONGO_URI)
+db = client["academiq"]
+users_col = db["users"]
+settings_col = db["settings"]
+
+pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+SUPER_ADMIN_EMAIL = "happyreehal584@gmail.com"
+
+def get_admin_secret():
+    doc = settings_col.find_one({"_id": "main"})
+    if doc and "admin_secret" in doc:
+        return doc["admin_secret"]
+    return os.getenv("ADMIN_SECRET", "academiq_admin_2026")
+
+@router.post("/register")
+def register(user: UserRegister):
+    if user.role == "superadmin":
+        raise HTTPException(status_code=403, detail="Cannot register as superadmin")
+
+    if user.role == "admin":
+        if not user.admin_code:
+            raise HTTPException(status_code=403, detail="Admin secret code required")
+        if user.admin_code != get_admin_secret():
+            raise HTTPException(status_code=403, detail="Invalid admin secret code")
+
+    if users_col.find_one({"email": user.email, "role": user.role}):
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    hashed_pw = pwd_ctx.hash(user.password)
+
+    if user.email == SUPER_ADMIN_EMAIL and user.role == "admin":
+        status = "active"
+    elif user.role == "admin":
+        status = "pending"
+    else:
+        status = "pending"
+
+    user_doc = {
+        "name": user.name,
+        "email": user.email,
+        "password": hashed_pw,
+        "role": user.role,
+        "college_id": user.college_id,
+        "status": status,
+    }
+    users_col.insert_one(user_doc)
+
+    if status == "pending":
+        return {"message": "Registration successful. Please wait for approval."}
+    return {"message": "Registration successful"}
+
+
+@router.post("/login")
+def login(user: UserLogin):
+    db_user = users_col.find_one({"email": user.email, "role": user.role})
+
+    if not db_user:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    if not pwd_ctx.verify(user.password, db_user["password"]):
+        raise HTTPException(status_code=401, detail="Incorrect password")
+
+    status = db_user.get("status", "active")
+    if status == "pending":
+        raise HTTPException(status_code=403, detail="Account pending approval. Please wait for admin to approve.")
+    if status == "rejected":
+        raise HTTPException(status_code=403, detail="Account rejected. Contact admin.")
+
+    is_super = user.email == SUPER_ADMIN_EMAIL and user.role == "admin"
+
+    token = create_token({
+        "email": db_user["email"],
+        "role": db_user["role"],
+        "name": db_user["name"],
+        "is_super": is_super,
+    })
+
+    return {
+        "token": token,
+        "role": db_user["role"],
+        "name": db_user["name"],
+        "is_super": is_super,
+    }
+</file>
+
+<file path="frontend/src/App.jsx">
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import LandingPage from "./pages/LandingPage";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import AdminDashboard from "./pages/AdminDashboard";
+import StudentDashboard from "./pages/StudentDashboard";
+import AIGenerator from "./pages/AIGenerator";
+
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/admin" element={
+            <ProtectedRoute role="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/student" element={
+            <ProtectedRoute role="student">
+              <StudentDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/ai-generator" element={
+            <ProtectedRoute role="student">
+              <AIGenerator />
+            </ProtectedRoute>
+          } />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
+
+export default App;
+</file>
+
+<file path="backend/main.py">
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+from routes.auth import router as auth_router
+from routes.papers import router as papers_router
+from routes.ai import router as ai_router
+from routes.settings import router as settings_router
+
+load_dotenv()
+
+app = FastAPI(title="AcademiQ API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://academiq-sigma.vercel.app",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(auth_router, prefix="/auth", tags=["Auth"])
+app.include_router(papers_router, prefix="/papers", tags=["Papers"])
+app.include_router(ai_router, prefix="/ai", tags=["AI"])
+app.include_router(settings_router, prefix="/settings", tags=["Settings"])
+
+@app.get("/")
+def root():
+    return {"message": "AcademiQ API is running"}
+</file>
+
+<file path="frontend/src/pages/AIGenerator.jsx">
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
+const API = "https://academiq-jenb.onrender.com";
+
+export default function AIGenerator() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const [syllabusPdf, setSyllabusPdf] = useState(null);
+  const [pastPapersPdf, setPastPapersPdf] = useState(null);
+  const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [feedback, setFeedback] = useState(null);
+  const [comment, setComment] = useState("");
+  const [feedbackSent, setFeedbackSent] = useState(false);
+
+  const handleGenerate = async () => {
+    if (!syllabusPdf) { setError("Please upload syllabus PDF"); return; }
+    setLoading(true);
+    setError("");
+    setResult("");
+    setFeedback(null);
+    setFeedbackSent(false);
+
+    try {
+      const formData = new FormData();
+      formData.append("syllabus_pdf", syllabusPdf);
+      if (pastPapersPdf) formData.append("past_papers_pdf", pastPapersPdf);
+
+      // FIX: fetch with streaming instead of axios
+      const res = await fetch(`${API}/ai/generate`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.detail || "Generation failed");
+      }
+
+      // FIX: read stream chunk by chunk — words appear as they generate
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        setResult(prev => prev + chunk);  // append each chunk as it arrives
+      }
+
+    } catch (err) {
+      setError(err.message || "Generation failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{minHeight:"100vh", background:"#F4F7FB", fontFamily:"'DM Sans',sans-serif"}}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+      `}</style>
+
+      {/* Navbar */}
+      <nav style={{background:"#0F2A4A", height:"64px", padding:"0 32px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100}}>
+        <div style={{display:"flex", alignItems:"center", gap:"10px"}}>
+          <div style={{width:"36px", height:"36px", background:"#1D9E75", borderRadius:"8px", display:"flex", alignItems:"center", justifyContent:"center", color:"white", fontWeight:"700", fontSize:"18px"}}>Q</div>
+          <span style={{color:"white", fontWeight:"600", fontSize:"15px"}}>AcademiQ <span style={{color:"#1D9E75"}}>AI Generator</span></span>
+        </div>
+        <div style={{display:"flex", alignItems:"center", gap:"12px"}}>
+          <button onClick={() => navigate("/student")} style={{background:"none", border:"none", color:"rgba(255,255,255,0.7)", cursor:"pointer", fontSize:"14px", textDecoration:"underline"}}>← Back</button>
+          <span style={{color:"rgba(255,255,255,0.7)", fontSize:"14px"}}>👋 {user?.name}</span>
+          <button onClick={() => { logout(); navigate("/login"); }} style={{background:"rgba(255,255,255,0.12)", border:"1px solid rgba(255,255,255,0.25)", color:"white", padding:"8px 18px", borderRadius:"8px", cursor:"pointer", fontSize:"14px"}}>Logout</button>
+        </div>
+      </nav>
+
+      <div style={{maxWidth:"800px", margin:"40px auto", padding:"0 20px"}}>
+
+        {/* Step 1 */}
+        <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px", marginBottom:"20px"}}>
+          <h2 style={{fontSize:"18px", fontWeight:"700", color:"#0F2A4A", margin:"0 0 6px"}}>📄 Step 1 — Upload Syllabus PDF</h2>
+          <p style={{color:"#4A6080", fontSize:"14px", margin:"0 0 14px"}}>Upload your latest course syllabus in PDF format</p>
+          <input type="file" accept=".pdf" onChange={(e) => setSyllabusPdf(e.target.files[0])}
+            style={{width:"100%", padding:"10px 14px", border:"2px dashed rgba(15,42,74,0.2)", borderRadius:"10px", fontSize:"14px", background:"#F4F7FB", cursor:"pointer", boxSizing:"border-box"}} />
+          {syllabusPdf && <p style={{color:"#1D9E75", fontSize:"13px", marginTop:"8px", fontWeight:"600"}}>✓ {syllabusPdf.name}</p>}
+        </div>
+
+        {/* Step 2 */}
+        <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px", marginBottom:"20px"}}>
+          <h2 style={{fontSize:"18px", fontWeight:"700", color:"#0F2A4A", margin:"0 0 6px"}}>
+            📚 Step 2 — Upload Past Year Papers PDF{" "}
+            <span style={{color:"#4A6080", fontWeight:"400", fontSize:"14px"}}>(Optional)</span>
+          </h2>
+          <p style={{color:"#4A6080", fontSize:"14px", margin:"0 0 14px"}}>Upload previous year question papers for better predictions</p>
+          <input type="file" accept=".pdf" onChange={(e) => setPastPapersPdf(e.target.files[0])}
+            style={{width:"100%", padding:"10px 14px", border:"2px dashed rgba(15,42,74,0.2)", borderRadius:"10px", fontSize:"14px", background:"#F4F7FB", cursor:"pointer", boxSizing:"border-box"}} />
+          {pastPapersPdf && <p style={{color:"#1D9E75", fontSize:"13px", marginTop:"8px", fontWeight:"600"}}>✓ {pastPapersPdf.name}</p>}
+        </div>
+
+        {/* Error */}
+        {error && (
+          <div style={{background:"#fef2f2", border:"1px solid #fecaca", color:"#dc2626", padding:"12px 16px", borderRadius:"10px", fontSize:"14px", marginBottom:"20px"}}>
+            ⚠️ {error}
+          </div>
+        )}
+
+        {/* Generate Button */}
+        <button onClick={handleGenerate} disabled={loading}
+          style={{width:"100%", padding:"15px", background:loading?"#94a3b8":"linear-gradient(135deg,#0F2A4A,#1D5FA0)", color:"white", border:"none", borderRadius:"12px", fontSize:"16px", fontWeight:"600", cursor:loading?"not-allowed":"pointer", fontFamily:"'DM Sans',sans-serif", marginBottom:"20px"}}>
+          {loading ? "⏳ Generating... (words will appear below)" : "🤖 Generate AI Practice Paper"}
+        </button>
+
+        {/* Result — shows while streaming */}
+        {(result || loading) && (
+          <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px", marginBottom:"40px"}}>
+            <h2 style={{fontSize:"18px", fontWeight:"700", color:"#0F2A4A", margin:"0 0 16px"}}>
+              📝 Generated Practice Paper
+              {loading && <span style={{fontSize:"13px", fontWeight:"400", color:"#1D9E75", marginLeft:"12px"}}>● generating...</span>}
+            </h2>
+            <pre style={{whiteSpace:"pre-wrap", color:"#374151", fontSize:"14px", lineHeight:"1.7", fontFamily:"'DM Sans',sans-serif"}}>{result}</pre>
+
+            {/* Feedback — only show when done */}
+            {!loading && result && (
+              <div style={{marginTop:"24px", paddingTop:"20px", borderTop:"1px solid rgba(15,42,74,0.1)"}}>
+                <p style={{fontWeight:"600", color:"#0F2A4A", marginBottom:"12px"}}>Rate this generated paper:</p>
+                <div style={{display:"flex", gap:"12px", marginBottom:"16px"}}>
+                  <button onClick={() => setFeedback("up")}
+                    style={{padding:"10px 20px", borderRadius:"10px", border:`1px solid ${feedback==="up"?"#1D9E75":"rgba(15,42,74,0.2)"}`, fontSize:"15px", cursor:"pointer", background:feedback==="up"?"#E1F5EE":"white"}}>
+                    👍 Helpful
+                  </button>
+                  <button onClick={() => setFeedback("down")}
+                    style={{padding:"10px 20px", borderRadius:"10px", border:`1px solid ${feedback==="down"?"#dc2626":"rgba(15,42,74,0.2)"}`, fontSize:"15px", cursor:"pointer", background:feedback==="down"?"#fef2f2":"white"}}>
+                    👎 Not Helpful
+                  </button>
+                </div>
+
+                {feedback && !feedbackSent && (
+                  <div style={{display:"flex", flexDirection:"column", gap:"10px"}}>
+                    <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={3}
+                      style={{width:"100%", padding:"12px 14px", border:"1px solid rgba(15,42,74,0.15)", borderRadius:"10px", fontSize:"14px", fontFamily:"'DM Sans',sans-serif", resize:"vertical", outline:"none", boxSizing:"border-box"}}
+                      placeholder="Any comments? (optional)" />
+                    <button onClick={() => setFeedbackSent(true)}
+                      style={{alignSelf:"flex-start", padding:"10px 20px", background:"#0F2A4A", color:"white", border:"none", borderRadius:"8px", fontSize:"14px", fontWeight:"500", cursor:"pointer"}}>
+                      Submit Feedback
+                    </button>
+                  </div>
+                )}
+
+                {feedbackSent && (
+                  <p style={{color:"#1D9E75", fontWeight:"600"}}>✅ Thank you for your feedback!</p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="frontend/src/pages/Login.jsx">
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+
+const API = "https://academiq-jenb.onrender.com";
+
+export default function Login() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const [form, setForm] = useState({ email: "", password: "", role: "student" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const res = await axios.post(`${API}/auth/login`, form);
+      login({
+        name: res.data.name,
+        role: res.data.role,
+        is_super: res.data.is_super,
+        email: form.email,
+      }, res.data.token);
+      if (res.data.role === "admin") navigate("/admin");
+      else navigate("/student");
+    } catch (err) {
+      setError(err.response?.data?.detail || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{
+      minHeight:"100vh",
+      background:"linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 50%, #1e3a5f 100%)",
+      display:"flex", alignItems:"center", justifyContent:"center",
+      fontFamily:"'Segoe UI', sans-serif", padding:"20px"
+    }}>
+      <div style={{
+        background:"rgba(255,255,255,0.97)", borderRadius:"24px",
+        padding:"48px 40px", width:"100%", maxWidth:"420px",
+        boxShadow:"0 25px 60px rgba(0,0,0,0.3)", animation:"slideUp 0.5s ease"
+      }}>
+        <style>{`
+          @keyframes slideUp {
+            from { opacity:0; transform:translateY(30px); }
+            to { opacity:1; transform:translateY(0); }
+          }
+          @keyframes shake {
+            0%,100% { transform:translateX(0); }
+            25% { transform:translateX(-8px); }
+            75% { transform:translateX(8px); }
+          }
+          .input-field {
+            width:100%; border:2px solid #e2e8f0; border-radius:12px;
+            padding:12px 16px; font-size:15px; outline:none;
+            transition:all 0.3s ease; box-sizing:border-box; background:#f8fafc;
+          }
+          .input-field:focus {
+            border-color:#1e3a5f; background:white;
+            box-shadow:0 0 0 4px rgba(30,58,95,0.1);
+          }
+          .login-btn {
+            width:100%; padding:14px;
+            background:linear-gradient(135deg,#1e3a5f,#2d6a9f);
+            color:white; border:none; border-radius:12px;
+            font-size:16px; font-weight:600; cursor:pointer; transition:all 0.3s ease;
+          }
+          .login-btn:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(30,58,95,0.4); }
+          .login-btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
+          .role-tab {
+            flex:1; padding:10px; border:2px solid #e2e8f0;
+            background:#f8fafc; border-radius:10px; cursor:pointer;
+            font-weight:600; font-size:14px; transition:all 0.3s ease;
+          }
+          .role-tab.active { background:#1e3a5f; color:white; border-color:#1e3a5f; }
+        `}</style>
+
+        <div style={{textAlign:"center", marginBottom:"32px"}}>
+          <div style={{
+            width:"64px", height:"64px",
+            background:"linear-gradient(135deg,#1e3a5f,#2d6a9f)",
+            borderRadius:"16px", display:"inline-flex",
+            alignItems:"center", justifyContent:"center",
+            marginBottom:"16px", fontSize:"28px"
+          }}>🎓</div>
+          <h1 style={{fontSize:"28px", fontWeight:"800", color:"#1e3a5f", margin:"0 0 6px"}}>AcademiQ</h1>
+          <p style={{color:"#64748b", margin:0, fontSize:"15px"}}>Sign in to your account</p>
+        </div>
+
+        <div style={{display:"flex", gap:"10px", marginBottom:"24px"}}>
+          <button className={`role-tab ${form.role==="student"?"active":""}`}
+            onClick={() => setForm({...form, role:"student"})}>
+            👨‍🎓 Student
+          </button>
+          <button className={`role-tab ${form.role==="admin"?"active":""}`}
+            onClick={() => setForm({...form, role:"admin"})}>
+            👨‍💼 Admin
+          </button>
+        </div>
+
+        {error && (
+          <div style={{
+            background:"#fef2f2", border:"1px solid #fecaca", color:"#dc2626",
+            padding:"12px 16px", borderRadius:"10px", marginBottom:"20px",
+            fontSize:"14px", animation:"shake 0.3s ease"
+          }}>⚠️ {error}</div>
+        )}
+
+        <form onSubmit={handleSubmit} style={{display:"flex", flexDirection:"column", gap:"18px"}}>
+          <div>
+            <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Email Address</label>
+            <input type="email" className="input-field" value={form.email}
+              onChange={e => setForm({...form, email:e.target.value})} required placeholder="you@example.com" />
+          </div>
+          <div>
+            <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Password</label>
+            <input type="password" className="input-field" value={form.password}
+              onChange={e => setForm({...form, password:e.target.value})} required placeholder="••••••••" />
+          </div>
+          <button type="submit" disabled={loading} className="login-btn">
+            {loading ? "⏳ Signing in..." : "Sign In →"}
+          </button>
+        </form>
+
+        <p style={{textAlign:"center", fontSize:"14px", color:"#64748b", marginTop:"24px", marginBottom:0}}>
+          Don't have an account?{" "}
+          <Link to="/register" style={{color:"#1e3a5f", fontWeight:"700", textDecoration:"none"}}>Register here</Link>
+        </p>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="frontend/src/pages/Register.jsx">
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+
+const API = "https://academiq-jenb.onrender.com";
+
+export default function Register() {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({
+    name: "", email: "", password: "", role: "student",
+    college_id: "", admin_code: "",
+  });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      await axios.post(`${API}/auth/register`, form);
+      navigate("/login");
+    } catch (err) {
+      setError(err.response?.data?.detail || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{
+      minHeight:"100vh",
+      background:"linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 50%, #1e3a5f 100%)",
+      display:"flex", alignItems:"center", justifyContent:"center",
+      fontFamily:"'Segoe UI', sans-serif", padding:"20px"
+    }}>
+      <div style={{
+        background:"rgba(255,255,255,0.97)", borderRadius:"24px",
+        padding:"48px 40px", width:"100%", maxWidth:"420px",
+        boxShadow:"0 25px 60px rgba(0,0,0,0.3)", animation:"slideUp 0.5s ease"
+      }}>
+        <style>{`
+          @keyframes slideUp {
+            from { opacity:0; transform:translateY(30px); }
+            to { opacity:1; transform:translateY(0); }
+          }
+          @keyframes shake {
+            0%,100% { transform:translateX(0); }
+            25% { transform:translateX(-8px); }
+            75% { transform:translateX(8px); }
+          }
+          .input-field {
+            width:100%; border:2px solid #e2e8f0; border-radius:12px;
+            padding:12px 16px; font-size:15px; outline:none;
+            transition:all 0.3s ease; box-sizing:border-box; background:#f8fafc;
+          }
+          .input-field:focus {
+            border-color:#1e3a5f; background:white;
+            box-shadow:0 0 0 4px rgba(30,58,95,0.1);
+          }
+          .reg-btn {
+            width:100%; padding:14px;
+            background:linear-gradient(135deg,#1e3a5f,#2d6a9f);
+            color:white; border:none; border-radius:12px;
+            font-size:16px; font-weight:600; cursor:pointer; transition:all 0.3s ease;
+          }
+          .reg-btn:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(30,58,95,0.4); }
+          .reg-btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
+          .role-tab {
+            flex:1; padding:10px; border:2px solid #e2e8f0;
+            background:#f8fafc; border-radius:10px; cursor:pointer;
+            font-weight:600; font-size:14px; transition:all 0.3s ease;
+          }
+          .role-tab.active { background:#1e3a5f; color:white; border-color:#1e3a5f; }
+        `}</style>
+
+        <div style={{textAlign:"center", marginBottom:"28px"}}>
+          <div style={{
+            width:"64px", height:"64px",
+            background:"linear-gradient(135deg,#1e3a5f,#2d6a9f)",
+            borderRadius:"16px", display:"inline-flex",
+            alignItems:"center", justifyContent:"center",
+            marginBottom:"16px", fontSize:"28px"
+          }}>🎓</div>
+          <h1 style={{fontSize:"28px", fontWeight:"800", color:"#1e3a5f", margin:"0 0 6px"}}>AcademiQ</h1>
+          <p style={{color:"#64748b", margin:0, fontSize:"15px"}}>Create your account</p>
+        </div>
+
+        <div style={{display:"flex", gap:"10px", marginBottom:"20px"}}>
+          <button className={`role-tab ${form.role==="student"?"active":""}`}
+            onClick={() => setForm({...form, role:"student", admin_code:""})}>
+            👨‍🎓 Student
+          </button>
+          <button className={`role-tab ${form.role==="admin"?"active":""}`}
+            onClick={() => setForm({...form, role:"admin"})}>
+            👨‍💼 Admin
+          </button>
+        </div>
+
+        {error && (
+          <div style={{
+            background:"#fef2f2", border:"1px solid #fecaca", color:"#dc2626",
+            padding:"12px 16px", borderRadius:"10px", marginBottom:"16px",
+            fontSize:"14px", animation:"shake 0.3s ease"
+          }}>⚠️ {error}</div>
+        )}
+
+        <form onSubmit={handleSubmit} style={{display:"flex", flexDirection:"column", gap:"16px"}}>
+          <div>
+            <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Full Name</label>
+            <input type="text" className="input-field" value={form.name}
+              onChange={e => setForm({...form, name:e.target.value})} required placeholder="Your full name" />
+          </div>
+
+          <div>
+            <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Email Address</label>
+            <input type="email" className="input-field" value={form.email}
+              onChange={e => setForm({...form, email:e.target.value})} required placeholder="you@example.com" />
+          </div>
+
+          <div>
+            <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>College ID (optional)</label>
+            <input type="text" className="input-field" value={form.college_id}
+              onChange={e => setForm({...form, college_id:e.target.value})} placeholder="e.g. CSE2024001" />
+          </div>
+
+          <div>
+            <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Password</label>
+            <input type="password" className="input-field" value={form.password}
+              onChange={e => setForm({...form, password:e.target.value})} required placeholder="••••••••" />
+          </div>
+
+          {form.role === "admin" && (
+            <div style={{
+              background:"#fef9c3", border:"1px solid #fde047",
+              borderRadius:"12px", padding:"16px"
+            }}>
+              <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>
+                🔐 Admin Secret Code
+              </label>
+              <input type="password" className="input-field" value={form.admin_code}
+                onChange={e => setForm({...form, admin_code:e.target.value})}
+                required={form.role==="admin"} placeholder="Enter admin secret code" />
+              <p style={{fontSize:"12px", color:"#92400e", marginTop:"6px", marginBottom:0}}>
+                Contact your institution admin for the secret code
+              </p>
+            </div>
+          )}
+
+          <button type="submit" disabled={loading} className="reg-btn">
+            {loading ? "⏳ Creating account..." : "Create Account →"}
+          </button>
+        </form>
+
+        <p style={{textAlign:"center", fontSize:"14px", color:"#64748b", marginTop:"20px", marginBottom:0}}>
+          Already have an account?{" "}
+          <Link to="/login" style={{color:"#1e3a5f", fontWeight:"700", textDecoration:"none"}}>Sign in</Link>
+        </p>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="backend/routes/settings.py">
+from fastapi import APIRouter, HTTPException, Depends
+from pymongo import MongoClient
+from utils.dependencies import admin_only, get_current_user
+from pydantic import BaseModel
+from dotenv import load_dotenv
+import os
+import urllib.parse
+
+load_dotenv()
+
+router = APIRouter()
+client = MongoClient(os.getenv("MONGO_URI"))
+db = client["academiq"]
+settings_col = db["settings"]
+users_col = db["users"]
+
+SUPER_ADMIN_EMAIL = "happyreehal584@gmail.com"
+
+def get_settings():
+    doc = settings_col.find_one({"_id": "main"})
+    if not doc:
+        doc = {
+            "_id": "main",
+            "departments": [],
+            "courses": [],
+            "subjects": {},
+            "dept_courses": {},
+            "admin_secret": os.getenv("ADMIN_SECRET", "academiq_admin_2026")
+        }
+        settings_col.insert_one(doc)
+    return doc
+
+def save_settings(doc):
+    settings_col.update_one({"_id": "main"}, {"$set": doc}, upsert=True)
+
+def is_super(user):
+    return user.get("email") == SUPER_ADMIN_EMAIL and user.get("role") == "admin"
+
+def super_only(user=Depends(get_current_user)):
+    if not is_super(user):
+        raise HTTPException(status_code=403, detail="Super admin only")
+    return user
+
+class ValueModel(BaseModel):
+    value: str
+
+class SubjectModel(BaseModel):
+    department: str
+    course: str
+    semester: str
+    subject: str
+
+class DeptCourseModel(BaseModel):
+    department: str
+    course: str
+
+class SecretModel(BaseModel):
+    new_secret: str
+
+# ── DEPARTMENTS ──
+@router.get("/departments")
+def get_departments():
+    return {"departments": get_settings().get("departments", [])}
+
+@router.post("/departments")
+def add_department(body: ValueModel, user=Depends(admin_only)):
+    doc = get_settings()
+    depts = doc.get("departments", [])
+    if body.value in depts:
+        raise HTTPException(400, "Already exists")
+    depts.append(body.value)
+    save_settings({"departments": depts})
+    return {"departments": depts}
+
+@router.delete("/departments/{name:path}")
+def delete_department(name: str, user=Depends(admin_only)):
+    name = urllib.parse.unquote(name)
+    doc = get_settings()
+    depts = [d for d in doc.get("departments", []) if d != name]
+    subjects = doc.get("subjects", {})
+    subjects.pop(name, None)
+    dept_courses = doc.get("dept_courses", {})
+    dept_courses.pop(name, None)
+    save_settings({"departments": depts, "subjects": subjects, "dept_courses": dept_courses})
+    return {"departments": depts}
+
+# ── COURSES ──
+@router.get("/courses")
+def get_courses():
+    return {"courses": get_settings().get("courses", [])}
+
+@router.post("/courses")
+def add_course(body: ValueModel, user=Depends(admin_only)):
+    doc = get_settings()
+    courses = doc.get("courses", [])
+    if body.value in courses:
+        raise HTTPException(400, "Already exists")
+    courses.append(body.value)
+    save_settings({"courses": courses})
+    return {"courses": courses}
+
+@router.delete("/courses/{name:path}")
+def delete_course(name: str, user=Depends(admin_only)):
+    name = urllib.parse.unquote(name)
+    doc = get_settings()
+    courses = [c for c in doc.get("courses", []) if c != name]
+    save_settings({"courses": courses})
+    return {"courses": courses}
+
+# ── SUBJECTS (Department → Course → Semester → Subjects) ──
+@router.get("/subjects")
+def get_subjects():
+    return {"subjects": get_settings().get("subjects", {})}
+
+@router.post("/subjects")
+def add_subject(body: SubjectModel, user=Depends(admin_only)):
+    doc = get_settings()
+    subjects = doc.get("subjects", {})
+    if body.department not in subjects:
+        subjects[body.department] = {}
+    if body.course not in subjects[body.department]:
+        subjects[body.department][body.course] = {}
+    if body.semester not in subjects[body.department][body.course]:
+        subjects[body.department][body.course][body.semester] = []
+    if body.subject in subjects[body.department][body.course][body.semester]:
+        raise HTTPException(400, "Already exists")
+    subjects[body.department][body.course][body.semester].append(body.subject)
+    save_settings({"subjects": subjects})
+    return {"subjects": subjects}
+
+@router.delete("/subjects/{department}/{course}/{semester}/{subject}")
+def delete_subject(department: str, course: str, semester: str, subject: str, user=Depends(admin_only)):
+    department = urllib.parse.unquote(department)
+    course = urllib.parse.unquote(course)
+    semester = urllib.parse.unquote(semester)
+    subject = urllib.parse.unquote(subject)
+    doc = get_settings()
+    subjects = doc.get("subjects", {})
+    try:
+        subjects[department][course][semester] = [
+            s for s in subjects[department][course][semester] if s != subject
+        ]
+    except KeyError:
+        pass
+    save_settings({"subjects": subjects})
+    return {"subjects": subjects}
+
+# ── DEPT-COURSE MAPPING ──
+@router.get("/dept-courses")
+def get_dept_courses():
+    return {"dept_courses": get_settings().get("dept_courses", {})}
+
+@router.post("/dept-courses")
+def add_dept_course(body: DeptCourseModel, user=Depends(admin_only)):
+    doc = get_settings()
+    dept_courses = doc.get("dept_courses", {})
+    if body.department not in dept_courses:
+        dept_courses[body.department] = []
+    if body.course in dept_courses[body.department]:
+        raise HTTPException(400, "Already linked")
+    dept_courses[body.department].append(body.course)
+    save_settings({"dept_courses": dept_courses})
+    return {"dept_courses": dept_courses}
+
+@router.delete("/dept-courses/{department}/{course}")
+def delete_dept_course(department: str, course: str, user=Depends(admin_only)):
+    department = urllib.parse.unquote(department)
+    course = urllib.parse.unquote(course)
+    doc = get_settings()
+    dept_courses = doc.get("dept_courses", {})
+    if department in dept_courses:
+        dept_courses[department] = [c for c in dept_courses[department] if c != course]
+    save_settings({"dept_courses": dept_courses})
+    return {"dept_courses": dept_courses}
+
+# ── STUDENTS ──
+@router.get("/students")
+def get_students(user=Depends(admin_only)):
+    students = list(users_col.find({"role": "student"}, {"_id": 0, "password": 0}))
+    return {"students": students}
+
+@router.post("/students/{email}/approve")
+def approve_student(email: str, user=Depends(admin_only)):
+    email = urllib.parse.unquote(email)
+    users_col.update_one({"email": email, "role": "student"}, {"$set": {"status": "active"}})
+    return {"message": "Student approved"}
+
+@router.post("/students/{email}/reject")
+def reject_student(email: str, user=Depends(admin_only)):
+    email = urllib.parse.unquote(email)
+    users_col.update_one({"email": email, "role": "student"}, {"$set": {"status": "rejected"}})
+    return {"message": "Student rejected"}
+
+@router.delete("/students/{email:path}")
+def delete_student(email: str, user=Depends(admin_only)):
+    email = urllib.parse.unquote(email)
+    users_col.delete_one({"email": email, "role": "student"})
+    return {"message": "Student removed"}
+
+# ── ADMINS (Super Admin Only) ──
+@router.get("/admins")
+def get_admins(user=Depends(super_only)):
+    admins = list(users_col.find({"role": "admin"}, {"_id": 0, "password": 0}))
+    return {"admins": admins}
+
+@router.post("/admins/{email}/approve")
+def approve_admin(email: str, user=Depends(super_only)):
+    email = urllib.parse.unquote(email)
+    users_col.update_one({"email": email, "role": "admin"}, {"$set": {"status": "active"}})
+    return {"message": "Admin approved"}
+
+@router.post("/admins/{email}/reject")
+def reject_admin(email: str, user=Depends(super_only)):
+    email = urllib.parse.unquote(email)
+    users_col.update_one({"email": email, "role": "admin"}, {"$set": {"status": "rejected"}})
+    return {"message": "Admin rejected"}
+
+@router.delete("/admins/{email:path}")
+def delete_admin(email: str, user=Depends(super_only)):
+    email = urllib.parse.unquote(email)
+    if email == SUPER_ADMIN_EMAIL:
+        raise HTTPException(400, "Cannot remove super admin")
+    users_col.delete_one({"email": email, "role": "admin"})
+    return {"message": "Admin removed"}
+
+# ── SECRET KEY ──
+@router.get("/admin-secret")
+def get_admin_secret(user=Depends(super_only)):
+    doc = get_settings()
+    return {"secret": doc.get("admin_secret", os.getenv("ADMIN_SECRET", "academiq_admin_2026"))}
+
+@router.post("/admin-secret")
+def update_admin_secret(body: SecretModel, user=Depends(super_only)):
+    if len(body.new_secret) < 8:
+        raise HTTPException(400, "Secret must be at least 8 characters")
+    save_settings({"admin_secret": body.new_secret})
+    return {"message": "Admin secret updated successfully"}
+</file>
+
+<file path="backend/routes/papers.py">
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
+from pymongo import MongoClient
+from utils.dependencies import admin_only
+import cloudinary
+import cloudinary.uploader
+from dotenv import load_dotenv
+import os
+from datetime import datetime
+import urllib.parse
+from fastapi.responses import StreamingResponse
+import httpx
+
+load_dotenv()
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+)
+
+MONGO_URI = os.getenv("MONGO_URI")
+client = MongoClient(MONGO_URI)
+db = client["academiq"]
+papers_col = db["papers"]
+
+router = APIRouter()
+
+def clean_public_id(text):
+    return text.replace(" ", "_").replace("&", "and").replace(".", "").replace(",", "").replace("/", "-")
+
+@router.post("/upload")
+def upload_paper(
+    department: str = Form(...),
+    class_name: str = Form(...),
+    semester: str = Form(...),
+    subject: str = Form(...),
+    academic_year: int = Form(...),
+    file: UploadFile = File(...),
+    user=Depends(admin_only)
+):
+    if not file.filename.endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files allowed")
+
+    current_year = datetime.now().year
+    if academic_year < current_year - 10:
+        raise HTTPException(status_code=400, detail="Paper older than 10 years not allowed")
+
+    safe_id = f"{clean_public_id(department)}_{clean_public_id(class_name)}_{clean_public_id(semester)}_{clean_public_id(subject)}_{academic_year}"
+
+    upload_result = cloudinary.uploader.upload(
+        file.file,
+        resource_type="raw",
+        folder="academiq/papers",
+        public_id=safe_id,
+        overwrite=True,
+    )
+
+    # PDF URL fix - browser mein view ho sake
+    secure_url = upload_result["secure_url"]
+    if not secure_url.endswith(".pdf"):
+        secure_url = secure_url + ".pdf"
+
+    paper_doc = {
+        "department": department,
+        "class_name": class_name,
+        "semester": semester,
+        "subject": subject,
+        "academic_year": academic_year,
+        "file_url": secure_url,
+        "public_id": upload_result["public_id"],
+        "uploaded_by": user["email"],
+        "uploaded_at": datetime.utcnow(),
+    }
+    papers_col.insert_one(paper_doc)
+    return {"message": "Paper uploaded successfully", "url": secure_url}
+
+
+@router.get("/list")
+def list_papers(
+    department: str = None,
+    class_name: str = None,
+    semester: str = None,
+    subject: str = None,
+):
+    current_year = datetime.now().year
+    cutoff_year = current_year - 10
+
+    query = {"academic_year": {"$gt": cutoff_year}}
+    if department:
+        query["department"] = department
+    if class_name:
+        query["class_name"] = class_name
+    if semester:
+        query["semester"] = semester
+    if subject:
+        query["subject"] = subject
+
+    papers = list(papers_col.find(query, {"_id": 0}))
+    return {"papers": papers}
+
+
+@router.get("/all")
+def all_papers(user=Depends(admin_only)):
+    papers = list(papers_col.find({}, {"_id": 0}))
+    return {"papers": papers}
+
+
+@router.delete("/delete/{public_id:path}")
+def delete_paper(public_id: str, user=Depends(admin_only)):
+    public_id = urllib.parse.unquote(public_id)
+    paper = papers_col.find_one({"public_id": public_id})
+    if not paper:
+        raise HTTPException(status_code=404, detail="Paper not found")
+    try:
+        cloudinary.uploader.destroy(public_id, resource_type="raw")
+    except Exception:
+        pass
+    papers_col.delete_one({"public_id": public_id})
+    return {"message": "Paper deleted successfully"}
+
+
+@router.post("/fix-urls-remove")
+def fix_pdf_urls_remove(user=Depends(admin_only)):
+    papers = list(papers_col.find({}))
+    fixed = 0
+    for paper in papers:
+        url = paper.get("file_url", "")
+        if url.endswith(".pdf") and "/raw/upload/" in url:
+            new_url = url[:-4]  # remove .pdf
+            papers_col.update_one(
+                {"_id": paper["_id"]},
+                {"$set": {"file_url": new_url}}
+            )
+            fixed += 1
+    return {"message": f"Fixed {fixed} paper URLs"}
+@router.get("/download")
+async def download_paper(url: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, follow_redirects=True)
+    
+    filename = url.split("/")[-1]
+    if not filename.endswith(".pdf"):
+        filename = filename + ".pdf"
+    
+    return StreamingResponse(
+        iter([response.content]),
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}",
+            "Content-Type": "application/pdf",
+        }
+    )
+</file>
+
+<file path="frontend/src/pages/AdminDashboard.jsx">
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
+const API = "https://academiq-jenb.onrender.com";
+const SEMESTERS = ["1st","2nd","3rd","4th","5th","6th","7th","8th"];
+const token = () => localStorage.getItem("academiq_token");
+const authH = () => ({ Authorization: `Bearer ${token()}` });
+
+export default function AdminDashboard() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const isSuperAdmin = user?.is_super;
+  const [activeTab, setActiveTab] = useState("upload");
+
+  // Upload state
+  const [form, setForm] = useState({ department:"", course:"", semester:"", subject:"", academic_year:"", file:null });
+  const [dragOver, setDragOver] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadMsg, setUploadMsg] = useState("");
+  const [uploadErr, setUploadErr] = useState("");
+
+  // Settings state
+  const [departments, setDepartments] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [subjects, setSubjects] = useState({});
+  const [deptCourses, setDeptCourses] = useState({});
+  const [newDept, setNewDept] = useState("");
+  const [newCourse, setNewCourse] = useState("");
+  const [newSubjDept, setNewSubjDept] = useState("");
+  const [newSubjCourse, setNewSubjCourse] = useState("");
+  const [newSubjSem, setNewSubjSem] = useState("");
+  const [newSubj, setNewSubj] = useState("");
+  const [mapDept, setMapDept] = useState("");
+  const [mapCourse, setMapCourse] = useState("");
+  const [settingsMsg, setSettingsMsg] = useState("");
+
+  // Students state
+  const [students, setStudents] = useState([]);
+
+  // Papers state
+  const [papers, setPapers] = useState([]);
+  const [papersMsg, setPapersMsg] = useState("");
+  const [filterDept, setFilterDept] = useState("");
+  const [filterSem, setFilterSem] = useState("");
+
+  // Super admin state
+  const [admins, setAdmins] = useState([]);
+  const [newSecret, setNewSecret] = useState("");
+  const [currentSecret, setCurrentSecret] = useState("");
+  const [superMsg, setSuperMsg] = useState("");
+
+  useEffect(() => { fetchSettings(); }, []);
+  useEffect(() => { if (activeTab === "students") fetchStudents(); }, [activeTab]);
+  useEffect(() => { if (activeTab === "papers") fetchPapers(); }, [activeTab]);
+  useEffect(() => { if (activeTab === "admins" && isSuperAdmin) fetchAdmins(); }, [activeTab]);
+  useEffect(() => { if (activeTab === "superadmin" && isSuperAdmin) fetchSecret(); }, [activeTab]);
+
+  async function fetchSettings() {
+    try {
+      const [d, c, s, dc] = await Promise.all([
+        axios.get(`${API}/settings/departments`),
+        axios.get(`${API}/settings/courses`),
+        axios.get(`${API}/settings/subjects`),
+        axios.get(`${API}/settings/dept-courses`),
+      ]);
+      setDepartments(d.data.departments);
+      setCourses(c.data.courses);
+      setSubjects(s.data.subjects);
+      setDeptCourses(dc.data.dept_courses);
+    } catch (_) {}
+  }
+
+  async function fetchStudents() {
+    try {
+      const res = await axios.get(`${API}/settings/students`, { headers: authH() });
+      setStudents(res.data.students);
+    } catch (_) {}
+  }
+
+  async function fetchPapers() {
+    try {
+      const res = await axios.get(`${API}/papers/all`, { headers: authH() });
+      setPapers(res.data.papers);
+    } catch (_) {}
+  }
+
+  async function fetchAdmins() {
+    try {
+      const res = await axios.get(`${API}/settings/admins`, { headers: authH() });
+      setAdmins(res.data.admins);
+    } catch (_) {}
+  }
+
+  async function fetchSecret() {
+    try {
+      const res = await axios.get(`${API}/settings/admin-secret`, { headers: authH() });
+      setCurrentSecret(res.data.secret);
+    } catch (_) {}
+  }
+
+  const flash = (msg) => { setSettingsMsg(msg); setTimeout(() => setSettingsMsg(""), 3000); };
+  const flashPapers = (msg) => { setPapersMsg(msg); setTimeout(() => setPapersMsg(""), 3000); };
+  const flashSuper = (msg) => { setSuperMsg(msg); setTimeout(() => setSuperMsg(""), 3000); };
+
+  // Upload
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    setUploading(true); setUploadMsg(""); setUploadErr("");
+    const data = new FormData();
+    data.append("department", form.department);
+    data.append("class_name", form.course);
+    data.append("semester", form.semester);
+    data.append("subject", form.subject);
+    data.append("academic_year", form.academic_year);
+    data.append("file", form.file);
+    try {
+      await axios.post(`${API}/papers/upload`, data, {
+        headers: { ...authH(), "Content-Type": "multipart/form-data" },
+      });
+      setUploadMsg("Paper uploaded successfully!");
+      setForm({ department:"", course:"", semester:"", subject:"", academic_year:"", file:null });
+    } catch (err) {
+      setUploadErr(err.response?.data?.detail || "Upload failed");
+    } finally { setUploading(false); }
+  };
+
+  async function deletePaper(public_id) {
+    if (!window.confirm("Delete this paper permanently?")) return;
+    try {
+      await axios.delete(`${API}/papers/delete/${encodeURIComponent(public_id)}`, { headers: authH() });
+      setPapers(prev => prev.filter(p => p.public_id !== public_id));
+      flashPapers("🗑️ Paper deleted");
+    } catch (err) { flashPapers("⚠️ " + (err.response?.data?.detail || "Error")); }
+  }
+
+  async function approveStudent(email) {
+    try {
+      await axios.post(`${API}/settings/students/${encodeURIComponent(email)}/approve`, {}, { headers: authH() });
+      setStudents(prev => prev.map(s => s.email === email ? {...s, status:"active"} : s));
+      flash("✅ Student approved");
+    } catch (err) { flash("⚠️ Error"); }
+  }
+
+  async function rejectStudent(email) {
+    try {
+      await axios.post(`${API}/settings/students/${encodeURIComponent(email)}/reject`, {}, { headers: authH() });
+      setStudents(prev => prev.map(s => s.email === email ? {...s, status:"rejected"} : s));
+      flash("❌ Student rejected");
+    } catch (err) { flash("⚠️ Error"); }
+  }
+
+  async function removeStudent(email) {
+    if (!window.confirm(`Remove "${email}"?`)) return;
+    try {
+      await axios.delete(`${API}/settings/students/${encodeURIComponent(email)}`, { headers: authH() });
+      setStudents(prev => prev.filter(s => s.email !== email));
+      flash("🗑️ Removed");
+    } catch (err) { flash("⚠️ Error"); }
+  }
+
+  async function approveAdmin(email) {
+    try {
+      await axios.post(`${API}/settings/admins/${encodeURIComponent(email)}/approve`, {}, { headers: authH() });
+      setAdmins(prev => prev.map(a => a.email === email ? {...a, status:"active"} : a));
+      flashSuper("✅ Admin approved");
+    } catch (err) { flashSuper("⚠️ Error"); }
+  }
+
+  async function rejectAdmin(email) {
+    try {
+      await axios.post(`${API}/settings/admins/${encodeURIComponent(email)}/reject`, {}, { headers: authH() });
+      setAdmins(prev => prev.map(a => a.email === email ? {...a, status:"rejected"} : a));
+      flashSuper("❌ Admin rejected");
+    } catch (err) { flashSuper("⚠️ Error"); }
+  }
+
+  async function removeAdmin(email) {
+    if (!window.confirm(`Remove "${email}"?`)) return;
+    try {
+      await axios.delete(`${API}/settings/admins/${encodeURIComponent(email)}`, { headers: authH() });
+      setAdmins(prev => prev.filter(a => a.email !== email));
+      flashSuper("🗑️ Removed");
+    } catch (err) { flashSuper("⚠️ Error"); }
+  }
+
+  async function updateSecret() {
+    if (newSecret.length < 8) { flashSuper("⚠️ Min 8 characters"); return; }
+    try {
+      await axios.post(`${API}/settings/admin-secret`, { new_secret: newSecret }, { headers: authH() });
+      setCurrentSecret(newSecret); setNewSecret("");
+      flashSuper("✅ Secret updated");
+    } catch (err) { flashSuper("⚠️ Error"); }
+  }
+
+  async function addDept() {
+    if (!newDept.trim()) return;
+    try {
+      const res = await axios.post(`${API}/settings/departments`, { value: newDept }, { headers: authH() });
+      setDepartments(res.data.departments); setNewDept(""); flash("✅ Department added");
+    } catch (err) { flash("⚠️ " + (err.response?.data?.detail || "Error")); }
+  }
+
+  async function removeDept(name) {
+    if (!window.confirm(`Remove "${name}"?`)) return;
+    try {
+      const res = await axios.delete(`${API}/settings/departments/${encodeURIComponent(name)}`, { headers: authH() });
+      setDepartments(res.data.departments); fetchSettings(); flash("🗑️ Removed");
+    } catch (err) { flash("⚠️ Error"); }
+  }
+
+  async function addCourse() {
+    if (!newCourse.trim()) return;
+    try {
+      const res = await axios.post(`${API}/settings/courses`, { value: newCourse }, { headers: authH() });
+      setCourses(res.data.courses); setNewCourse(""); flash("✅ Course added");
+    } catch (err) { flash("⚠️ " + (err.response?.data?.detail || "Error")); }
+  }
+
+  async function removeCourse(name) {
+    if (!window.confirm(`Remove "${name}"?`)) return;
+    try {
+      const res = await axios.delete(`${API}/settings/courses/${encodeURIComponent(name)}`, { headers: authH() });
+      setCourses(res.data.courses); flash("🗑️ Removed");
+    } catch (err) { flash("⚠️ Error"); }
+  }
+
+  async function addSubject() {
+    if (!newSubjDept || !newSubjCourse || !newSubjSem || !newSubj.trim()) {
+      flash("⚠️ All fields required for subject"); return;
+    }
+    try {
+      const res = await axios.post(`${API}/settings/subjects`, {
+        department: newSubjDept, course: newSubjCourse,
+        semester: newSubjSem, subject: newSubj
+      }, { headers: authH() });
+      setSubjects(res.data.subjects); setNewSubj(""); flash("✅ Subject added");
+    } catch (err) { flash("⚠️ " + (err.response?.data?.detail || "Error")); }
+  }
+
+  async function removeSubject(dept, course, sem, subj) {
+    try {
+      const res = await axios.delete(
+        `${API}/settings/subjects/${encodeURIComponent(dept)}/${encodeURIComponent(course)}/${encodeURIComponent(sem)}/${encodeURIComponent(subj)}`,
+        { headers: authH() }
+      );
+      setSubjects(res.data.subjects); flash("🗑️ Removed");
+    } catch (err) { flash("⚠️ Error"); }
+  }
+
+  async function addDeptCourse() {
+    if (!mapDept || !mapCourse) return;
+    try {
+      const res = await axios.post(`${API}/settings/dept-courses`, { department: mapDept, course: mapCourse }, { headers: authH() });
+      setDeptCourses(res.data.dept_courses); setMapCourse(""); flash("✅ Course linked");
+    } catch (err) { flash("⚠️ " + (err.response?.data?.detail || "Error")); }
+  }
+
+  async function removeDeptCourse(dept, course) {
+    try {
+      const res = await axios.delete(`${API}/settings/dept-courses/${encodeURIComponent(dept)}/${encodeURIComponent(course)}`, { headers: authH() });
+      setDeptCourses(res.data.dept_courses); flash("🗑️ Removed");
+    } catch (err) { flash("⚠️ Error"); }
+  }
+
+  // Upload form dropdowns
+  const uploadCourses = form.department ? (deptCourses[form.department] || []) : [];
+  const uploadSubjects = (form.department && form.course && form.semester)
+    ? ((subjects[form.department]?.[form.course]?.[form.semester]) || [])
+    : [];
+
+  const filteredPapers = papers.filter(p => {
+    if (filterDept && p.department !== filterDept) return false;
+    if (filterSem && p.semester !== filterSem) return false;
+    return true;
+  });
+
+  const pendingStudents = students.filter(s => s.status === "pending");
+  const activeStudents = students.filter(s => s.status === "active");
+  const rejectedStudents = students.filter(s => s.status === "rejected");
+  const pendingAdmins = admins.filter(a => a.status === "pending");
+  const activeAdmins = admins.filter(a => a.status === "active");
+
+  return (
+    <div style={{minHeight:"100vh", background:"#F4F7FB", fontFamily:"'DM Sans', sans-serif"}}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap');
+        .adm-tab { flex:1; padding:10px 8px; border:none; border-radius:10px; cursor:pointer; font-size:12px; font-weight:500; font-family:'DM Sans',sans-serif; color:#4A6080; background:transparent; transition:all 0.2s; white-space:nowrap; }
+        .adm-tab.active { background:#0F2A4A; color:white; }
+        .adm-tab.super-tab.active { background:linear-gradient(135deg,#7C3AED,#5B21B6); }
+        .adm-tab:hover:not(.active) { background:#F4F7FB; }
+        .form-input { width:100%; padding:11px 14px; border:1px solid rgba(15,42,74,0.12); border-radius:8px; font-size:14px; font-family:'DM Sans',sans-serif; color:#0F2A4A; background:#F4F7FB; outline:none; transition:border-color 0.2s; box-sizing:border-box; }
+        .form-input:focus { border-color:#2D5FA0; background:white; }
+        .btn-navy { background:#0F2A4A; color:white; border:none; padding:10px 20px; border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; white-space:nowrap; }
+        .btn-navy:hover { opacity:0.85; }
+        .btn-accent { background:#1D9E75; color:white; border:none; padding:10px 20px; border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; white-space:nowrap; }
+        .btn-accent:hover { opacity:0.85; }
+        .btn-accent:disabled { opacity:0.6; cursor:not-allowed; }
+        .btn-danger { background:#fef2f2; color:#dc2626; border:1px solid #fecaca; padding:5px 12px; border-radius:6px; font-size:12px; cursor:pointer; }
+        .btn-danger:hover { background:#fee2e2; }
+        .btn-approve { background:#E1F5EE; color:#1D9E75; border:1px solid rgba(29,158,117,0.3); padding:5px 12px; border-radius:6px; font-size:12px; cursor:pointer; }
+        .btn-approve:hover { background:#C6EFE0; }
+        .btn-reject { background:#FEF9C3; color:#92400E; border:1px solid #FDE68A; padding:5px 12px; border-radius:6px; font-size:12px; cursor:pointer; }
+        .btn-reject:hover { background:#FEF08A; }
+        .btn-purple { background:linear-gradient(135deg,#7C3AED,#5B21B6); color:white; border:none; padding:10px 20px; border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; }
+        .btn-purple:hover { opacity:0.85; }
+        .tag { display:inline-flex; align-items:center; gap:6px; background:white; border:1px solid rgba(15,42,74,0.12); border-radius:20px; padding:5px 12px; font-size:13px; color:#0F2A4A; font-weight:500; margin:4px; }
+        .tag button { background:none; border:none; cursor:pointer; color:#4A6080; font-size:15px; line-height:1; padding:0; }
+        .tag button:hover { color:#dc2626; }
+        .drop-zone { border:2px dashed rgba(15,42,74,0.2); border-radius:10px; padding:28px; text-align:center; cursor:pointer; transition:all 0.2s; background:#F4F7FB; }
+        .drop-zone.active { border-color:#1D9E75; background:#E1F5EE; }
+        .paper-card { background:white; border:1px solid rgba(15,42,74,0.1); border-radius:12px; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+        .paper-card:hover { box-shadow:0 4px 15px rgba(0,0,0,0.08); }
+        .card { background:white; borderRadius:16px; border:1px solid rgba(15,42,74,0.12); padding:28px; }
+      `}</style>
+
+      {/* Navbar */}
+      <nav style={{background:"#0F2A4A", height:"64px", padding:"0 32px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100}}>
+        <div style={{display:"flex", alignItems:"center", gap:"10px"}}>
+          <div style={{width:"36px", height:"36px", background:"#1D9E75", borderRadius:"8px", display:"flex", alignItems:"center", justifyContent:"center", color:"white", fontWeight:"700", fontSize:"18px"}}>Q</div>
+          <span style={{color:"white", fontWeight:"600", fontSize:"15px"}}>
+            AcademiQ <span style={{color:"#1D9E75"}}>Admin</span>
+            {isSuperAdmin && <span style={{background:"linear-gradient(135deg,#7C3AED,#5B21B6)", color:"white", fontSize:"11px", padding:"2px 8px", borderRadius:"20px", marginLeft:"8px"}}>SUPER</span>}
+          </span>
+        </div>
+        <div style={{display:"flex", alignItems:"center", gap:"14px"}}>
+          <span style={{color:"rgba(255,255,255,0.7)", fontSize:"14px"}}>👋 {user?.name}</span>
+          <button onClick={() => { logout(); navigate("/login"); }} style={{background:"rgba(255,255,255,0.12)", border:"1px solid rgba(255,255,255,0.25)", color:"white", padding:"8px 18px", borderRadius:"8px", cursor:"pointer", fontSize:"14px"}}>Logout</button>
+        </div>
+      </nav>
+
+      <div style={{maxWidth:"960px", margin:"0 auto", padding:"36px 20px"}}>
+
+        {/* Tabs */}
+        <div style={{display:"flex", gap:"6px", marginBottom:"28px", background:"white", padding:"6px", borderRadius:"14px", border:"1px solid rgba(15,42,74,0.12)", flexWrap:"wrap"}}>
+          <button className={`adm-tab ${activeTab==="upload"?"active":""}`} onClick={() => setActiveTab("upload")}>📤 Upload</button>
+          <button className={`adm-tab ${activeTab==="papers"?"active":""}`} onClick={() => setActiveTab("papers")}>📋 Papers</button>
+          <button className={`adm-tab ${activeTab==="students"?"active":""}`} onClick={() => setActiveTab("students")}>
+            👨‍🎓 Students {pendingStudents.length > 0 && <span style={{background:"#EF4444", color:"white", borderRadius:"50%", padding:"1px 6px", fontSize:"11px", marginLeft:"4px"}}>{pendingStudents.length}</span>}
+          </button>
+          <button className={`adm-tab ${activeTab==="settings"?"active":""}`} onClick={() => setActiveTab("settings")}>⚙️ Settings</button>
+          {isSuperAdmin && <>
+            <button className={`adm-tab super-tab ${activeTab==="admins"?"active":""}`} onClick={() => setActiveTab("admins")}>
+              👑 Admins {pendingAdmins.length > 0 && <span style={{background:"#EF4444", color:"white", borderRadius:"50%", padding:"1px 6px", fontSize:"11px", marginLeft:"4px"}}>{pendingAdmins.length}</span>}
+            </button>
+            <button className={`adm-tab super-tab ${activeTab==="superadmin"?"active":""}`} onClick={() => setActiveTab("superadmin")}>🔐 Super</button>
+          </>}
+        </div>
+
+        {settingsMsg && <div style={{background:"#E1F5EE", border:"1px solid rgba(29,158,117,0.3)", color:"#0f7a5a", padding:"10px 16px", borderRadius:"10px", fontSize:"14px", marginBottom:"20px"}}>{settingsMsg}</div>}
+        {papersMsg && <div style={{background:"#E1F5EE", border:"1px solid rgba(29,158,117,0.3)", color:"#0f7a5a", padding:"10px 16px", borderRadius:"10px", fontSize:"14px", marginBottom:"20px"}}>{papersMsg}</div>}
+        {superMsg && <div style={{background:"#F3E8FF", border:"1px solid #C4B5FD", color:"#5B21B6", padding:"10px 16px", borderRadius:"10px", fontSize:"14px", marginBottom:"20px"}}>{superMsg}</div>}
+
+        {/* TAB 1: UPLOAD */}
+        {activeTab === "upload" && (
+          <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+            <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:"0 0 20px"}}>📤 Upload Question Paper</h2>
+            {uploadMsg && <div style={{background:"#f0fdf4", border:"1px solid #86efac", color:"#15803d", padding:"12px 16px", borderRadius:"10px", fontSize:"14px", marginBottom:"16px"}}>✅ {uploadMsg}</div>}
+            {uploadErr && <div style={{background:"#fef2f2", border:"1px solid #fecaca", color:"#dc2626", padding:"12px 16px", borderRadius:"10px", fontSize:"14px", marginBottom:"16px"}}>⚠️ {uploadErr}</div>}
+            <form onSubmit={handleUpload} style={{display:"flex", flexDirection:"column", gap:"16px"}}>
+              <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px"}}>
+                <div>
+                  <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Department</label>
+                  <select className="form-input" value={form.department} onChange={e => setForm({...form, department:e.target.value, course:"", semester:"", subject:""})} required>
+                    <option value="">Select Department</option>
+                    {departments.map(d => <option key={d}>{d}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Course</label>
+                  <select className="form-input" value={form.course} onChange={e => setForm({...form, course:e.target.value, semester:"", subject:""})} required disabled={!form.department}>
+                    <option value="">{form.department ? "Select Course" : "Select Dept first"}</option>
+                    {uploadCourses.map(c => <option key={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Semester</label>
+                  <select className="form-input" value={form.semester} onChange={e => setForm({...form, semester:e.target.value, subject:""})} required disabled={!form.course}>
+                    <option value="">{form.course ? "Select Semester" : "Select Course first"}</option>
+                    {SEMESTERS.map(s => <option key={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Academic Year</label>
+                  <input type="number" className="form-input" value={form.academic_year} onChange={e => setForm({...form, academic_year:e.target.value})} required placeholder="e.g. 2024" min="2000" max="2030" />
+                </div>
+              </div>
+              <div>
+                <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Subject</label>
+                <select className="form-input" value={form.subject} onChange={e => setForm({...form, subject:e.target.value})} required disabled={!form.semester}>
+                  <option value="">{form.semester ? (uploadSubjects.length > 0 ? "Select Subject" : "No subjects for this semester — add in Settings") : "Select Semester first"}</option>
+                  {uploadSubjects.map(s => <option key={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Upload PDF</label>
+                <div className={`drop-zone ${dragOver?"active":""}`}
+                  onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                  onDragLeave={() => setDragOver(false)}
+                  onDrop={e => { e.preventDefault(); setDragOver(false); const f=e.dataTransfer.files[0]; if(f?.name.endsWith(".pdf")) setForm({...form,file:f}); }}
+                  onClick={() => document.getElementById("fileInput").click()}>
+                  <input id="fileInput" type="file" accept=".pdf" style={{display:"none"}} onChange={e => setForm({...form, file:e.target.files[0]})} />
+                  {form.file ? (
+                    <div><div style={{fontSize:"28px"}}>📄</div><div style={{color:"#15803d", fontWeight:"600", marginTop:"6px"}}>{form.file.name}</div><div style={{color:"#94a3b8", fontSize:"13px"}}>Click to change</div></div>
+                  ) : (
+                    <div><div style={{fontSize:"28px"}}>☁️</div><div style={{color:"#0F2A4A", fontWeight:"600", marginTop:"6px"}}>Drag & drop PDF here</div><div style={{color:"#94a3b8", fontSize:"13px"}}>or click to browse</div></div>
+                  )}
+                </div>
+              </div>
+              <button type="submit" disabled={uploading} className="btn-accent" style={{padding:"13px", fontSize:"15px"}}>
+                {uploading ? "⏳ Uploading..." : "📤 Upload Paper"}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* TAB 2: PAPERS */}
+        {activeTab === "papers" && (
+          <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+            <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"20px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:0}}>📋 Manage Papers</h2>
+              <span style={{background:"#E1F5EE", color:"#1D9E75", borderRadius:"20px", padding:"4px 12px", fontSize:"13px", fontWeight:"600"}}>{filteredPapers.length} papers</span>
+            </div>
+            <div style={{display:"flex", gap:"12px", marginBottom:"20px"}}>
+              <select className="form-input" value={filterDept} onChange={e => setFilterDept(e.target.value)}>
+                <option value="">All Departments</option>
+                {departments.map(d => <option key={d}>{d}</option>)}
+              </select>
+              <select className="form-input" value={filterSem} onChange={e => setFilterSem(e.target.value)}>
+                <option value="">All Semesters</option>
+                {SEMESTERS.map(s => <option key={s}>{s}</option>)}
+              </select>
+            </div>
+            {filteredPapers.length === 0 ? (
+              <div style={{textAlign:"center", padding:"40px", color:"#94a3b8"}}><div style={{fontSize:"32px"}}>📭</div><div style={{marginTop:"8px"}}>No papers found</div></div>
+            ) : filteredPapers.map((paper, idx) => (
+              <div key={idx} className="paper-card">
+                <div>
+                  <div style={{fontWeight:"600", color:"#0F2A4A"}}>{paper.subject} — {paper.academic_year}</div>
+                  <div style={{color:"#4A6080", fontSize:"13px", marginTop:"4px"}}>{paper.department} | {paper.class_name} | {paper.semester} Semester</div>
+                  <div style={{color:"#94a3b8", fontSize:"12px"}}>By: {paper.uploaded_by}</div>
+                </div>
+                <div style={{display:"flex", gap:"8px"}}>
+                  <a href={paper.file_url} target="_blank" rel="noreferrer"
+                    style={{padding:"7px 14px", background:"#E1F5EE", color:"#1D9E75", borderRadius:"8px", fontSize:"13px", fontWeight:"500", textDecoration:"none", border:"1px solid rgba(29,158,117,0.3)"}}>
+                    👁️ View
+                  </a>
+                  <button className="btn-danger" onClick={() => deletePaper(paper.public_id)}>🗑️ Delete</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* TAB 3: STUDENTS */}
+        {activeTab === "students" && (
+          <div style={{display:"flex", flexDirection:"column", gap:"20px"}}>
+            {/* Pending */}
+            <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"18px", color:"#0F2A4A", margin:"0 0 16px"}}>
+                ⏳ Pending Requests <span style={{background:"#FEF9C3", color:"#92400E", borderRadius:"20px", padding:"3px 10px", fontSize:"13px", marginLeft:"8px"}}>{pendingStudents.length}</span>
+              </h2>
+              {pendingStudents.length === 0 ? <p style={{color:"#94a3b8", fontSize:"14px"}}>No pending requests</p>
+              : pendingStudents.map(s => (
+                <div key={s.email} style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 0", borderBottom:"1px solid rgba(15,42,74,0.06)"}}>
+                  <div>
+                    <div style={{fontWeight:"600", color:"#0F2A4A"}}>{s.name}</div>
+                    <div style={{color:"#4A6080", fontSize:"13px"}}>{s.email} {s.college_id && `• ${s.college_id}`}</div>
+                  </div>
+                  <div style={{display:"flex", gap:"8px"}}>
+                    <button className="btn-approve" onClick={() => approveStudent(s.email)}>✅ Approve</button>
+                    <button className="btn-reject" onClick={() => rejectStudent(s.email)}>❌ Reject</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Active */}
+            <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"18px", color:"#0F2A4A", margin:"0 0 16px"}}>
+                ✅ Active Students <span style={{background:"#E1F5EE", color:"#1D9E75", borderRadius:"20px", padding:"3px 10px", fontSize:"13px", marginLeft:"8px"}}>{activeStudents.length}</span>
+              </h2>
+              {activeStudents.length === 0 ? <p style={{color:"#94a3b8", fontSize:"14px"}}>No active students</p>
+              : activeStudents.map(s => (
+                <div key={s.email} style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 0", borderBottom:"1px solid rgba(15,42,74,0.06)"}}>
+                  <div>
+                    <div style={{fontWeight:"600", color:"#0F2A4A"}}>{s.name}</div>
+                    <div style={{color:"#4A6080", fontSize:"13px"}}>{s.email} {s.college_id && `• ${s.college_id}`}</div>
+                  </div>
+                  <button className="btn-danger" onClick={() => removeStudent(s.email)}>🗑️ Remove</button>
+                </div>
+              ))}
+            </div>
+
+            {/* Rejected */}
+            {rejectedStudents.length > 0 && (
+              <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+                <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"18px", color:"#0F2A4A", margin:"0 0 16px"}}>
+                  ❌ Rejected <span style={{background:"#FEF2F2", color:"#DC2626", borderRadius:"20px", padding:"3px 10px", fontSize:"13px", marginLeft:"8px"}}>{rejectedStudents.length}</span>
+                </h2>
+                {rejectedStudents.map(s => (
+                  <div key={s.email} style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 0", borderBottom:"1px solid rgba(15,42,74,0.06)"}}>
+                    <div>
+                      <div style={{fontWeight:"600", color:"#0F2A4A"}}>{s.name}</div>
+                      <div style={{color:"#4A6080", fontSize:"13px"}}>{s.email}</div>
+                    </div>
+                    <div style={{display:"flex", gap:"8px"}}>
+                      <button className="btn-approve" onClick={() => approveStudent(s.email)}>✅ Approve</button>
+                      <button className="btn-danger" onClick={() => removeStudent(s.email)}>🗑️ Remove</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 4: SETTINGS */}
+        {activeTab === "settings" && (
+          <div style={{display:"flex", flexDirection:"column", gap:"20px"}}>
+
+            {/* Departments */}
+            <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:"0 0 16px"}}>🏛️ Departments</h2>
+              <div style={{display:"flex", gap:"10px"}}>
+                <input className="form-input" placeholder="e.g. Computer Science" value={newDept} onChange={e => setNewDept(e.target.value)} onKeyDown={e => e.key==="Enter" && addDept()} />
+                <button className="btn-navy" onClick={addDept}>Add</button>
+              </div>
+              <div style={{marginTop:"14px"}}>
+                {departments.length === 0 && <span style={{color:"#94a3b8", fontSize:"14px"}}>No departments yet</span>}
+                {departments.map(d => <span key={d} className="tag">{d}<button onClick={() => removeDept(d)}>×</button></span>)}
+              </div>
+            </div>
+
+            {/* Courses */}
+            <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:"0 0 16px"}}>🎓 Courses</h2>
+              <div style={{display:"flex", gap:"10px"}}>
+                <input className="form-input" placeholder="e.g. B.Tech, MCA, M.Sc" value={newCourse} onChange={e => setNewCourse(e.target.value)} onKeyDown={e => e.key==="Enter" && addCourse()} />
+                <button className="btn-navy" onClick={addCourse}>Add</button>
+              </div>
+              <div style={{marginTop:"14px"}}>
+                {courses.length === 0 && <span style={{color:"#94a3b8", fontSize:"14px"}}>No courses yet</span>}
+                {courses.map(c => <span key={c} className="tag">{c}<button onClick={() => removeCourse(c)}>×</button></span>)}
+              </div>
+            </div>
+
+            {/* Dept-Course Mapping */}
+            <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:"0 0 4px"}}>🔗 Department → Course Mapping</h2>
+              <p style={{color:"#4A6080", fontSize:"13px", margin:"0 0 16px"}}>Har department ke saath linked courses dikhenge</p>
+              <div style={{display:"flex", gap:"10px"}}>
+                <select className="form-input" value={mapDept} onChange={e => setMapDept(e.target.value)}>
+                  <option value="">Select Department</option>
+                  {departments.map(d => <option key={d}>{d}</option>)}
+                </select>
+                <select className="form-input" value={mapCourse} onChange={e => setMapCourse(e.target.value)}>
+                  <option value="">Select Course</option>
+                  {courses.map(c => <option key={c}>{c}</option>)}
+                </select>
+                <button className="btn-navy" onClick={addDeptCourse}>Link</button>
+              </div>
+              <div style={{marginTop:"16px"}}>
+                {departments.map(d => (
+                  <div key={d} style={{marginBottom:"12px"}}>
+                    <div style={{fontSize:"12px", fontWeight:"600", color:"#4A6080", textTransform:"uppercase", letterSpacing:"0.5px", marginBottom:"6px"}}>{d}</div>
+                    {(deptCourses[d] || []).length === 0
+                      ? <span style={{color:"#94a3b8", fontSize:"13px"}}>No courses linked</span>
+                      : (deptCourses[d] || []).map(c => <span key={c} className="tag">{c}<button onClick={() => removeDeptCourse(d, c)}>×</button></span>)
+                    }
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Subjects */}
+            <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#0F2A4A", margin:"0 0 4px"}}>📚 Subjects</h2>
+              <p style={{color:"#4A6080", fontSize:"13px", margin:"0 0 16px"}}>Department → Course → Semester ke hisaab se subjects add karo</p>
+              <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"10px", marginBottom:"10px"}}>
+                <select className="form-input" value={newSubjDept} onChange={e => setNewSubjDept(e.target.value)}>
+                  <option value="">Select Department</option>
+                  {departments.map(d => <option key={d}>{d}</option>)}
+                </select>
+                <select className="form-input" value={newSubjCourse} onChange={e => setNewSubjCourse(e.target.value)} disabled={!newSubjDept}>
+                  <option value="">{newSubjDept ? "Select Course" : "Select Dept first"}</option>
+                  {(deptCourses[newSubjDept] || []).map(c => <option key={c}>{c}</option>)}
+                </select>
+                <select className="form-input" value={newSubjSem} onChange={e => setNewSubjSem(e.target.value)} disabled={!newSubjCourse}>
+                  <option value="">{newSubjCourse ? "Select Semester" : "Select Course first"}</option>
+                  {SEMESTERS.map(s => <option key={s}>{s}</option>)}
+                </select>
+                <div style={{display:"flex", gap:"8px"}}>
+                  <input className="form-input" placeholder="Subject name" value={newSubj} onChange={e => setNewSubj(e.target.value)} onKeyDown={e => e.key==="Enter" && addSubject()} disabled={!newSubjSem} />
+                  <button className="btn-navy" onClick={addSubject}>Add</button>
+                </div>
+              </div>
+
+              {/* Display subjects */}
+              <div style={{marginTop:"20px"}}>
+                {departments.length === 0 && <span style={{color:"#94a3b8", fontSize:"14px"}}>Add departments first</span>}
+                {departments.map(dept => (
+                  <div key={dept} style={{marginBottom:"20px"}}>
+                    <div style={{fontSize:"14px", fontWeight:"700", color:"#0F2A4A", marginBottom:"10px", paddingBottom:"6px", borderBottom:"2px solid rgba(15,42,74,0.1)"}}>🏛️ {dept}</div>
+                    {(deptCourses[dept] || []).length === 0
+                      ? <span style={{color:"#94a3b8", fontSize:"13px", paddingLeft:"12px"}}>No courses linked</span>
+                      : (deptCourses[dept] || []).map(course => (
+                        <div key={course} style={{marginBottom:"12px", paddingLeft:"12px"}}>
+                          <div style={{fontSize:"13px", fontWeight:"600", color:"#2D5FA0", marginBottom:"8px"}}>🎓 {course}</div>
+                          {SEMESTERS.map(sem => {
+                            const semSubjects = subjects[dept]?.[course]?.[sem] || [];
+                            if (semSubjects.length === 0) return null;
+                            return (
+                              <div key={sem} style={{marginBottom:"8px", paddingLeft:"12px"}}>
+                                <div style={{fontSize:"12px", fontWeight:"600", color:"#4A6080", marginBottom:"4px"}}>📅 {sem} Semester</div>
+                                <div>
+                                  {semSubjects.map(s => (
+                                    <span key={s} className="tag">{s}<button onClick={() => removeSubject(dept, course, sem, s)}>×</button></span>
+                                  ))}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ))
+                    }
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 5: ADMINS */}
+        {activeTab === "admins" && isSuperAdmin && (
+          <div style={{display:"flex", flexDirection:"column", gap:"20px"}}>
+            <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"18px", color:"#0F2A4A", margin:"0 0 16px"}}>
+                ⏳ Pending Admin Requests <span style={{background:"#FEF9C3", color:"#92400E", borderRadius:"20px", padding:"3px 10px", fontSize:"13px", marginLeft:"8px"}}>{pendingAdmins.length}</span>
+              </h2>
+              {pendingAdmins.length === 0 ? <p style={{color:"#94a3b8", fontSize:"14px"}}>No pending requests</p>
+              : pendingAdmins.map(a => (
+                <div key={a.email} style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 0", borderBottom:"1px solid rgba(15,42,74,0.06)"}}>
+                  <div>
+                    <div style={{fontWeight:"600", color:"#0F2A4A"}}>{a.name}</div>
+                    <div style={{color:"#4A6080", fontSize:"13px"}}>{a.email}</div>
+                  </div>
+                  <div style={{display:"flex", gap:"8px"}}>
+                    <button className="btn-approve" onClick={() => approveAdmin(a.email)}>✅ Approve</button>
+                    <button className="btn-reject" onClick={() => rejectAdmin(a.email)}>❌ Reject</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"18px", color:"#0F2A4A", margin:"0 0 16px"}}>
+                👑 Active Admins <span style={{background:"#E1F5EE", color:"#1D9E75", borderRadius:"20px", padding:"3px 10px", fontSize:"13px", marginLeft:"8px"}}>{activeAdmins.length}</span>
+              </h2>
+              {activeAdmins.length === 0 ? <p style={{color:"#94a3b8", fontSize:"14px"}}>No active admins</p>
+              : activeAdmins.map(a => (
+                <div key={a.email} style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 0", borderBottom:"1px solid rgba(15,42,74,0.06)"}}>
+                  <div>
+                    <div style={{fontWeight:"600", color:"#0F2A4A"}}>
+                      {a.name}
+                      {a.email === "happyreehal584@gmail.com" && <span style={{background:"linear-gradient(135deg,#7C3AED,#5B21B6)", color:"white", fontSize:"10px", padding:"2px 8px", borderRadius:"20px", marginLeft:"8px"}}>SUPER</span>}
+                    </div>
+                    <div style={{color:"#4A6080", fontSize:"13px"}}>{a.email}</div>
+                  </div>
+                  {a.email !== "happyreehal584@gmail.com" && (
+                    <button className="btn-danger" onClick={() => removeAdmin(a.email)}>🗑️ Remove</button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 6: SUPER ADMIN */}
+        {activeTab === "superadmin" && isSuperAdmin && (
+          <div style={{display:"flex", flexDirection:"column", gap:"20px"}}>
+            <div style={{background:"white", borderRadius:"16px", border:"2px solid #C4B5FD", padding:"28px"}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:"20px", color:"#5B21B6", margin:"0 0 8px"}}>🔐 Change Admin Secret Key</h2>
+              <p style={{color:"#4A6080", fontSize:"14px", margin:"0 0 20px"}}>Yeh key admin registration ke waqt required hogi.</p>
+              <div style={{background:"#F3E8FF", border:"1px solid #C4B5FD", borderRadius:"10px", padding:"14px 16px", marginBottom:"20px"}}>
+                <div style={{fontSize:"12px", fontWeight:"600", color:"#5B21B6", marginBottom:"4px"}}>Current Secret Key:</div>
+                <div style={{fontFamily:"monospace", fontSize:"16px", color:"#0F2A4A", fontWeight:"600"}}>{currentSecret || "Loading..."}</div>
+              </div>
+              <div style={{display:"flex", flexDirection:"column", gap:"12px"}}>
+                <div>
+                  <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>New Secret Key (min 8 characters)</label>
+                  <input type="text" className="form-input" value={newSecret} onChange={e => setNewSecret(e.target.value)} placeholder="Enter new secret key" />
+                </div>
+                <button className="btn-purple" onClick={updateSecret} style={{alignSelf:"flex-start", padding:"12px 28px"}}>
+                  🔄 Update Secret Key
+                </button>
+              </div>
+            </div>
+            <div style={{background:"#FEF2F2", borderRadius:"16px", border:"1px solid #FECACA", padding:"20px"}}>
+              <h3 style={{color:"#DC2626", fontSize:"15px", fontWeight:"700", margin:"0 0 8px"}}>⚠️ Important</h3>
+              <p style={{color:"#7F1D1D", fontSize:"14px", margin:0, lineHeight:"1.6"}}>
+                Key change karne ke baad existing admins affect nahi honge. Sirf nayi registrations ke liye nayi key required hogi.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="frontend/src/pages/StudentDashboard.jsx">
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
+const API = "https://academiq-jenb.onrender.com";
+const SEMESTERS = ["1st","2nd","3rd","4th","5th","6th","7th","8th"];
+
+export default function StudentDashboard() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const [departments, setDepartments] = useState([]);
+  const [deptCourses, setDeptCourses] = useState({});
+  const [subjects, setSubjects] = useState({});
+
+  const [filters, setFilters] = useState({ department:"", course:"", semester:"", subject:"" });
+  const [papers, setPapers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+
+  useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const [d, dc, s] = await Promise.all([
+          axios.get(`${API}/settings/departments`),
+          axios.get(`${API}/settings/dept-courses`),
+          axios.get(`${API}/settings/subjects`),
+        ]);
+        setDepartments(d.data.departments);
+        setDeptCourses(dc.data.dept_courses);
+        setSubjects(s.data.subjects);
+      } catch (_) {}
+    }
+    fetchSettings();
+  }, []);
+
+  const filteredCourses = filters.department ? (deptCourses[filters.department] || []) : [];
+  const filteredSubjects =
+    filters.department && filters.course && filters.semester
+      ? (subjects[filters.department]?.[filters.course]?.[filters.semester] || [])
+      : [];
+
+  const handleSearch = async () => {
+    setLoading(true);
+    setSearched(true);
+    try {
+      const params = {};
+      if (filters.department) params.department = filters.department;
+      if (filters.course)     params.class_name = filters.course;
+      if (filters.semester)   params.semester = filters.semester;
+      if (filters.subject)    params.subject = filters.subject;
+      const res = await axios.get(`${API}/papers/list`, { params });
+      setPapers(res.data.papers);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const viewUrl = (url) =>
+    `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
+
+  const downloadUrl = (url) =>
+  `${API}/papers/download?url=${encodeURIComponent(url)}`;
+
+  return (
+    <div style={{minHeight:"100vh", background:"#F4F7FB", fontFamily:"'DM Sans', sans-serif"}}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+        .form-input { width:100%; padding:11px 14px; border:1px solid rgba(15,42,74,0.12); border-radius:8px; font-size:14px; font-family:'DM Sans',sans-serif; color:#0F2A4A; background:#F4F7FB; outline:none; transition:border-color 0.2s; box-sizing:border-box; }
+        .form-input:focus { border-color:#2D5FA0; background:white; }
+        .form-input:disabled { opacity:0.5; cursor:not-allowed; }
+        .paper-card { border:1px solid rgba(15,42,74,0.12); border-radius:12px; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; transition:box-shadow 0.2s; }
+        .paper-card:hover { box-shadow:0 4px 15px rgba(0,0,0,0.08); }
+        .btn-view { background:#0F2A4A; color:white; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:500; text-decoration:none; display:inline-block; }
+        .btn-view:hover { opacity:0.85; }
+        .btn-download { background:#E1F5EE; color:#1D9E75; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:500; text-decoration:none; border:1px solid rgba(29,158,117,0.3); display:inline-block; }
+        .btn-download:hover { background:#C6EFE0; }
+      `}</style>
+
+      {/* Navbar */}
+      <nav style={{background:"#0F2A4A", height:"64px", padding:"0 24px", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, zIndex:100}}>
+        <div style={{display:"flex", alignItems:"center", gap:"10px"}}>
+          <div style={{width:"32px", height:"32px", background:"#1D9E75", borderRadius:"8px", display:"flex", alignItems:"center", justifyContent:"center", color:"white", fontWeight:"700", fontSize:"16px"}}>Q</div>
+          <span style={{color:"white", fontWeight:"600", fontSize:"15px"}}>AcademiQ <span style={{color:"#1D9E75"}}>Student Portal</span></span>
+        </div>
+        <div style={{display:"flex", alignItems:"center", gap:"10px"}}>
+          <button onClick={() => navigate("/ai-generator")}
+            style={{background:"#1D9E75", color:"white", border:"none", padding:"8px 14px", borderRadius:"8px", fontSize:"13px", fontWeight:"500", cursor:"pointer"}}>
+            🤖 AI Generator
+          </button>
+          <span style={{color:"rgba(255,255,255,0.7)", fontSize:"13px"}}>👋 {user?.name}</span>
+          <button onClick={() => { logout(); navigate("/login"); }}
+            style={{background:"rgba(255,255,255,0.12)", border:"1px solid rgba(255,255,255,0.25)", color:"white", padding:"8px 14px", borderRadius:"8px", fontSize:"13px", cursor:"pointer"}}>
+            Logout
+          </button>
+        </div>
+      </nav>
+
+      <div style={{maxWidth:"860px", margin:"0 auto", padding:"36px 20px"}}>
+
+        {/* Filter Card */}
+        <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px", marginBottom:"20px"}}>
+          <h2 style={{fontSize:"18px", fontWeight:"600", color:"#0F2A4A", margin:"0 0 20px"}}>🔍 Filter Question Papers</h2>
+          <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px"}}>
+
+            <div>
+              <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Department</label>
+              <select className="form-input" value={filters.department}
+                onChange={e => setFilters({...filters, department:e.target.value, course:"", semester:"", subject:""})}>
+                <option value="">All Departments</option>
+                {departments.map(d => <option key={d}>{d}</option>)}
+              </select>
+            </div>
+
+            <div>
+              <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Course</label>
+              <select className="form-input" value={filters.course}
+                onChange={e => setFilters({...filters, course:e.target.value, semester:"", subject:""})}
+                disabled={!filters.department}>
+                <option value="">{filters.department ? "All Courses" : "Select Department first"}</option>
+                {filteredCourses.map(c => <option key={c}>{c}</option>)}
+              </select>
+            </div>
+
+            <div>
+              <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Semester</label>
+              <select className="form-input" value={filters.semester}
+                onChange={e => setFilters({...filters, semester:e.target.value, subject:""})}
+                disabled={!filters.course}>
+                <option value="">{filters.course ? "All Semesters" : "Select Course first"}</option>
+                {SEMESTERS.map(s => <option key={s}>{s}</option>)}
+              </select>
+            </div>
+
+            <div>
+              <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Subject</label>
+              <select className="form-input" value={filters.subject}
+                onChange={e => setFilters({...filters, subject:e.target.value})}
+                disabled={!filters.semester}>
+                <option value="">{filters.semester ? "All Subjects" : "Select Semester first"}</option>
+                {filteredSubjects.map(s => <option key={s}>{s}</option>)}
+              </select>
+            </div>
+
+          </div>
+
+          <button onClick={handleSearch}
+            style={{marginTop:"20px", background:"#0F2A4A", color:"white", border:"none", padding:"12px 28px", borderRadius:"8px", fontSize:"14px", fontWeight:"500", cursor:"pointer", fontFamily:"'DM Sans',sans-serif"}}>
+            {loading ? "⏳ Searching..." : "🔍 Search Papers"}
+          </button>
+        </div>
+
+        {/* Results */}
+        {searched && (
+          <div style={{background:"white", borderRadius:"16px", border:"1px solid rgba(15,42,74,0.12)", padding:"28px"}}>
+            <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"20px"}}>
+              <h2 style={{fontSize:"18px", fontWeight:"600", color:"#0F2A4A", margin:0}}>
+                Results
+              </h2>
+              <span style={{background:"#E1F5EE", color:"#1D9E75", borderRadius:"20px", padding:"4px 12px", fontSize:"13px", fontWeight:"600"}}>
+                {papers.length} paper{papers.length !== 1 ? "s" : ""} found
+              </span>
+            </div>
+
+            {papers.length === 0 ? (
+              <div style={{textAlign:"center", padding:"40px", color:"#94a3b8"}}>
+                <div style={{fontSize:"32px", marginBottom:"8px"}}>📭</div>
+                <div>No papers found for selected filters</div>
+              </div>
+            ) : (
+              <div style={{display:"flex", flexDirection:"column", gap:"12px"}}>
+                {papers.map((paper, idx) => (
+                  <div key={idx} className="paper-card">
+                    <div>
+                      <div style={{fontWeight:"600", color:"#0F2A4A", fontSize:"15px"}}>
+                        {paper.subject} — {paper.academic_year}
+                      </div>
+                      <div style={{color:"#4A6080", fontSize:"13px", marginTop:"4px"}}>
+                        {paper.department} · {paper.class_name} · {paper.semester} Semester
+                      </div>
+                    </div>
+                    <div style={{display:"flex", gap:"8px", flexWrap:"wrap"}}>
+                      <a
+                        href={viewUrl(paper.file_url)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn-view">
+                        👁️ View
+                      </a>
+                      <a
+                        href={downloadUrl(paper.file_url)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn-download">
+                        ⬇️ Download
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+</file>
+
+</files>
