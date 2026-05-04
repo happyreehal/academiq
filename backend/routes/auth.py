@@ -6,10 +6,10 @@ from dotenv import load_dotenv
 from main import db
 import os
 import random
-import sib_api_v3_sdk
-from sib_api_v3_sdk.rest import ApiException
 from datetime import datetime, timedelta
-
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 load_dotenv()
 
 router = APIRouter()
@@ -24,41 +24,51 @@ SUPER_ADMIN_EMAIL = "happyreehal584@gmail.com"
 
 def send_otp_email(to_email: str, otp: str, name: str):
     try:
-        configuration = sib_api_v3_sdk.Configuration()
-        configuration.api_key['api-key'] = os.getenv("BREVO_API_KEY")
+        GMAIL_USER = os.getenv("GMAIL_USER")       # tumhari gmail: abc@gmail.com
+        GMAIL_PASS = os.getenv("GMAIL_APP_PASS")   # 16-char app password
 
-        api_instance = sib_api_v3_sdk.TransactionalEmailsApi(
-            sib_api_v3_sdk.ApiClient(configuration)
-        )
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = "AcademiQ — Email Verification OTP"
+        msg["From"] = f"AcademiQ <{GMAIL_USER}>"
+        msg["To"] = to_email
 
-        email = sib_api_v3_sdk.SendSmtpEmail(
-            to=[{"email": to_email, "name": name}],
-            sender={"email": SUPER_ADMIN_EMAIL, "name": "AcademiQ"},
-            subject="AcademiQ — Email Verification OTP",
-            html_content=f"""
-            <div style="font-family:'DM Sans',sans-serif;max-width:480px;margin:0 auto;background:#0F2A4A;border-radius:16px;overflow:hidden;">
-              <div style="background:#1D9E75;padding:24px;text-align:center;">
-                <h1 style="color:white;margin:0;font-size:24px;">AcademiQ</h1>
-                <p style="color:rgba(255,255,255,0.8);margin:4px 0 0;font-size:13px;">SGTB Khalsa College</p>
-              </div>
-              <div style="padding:36px 32px;">
-                <h2 style="color:white;margin:0 0 12px;">Hi {name}! 👋</h2>
-                <p style="color:rgba(255,255,255,0.6);font-size:14px;line-height:1.7;margin-bottom:28px;">
-                  Use the OTP below to verify your email address. This OTP is valid for <strong style="color:#1D9E75;">10 minutes</strong>.
-                </p>
-                <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(29,158,117,0.3);border-radius:12px;padding:24px;text-align:center;margin-bottom:28px;">
-                  <div style="font-size:42px;font-weight:800;color:#1D9E75;letter-spacing:12px;">{otp}</div>
-                </div>
-                <p style="color:rgba(255,255,255,0.3);font-size:12px;">If you didn't create an AcademiQ account, ignore this email.</p>
-              </div>
+        html = f"""
+        <div style="font-family:'DM Sans',sans-serif;max-width:480px;margin:0 auto;
+                    background:#0F2A4A;border-radius:16px;overflow:hidden;">
+          <div style="background:#1D9E75;padding:24px;text-align:center;">
+            <h1 style="color:white;margin:0;font-size:24px;">AcademiQ</h1>
+            <p style="color:rgba(255,255,255,0.8);margin:4px 0 0;font-size:13px;">
+              SGTB Khalsa College</p>
+          </div>
+          <div style="padding:36px 32px;">
+            <h2 style="color:white;margin:0 0 12px;">Hi {name}! 👋</h2>
+            <p style="color:rgba(255,255,255,0.6);font-size:14px;line-height:1.7;
+                      margin-bottom:28px;">
+              Use the OTP below to verify your email. Valid for
+              <strong style="color:#1D9E75;">10 minutes</strong>.
+            </p>
+            <div style="background:rgba(255,255,255,0.05);
+                        border:1px solid rgba(29,158,117,0.3);
+                        border-radius:12px;padding:24px;text-align:center;
+                        margin-bottom:28px;">
+              <div style="font-size:42px;font-weight:800;color:#1D9E75;
+                          letter-spacing:12px;">{otp}</div>
             </div>
-            """
-        )
+            <p style="color:rgba(255,255,255,0.3);font-size:12px;">
+              If you didn't create an AcademiQ account, ignore this email.</p>
+          </div>
+        </div>
+        """
 
-        api_instance.send_transac_email(email)
+        msg.attach(MIMEText(html, "html"))
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(GMAIL_USER, GMAIL_PASS)
+            server.sendmail(GMAIL_USER, to_email, msg.as_string())
+
         return True
-    except ApiException as e:
-        print("BREVO EMAIL ERROR:", str(e))
+    except Exception as e:
+        print("GMAIL SMTP ERROR:", str(e))
         return False
 
 def get_admin_secret():

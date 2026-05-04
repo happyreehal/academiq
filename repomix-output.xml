@@ -772,6 +772,49 @@ frontend/node_modules/
 Thumbs.db
 </file>
 
+<file path="frontend/src/App.jsx">
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import LandingPage from "./pages/LandingPage";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import AdminDashboard from "./pages/AdminDashboard";
+import StudentDashboard from "./pages/StudentDashboard";
+import AIGenerator from "./pages/AIGenerator";
+
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/admin" element={
+            <ProtectedRoute role="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/student" element={
+            <ProtectedRoute role="student">
+              <StudentDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/ai-generator" element={
+            <ProtectedRoute role="student">
+              <AIGenerator />
+            </ProtectedRoute>
+          } />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
+
+export default App;
+</file>
+
 <file path="backend/requirements.txt">
 altair==6.0.0
 annotated-doc==0.0.4
@@ -907,50 +950,7 @@ websockets==16.0
 Werkzeug==3.1.8
 wrapt==2.1.2
 secure==0.3.0
-resend
-</file>
-
-<file path="frontend/src/App.jsx">
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
-import LandingPage from "./pages/LandingPage";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import AdminDashboard from "./pages/AdminDashboard";
-import StudentDashboard from "./pages/StudentDashboard";
-import AIGenerator from "./pages/AIGenerator";
-
-function App() {
-  return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/admin" element={
-            <ProtectedRoute role="admin">
-              <AdminDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/student" element={
-            <ProtectedRoute role="student">
-              <StudentDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/ai-generator" element={
-            <ProtectedRoute role="student">
-              <AIGenerator />
-            </ProtectedRoute>
-          } />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
-  );
-}
-
-export default App;
+sib-api-v3-sdk
 </file>
 
 <file path="frontend/src/pages/AIGenerator.jsx">
@@ -1703,101 +1703,112 @@ export default function Login() {
 
   return (
     <div style={{
-      minHeight:"100vh",
-      background:"linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 50%, #1e3a5f 100%)",
-      display:"flex", alignItems:"center", justifyContent:"center",
-      fontFamily:"'Segoe UI', sans-serif", padding:"20px"
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #030810 0%, #0d2035 50%, #030810 100%)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      fontFamily: "'DM Sans', sans-serif", padding: "20px"
     }}>
-      <div style={{
-        background:"rgba(255,255,255,0.97)", borderRadius:"24px",
-        padding:"48px 40px", width:"100%", maxWidth:"420px",
-        boxShadow:"0 25px 60px rgba(0,0,0,0.3)", animation:"slideUp 0.5s ease"
-      }}>
-        <style>{`
-          @keyframes slideUp {
-            from { opacity:0; transform:translateY(30px); }
-            to { opacity:1; transform:translateY(0); }
-          }
-          @keyframes shake {
-            0%,100% { transform:translateX(0); }
-            25% { transform:translateX(-8px); }
-            75% { transform:translateX(8px); }
-          }
-          .input-field {
-            width:100%; border:2px solid #e2e8f0; border-radius:12px;
-            padding:12px 16px; font-size:15px; outline:none;
-            transition:all 0.3s ease; box-sizing:border-box; background:#f8fafc;
-          }
-          .input-field:focus {
-            border-color:#1e3a5f; background:white;
-            box-shadow:0 0 0 4px rgba(30,58,95,0.1);
-          }
-          .login-btn {
-            width:100%; padding:14px;
-            background:linear-gradient(135deg,#1e3a5f,#2d6a9f);
-            color:white; border:none; border-radius:12px;
-            font-size:16px; font-weight:600; cursor:pointer; transition:all 0.3s ease;
-          }
-          .login-btn:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(30,58,95,0.4); }
-          .login-btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
-          .role-tab {
-            flex:1; padding:10px; border:2px solid #e2e8f0;
-            background:#f8fafc; border-radius:10px; cursor:pointer;
-            font-weight:600; font-size:14px; transition:all 0.3s ease;
-          }
-          .role-tab.active { background:#1e3a5f; color:white; border-color:#1e3a5f; }
-        `}</style>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+        @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes shake { 0%,100% { transform:translateX(0); } 25% { transform:translateX(-8px); } 75% { transform:translateX(8px); } }
+        .input-field {
+          width:100%; border:1px solid rgba(255,255,255,0.1); border-radius:8px;
+          padding:12px 16px; font-size:14px; outline:none;
+          transition:all 0.3s ease; box-sizing:border-box;
+          background:rgba(255,255,255,0.05); color:white;
+          font-family:'DM Sans',sans-serif;
+        }
+        .input-field::placeholder { color:rgba(255,255,255,0.25); }
+        .input-field:focus { border-color:#1D9E75; background:rgba(255,255,255,0.08); box-shadow:0 0 0 3px rgba(29,158,117,0.15); }
+        .login-btn {
+          width:100%; padding:14px;
+          background:linear-gradient(135deg,#1D9E75,#0d7a5a);
+          color:white; border:none; border-radius:8px;
+          font-size:14px; font-weight:600; cursor:pointer;
+          transition:all 0.3s ease; font-family:'DM Sans',sans-serif;
+          letter-spacing:1px;
+        }
+        .login-btn:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(29,158,117,0.3); }
+        .login-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+        .role-tab {
+          flex:1; padding:10px; border:1px solid rgba(255,255,255,0.1);
+          background:rgba(255,255,255,0.03); border-radius:8px; cursor:pointer;
+          font-weight:600; font-size:13px; transition:all 0.3s ease;
+          color:rgba(255,255,255,0.5); font-family:'DM Sans',sans-serif;
+        }
+        .role-tab.active { background:#1D9E75; color:white; border-color:#1D9E75; }
+        label { display:block; font-size:12px; font-weight:600; color:rgba(255,255,255,0.5); margin-bottom:6px; letter-spacing:1px; text-transform:uppercase; }
+      `}</style>
 
-        <div style={{textAlign:"center", marginBottom:"32px"}}>
+      <div style={{
+        background: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: "16px", padding: "48px 40px",
+        width: "100%", maxWidth: "420px",
+        backdropFilter: "blur(20px)",
+        animation: "slideUp 0.5s ease",
+        position: "relative", overflow: "hidden"
+      }}>
+        {/* Top accent line */}
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: "linear-gradient(90deg, #1D9E75, transparent)" }} />
+
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
           <div style={{
-            width:"64px", height:"64px",
-            background:"linear-gradient(135deg,#1e3a5f,#2d6a9f)",
-            borderRadius:"16px", display:"inline-flex",
-            alignItems:"center", justifyContent:"center",
-            marginBottom:"16px", fontSize:"28px"
+            width: "56px", height: "56px",
+            background: "linear-gradient(135deg,#1D9E75,#0d7a5a)",
+            borderRadius: "12px", display: "inline-flex",
+            alignItems: "center", justifyContent: "center",
+            marginBottom: "16px", fontSize: "24px"
           }}>🎓</div>
-          <h1 style={{fontSize:"28px", fontWeight:"800", color:"#1e3a5f", margin:"0 0 6px"}}>AcademiQ</h1>
-          <p style={{color:"#64748b", margin:0, fontSize:"15px"}}>Sign in to your account</p>
+          <h1 style={{ fontSize: "24px", fontWeight: "700", color: "white", margin: "0 0 4px", letterSpacing: "1px" }}>ACADEMIQ</h1>
+          <p style={{ color: "rgba(255,255,255,0.3)", margin: 0, fontSize: "13px", letterSpacing: "1px" }}>SIGN IN TO YOUR ACCOUNT</p>
         </div>
 
-        <div style={{display:"flex", gap:"10px", marginBottom:"24px"}}>
-          <button className={`role-tab ${form.role==="student"?"active":""}`}
-            onClick={() => setForm({...form, role:"student"})}>
+        {/* Role Tabs */}
+        <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
+          <button className={`role-tab ${form.role === "student" ? "active" : ""}`}
+            onClick={() => setForm({ ...form, role: "student" })}>
             👨‍🎓 Student
           </button>
-          <button className={`role-tab ${form.role==="admin"?"active":""}`}
-            onClick={() => setForm({...form, role:"admin"})}>
+          <button className={`role-tab ${form.role === "admin" ? "active" : ""}`}
+            onClick={() => setForm({ ...form, role: "admin" })}>
             👨‍💼 Admin
           </button>
         </div>
 
+        {/* Error */}
         {error && (
           <div style={{
-            background:"#fef2f2", border:"1px solid #fecaca", color:"#dc2626",
-            padding:"12px 16px", borderRadius:"10px", marginBottom:"20px",
-            fontSize:"14px", animation:"shake 0.3s ease"
+            background: "rgba(220,38,38,0.1)", border: "1px solid rgba(220,38,38,0.3)",
+            color: "#f87171", padding: "12px 16px", borderRadius: "8px",
+            marginBottom: "16px", fontSize: "13px", animation: "shake 0.3s ease"
           }}>⚠️ {error}</div>
         )}
 
-        <form onSubmit={handleSubmit} style={{display:"flex", flexDirection:"column", gap:"18px"}}>
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div>
-            <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Email Address</label>
+            <label>Email Address</label>
             <input type="email" className="input-field" value={form.email}
-              onChange={e => setForm({...form, email:e.target.value})} required placeholder="you@example.com" />
+              onChange={e => setForm({ ...form, email: e.target.value })}
+              required placeholder="you@example.com" />
           </div>
           <div>
-            <label style={{display:"block", fontSize:"13px", fontWeight:"600", color:"#374151", marginBottom:"6px"}}>Password</label>
+            <label>Password</label>
             <input type="password" className="input-field" value={form.password}
-              onChange={e => setForm({...form, password:e.target.value})} required placeholder="••••••••" />
+              onChange={e => setForm({ ...form, password: e.target.value })}
+              required placeholder="••••••••" />
           </div>
           <button type="submit" disabled={loading} className="login-btn">
             {loading ? "⏳ Signing in..." : "Sign In →"}
           </button>
         </form>
 
-        <p style={{textAlign:"center", fontSize:"14px", color:"#64748b", marginTop:"24px", marginBottom:0}}>
+        <p style={{ textAlign: "center", fontSize: "13px", color: "rgba(255,255,255,0.3)", marginTop: "24px", marginBottom: 0 }}>
           Don't have an account?{" "}
-          <Link to="/register" style={{color:"#1e3a5f", fontWeight:"700", textDecoration:"none"}}>Register here</Link>
+          <Link to="/register" style={{ color: "#1D9E75", fontWeight: "700", textDecoration: "none" }}>Register here</Link>
         </p>
       </div>
     </div>
@@ -1850,190 +1861,6 @@ app.include_router(settings_router, prefix="/settings", tags=["Settings"])
 @app.get("/")
 def root():
     return {"message": "AcademiQ API is running"}
-</file>
-
-<file path="backend/routes/auth.py">
-from fastapi import APIRouter, HTTPException
-from passlib.context import CryptContext
-from models.user import UserRegister, UserLogin
-from utils.jwt_handler import create_token
-from dotenv import load_dotenv
-from main import db
-import os
-import random
-import resend
-from datetime import datetime, timedelta
-
-load_dotenv()
-
-router = APIRouter()
-
-users_col = db["users"]
-settings_col = db["settings"]
-otp_col = db["otps"]
-
-pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-SUPER_ADMIN_EMAIL = "happyreehal584@gmail.com"
-resend.api_key = os.getenv("RESEND_API_KEY")
-
-def send_otp_email(to_email: str, otp: str, name: str):
-    try:
-        resend.Emails.send({
-            "from": "AcademiQ <onboarding@resend.dev>",
-            "to": to_email,
-            "subject": "AcademiQ — Email Verification OTP",
-            "html": f"""
-        <div style="font-family:'DM Sans',sans-serif;max-width:480px;margin:0 auto;background:#0F2A4A;border-radius:16px;overflow:hidden;">
-          <div style="background:#1D9E75;padding:24px;text-align:center;">
-            <h1 style="color:white;margin:0;font-size:24px;">AcademiQ</h1>
-            <p style="color:rgba(255,255,255,0.8);margin:4px 0 0;font-size:13px;">SGTB Khalsa College</p>
-          </div>
-          <div style="padding:36px 32px;">
-            <h2 style="color:white;margin:0 0 12px;">Hi {name}! 👋</h2>
-            <p style="color:rgba(255,255,255,0.6);font-size:14px;line-height:1.7;margin-bottom:28px;">
-              Use the OTP below to verify your email address. This OTP is valid for <strong style="color:#1D9E75;">10 minutes</strong>.
-            </p>
-            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(29,158,117,0.3);border-radius:12px;padding:24px;text-align:center;margin-bottom:28px;">
-              <div style="font-size:42px;font-weight:800;color:#1D9E75;letter-spacing:12px;">{otp}</div>
-            </div>
-            <p style="color:rgba(255,255,255,0.3);font-size:12px;">If you didn't create an AcademiQ account, ignore this email.</p>
-          </div>
-        </div>
-        """
-        })
-        return True
-    except Exception as e:
-        print("EMAIL ERROR:", str(e))
-        return False
-
-def get_admin_secret():
-    doc = settings_col.find_one({"_id": "main"})
-    if doc and "admin_secret" in doc:
-        return doc["admin_secret"]
-    return os.getenv("ADMIN_SECRET", "academiq_admin_2026")
-
-@router.post("/send-otp")
-def send_otp(body: dict):
-    email = body.get("email")
-    name = body.get("name", "Student")
-    role = body.get("role", "student")
-
-    if not email:
-        raise HTTPException(400, "Email required")
-
-    if users_col.find_one({"email": email, "role": role}):
-        raise HTTPException(400, "Email already registered")
-
-    otp = str(random.randint(100000, 999999))
-    expires_at = datetime.utcnow() + timedelta(minutes=10)
-
-    otp_col.update_one(
-        {"email": email, "role": role},
-        {"$set": {"otp": otp, "expires_at": expires_at, "verified": False}},
-        upsert=True
-    )
-
-    sent = send_otp_email(email, otp, name)
-    if not sent:
-        raise HTTPException(500, "Failed to send OTP email. Please check your email address.")
-
-    return {"message": "OTP sent successfully"}
-
-@router.post("/verify-otp")
-def verify_otp(body: dict):
-    email = body.get("email")
-    otp = body.get("otp")
-    role = body.get("role", "student")
-
-    record = otp_col.find_one({"email": email, "role": role})
-    if not record:
-        raise HTTPException(400, "OTP not found. Please request again.")
-
-    if datetime.utcnow() > record["expires_at"]:
-        raise HTTPException(400, "OTP expired. Please request again.")
-
-    if record["otp"] != otp:
-        raise HTTPException(400, "Invalid OTP. Please try again.")
-
-    otp_col.update_one({"email": email, "role": role}, {"$set": {"verified": True}})
-    return {"message": "Email verified successfully"}
-
-@router.post("/register")
-def register(user: UserRegister):
-    if user.role == "superadmin":
-        raise HTTPException(status_code=403, detail="Cannot register as superadmin")
-
-    if user.role == "admin":
-        if not user.admin_code:
-            raise HTTPException(status_code=403, detail="Admin secret code required")
-        if user.admin_code != get_admin_secret():
-            raise HTTPException(status_code=403, detail="Invalid admin secret code")
-
-    if users_col.find_one({"email": user.email, "role": user.role}):
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    if user.email != SUPER_ADMIN_EMAIL:
-        otp_record = otp_col.find_one({"email": user.email, "role": user.role})
-        if not otp_record or not otp_record.get("verified"):
-            raise HTTPException(status_code=400, detail="Email not verified. Please verify OTP first.")
-
-    hashed_pw = pwd_ctx.hash(user.password)
-
-    if user.email == SUPER_ADMIN_EMAIL and user.role == "admin":
-        status = "active"
-    elif user.role == "admin":
-        status = "pending"
-    else:
-        status = "pending"
-
-    user_doc = {
-        "name": user.name,
-        "email": user.email,
-        "password": hashed_pw,
-        "role": user.role,
-        "college_id": user.college_id,
-        "status": status,
-    }
-    users_col.insert_one(user_doc)
-
-    otp_col.delete_one({"email": user.email, "role": user.role})
-
-    if status == "pending":
-        return {"message": "Registration successful. Please wait for approval."}
-    return {"message": "Registration successful"}
-
-@router.post("/login")
-def login(user: UserLogin):
-    db_user = users_col.find_one({"email": user.email, "role": user.role})
-
-    if not db_user:
-        raise HTTPException(status_code=401, detail="User not found")
-
-    if not pwd_ctx.verify(user.password, db_user["password"]):
-        raise HTTPException(status_code=401, detail="Incorrect password")
-
-    status = db_user.get("status", "active")
-    if status == "pending":
-        raise HTTPException(status_code=403, detail="Account pending approval. Please wait for admin to approve.")
-    if status == "rejected":
-        raise HTTPException(status_code=403, detail="Account rejected. Contact admin.")
-
-    is_super = user.email == SUPER_ADMIN_EMAIL and user.role == "admin"
-
-    token = create_token({
-        "email": db_user["email"],
-        "role": db_user["role"],
-        "name": db_user["name"],
-        "is_super": is_super,
-    })
-
-    return {
-        "token": token,
-        "role": db_user["role"],
-        "name": db_user["name"],
-        "is_super": is_super,
-    }
 </file>
 
 <file path="backend/routes/settings.py">
@@ -3277,6 +3104,199 @@ export default function Register() {
     </div>
   );
 }
+</file>
+
+<file path="backend/routes/auth.py">
+from fastapi import APIRouter, HTTPException
+from passlib.context import CryptContext
+from models.user import UserRegister, UserLogin
+from utils.jwt_handler import create_token
+from dotenv import load_dotenv
+from main import db
+import os
+import random
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
+from datetime import datetime, timedelta
+
+load_dotenv()
+
+router = APIRouter()
+
+users_col = db["users"]
+settings_col = db["settings"]
+otp_col = db["otps"]
+
+pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+SUPER_ADMIN_EMAIL = "happyreehal584@gmail.com"
+
+def send_otp_email(to_email: str, otp: str, name: str):
+    try:
+        configuration = sib_api_v3_sdk.Configuration()
+        configuration.api_key['api-key'] = os.getenv("BREVO_API_KEY")
+
+        api_instance = sib_api_v3_sdk.TransactionalEmailsApi(
+            sib_api_v3_sdk.ApiClient(configuration)
+        )
+
+        email = sib_api_v3_sdk.SendSmtpEmail(
+            to=[{"email": to_email, "name": name}],
+            sender={"email": SUPER_ADMIN_EMAIL, "name": "AcademiQ"},
+            subject="AcademiQ — Email Verification OTP",
+            html_content=f"""
+            <div style="font-family:'DM Sans',sans-serif;max-width:480px;margin:0 auto;background:#0F2A4A;border-radius:16px;overflow:hidden;">
+              <div style="background:#1D9E75;padding:24px;text-align:center;">
+                <h1 style="color:white;margin:0;font-size:24px;">AcademiQ</h1>
+                <p style="color:rgba(255,255,255,0.8);margin:4px 0 0;font-size:13px;">SGTB Khalsa College</p>
+              </div>
+              <div style="padding:36px 32px;">
+                <h2 style="color:white;margin:0 0 12px;">Hi {name}! 👋</h2>
+                <p style="color:rgba(255,255,255,0.6);font-size:14px;line-height:1.7;margin-bottom:28px;">
+                  Use the OTP below to verify your email address. This OTP is valid for <strong style="color:#1D9E75;">10 minutes</strong>.
+                </p>
+                <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(29,158,117,0.3);border-radius:12px;padding:24px;text-align:center;margin-bottom:28px;">
+                  <div style="font-size:42px;font-weight:800;color:#1D9E75;letter-spacing:12px;">{otp}</div>
+                </div>
+                <p style="color:rgba(255,255,255,0.3);font-size:12px;">If you didn't create an AcademiQ account, ignore this email.</p>
+              </div>
+            </div>
+            """
+        )
+
+        api_instance.send_transac_email(email)
+        return True
+    except ApiException as e:
+        print("BREVO EMAIL ERROR:", str(e))
+        return False
+
+def get_admin_secret():
+    doc = settings_col.find_one({"_id": "main"})
+    if doc and "admin_secret" in doc:
+        return doc["admin_secret"]
+    return os.getenv("ADMIN_SECRET", "academiq_admin_2026")
+
+@router.post("/send-otp")
+def send_otp(body: dict):
+    email = body.get("email")
+    name = body.get("name", "Student")
+    role = body.get("role", "student")
+
+    if not email:
+        raise HTTPException(400, "Email required")
+
+    if users_col.find_one({"email": email, "role": role}):
+        raise HTTPException(400, "Email already registered")
+
+    otp = str(random.randint(100000, 999999))
+    expires_at = datetime.utcnow() + timedelta(minutes=10)
+
+    otp_col.update_one(
+        {"email": email, "role": role},
+        {"$set": {"otp": otp, "expires_at": expires_at, "verified": False}},
+        upsert=True
+    )
+
+    sent = send_otp_email(email, otp, name)
+    if not sent:
+        raise HTTPException(500, "Failed to send OTP email. Please check your email address.")
+
+    return {"message": "OTP sent successfully"}
+
+@router.post("/verify-otp")
+def verify_otp(body: dict):
+    email = body.get("email")
+    otp = body.get("otp")
+    role = body.get("role", "student")
+
+    record = otp_col.find_one({"email": email, "role": role})
+    if not record:
+        raise HTTPException(400, "OTP not found. Please request again.")
+
+    if datetime.utcnow() > record["expires_at"]:
+        raise HTTPException(400, "OTP expired. Please request again.")
+
+    if record["otp"] != otp:
+        raise HTTPException(400, "Invalid OTP. Please try again.")
+
+    otp_col.update_one({"email": email, "role": role}, {"$set": {"verified": True}})
+    return {"message": "Email verified successfully"}
+
+@router.post("/register")
+def register(user: UserRegister):
+    if user.role == "superadmin":
+        raise HTTPException(status_code=403, detail="Cannot register as superadmin")
+
+    if user.role == "admin":
+        if not user.admin_code:
+            raise HTTPException(status_code=403, detail="Admin secret code required")
+        if user.admin_code != get_admin_secret():
+            raise HTTPException(status_code=403, detail="Invalid admin secret code")
+
+    if users_col.find_one({"email": user.email, "role": user.role}):
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    if user.email != SUPER_ADMIN_EMAIL:
+        otp_record = otp_col.find_one({"email": user.email, "role": user.role})
+        if not otp_record or not otp_record.get("verified"):
+            raise HTTPException(status_code=400, detail="Email not verified. Please verify OTP first.")
+
+    hashed_pw = pwd_ctx.hash(user.password)
+
+    if user.email == SUPER_ADMIN_EMAIL and user.role == "admin":
+        status = "active"
+    elif user.role == "admin":
+        status = "pending"
+    else:
+        status = "pending"
+
+    user_doc = {
+        "name": user.name,
+        "email": user.email,
+        "password": hashed_pw,
+        "role": user.role,
+        "college_id": user.college_id,
+        "status": status,
+    }
+    users_col.insert_one(user_doc)
+
+    otp_col.delete_one({"email": user.email, "role": user.role})
+
+    if status == "pending":
+        return {"message": "Registration successful. Please wait for approval."}
+    return {"message": "Registration successful"}
+
+@router.post("/login")
+def login(user: UserLogin):
+    db_user = users_col.find_one({"email": user.email, "role": user.role})
+
+    if not db_user:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    if not pwd_ctx.verify(user.password, db_user["password"]):
+        raise HTTPException(status_code=401, detail="Incorrect password")
+
+    status = db_user.get("status", "active")
+    if status == "pending":
+        raise HTTPException(status_code=403, detail="Account pending approval. Please wait for admin to approve.")
+    if status == "rejected":
+        raise HTTPException(status_code=403, detail="Account rejected. Contact admin.")
+
+    is_super = user.email == SUPER_ADMIN_EMAIL and user.role == "admin"
+
+    token = create_token({
+        "email": db_user["email"],
+        "role": db_user["role"],
+        "name": db_user["name"],
+        "is_super": is_super,
+    })
+
+    return {
+        "token": token,
+        "role": db_user["role"],
+        "name": db_user["name"],
+        "is_super": is_super,
+    }
 </file>
 
 <file path="backend/routes/papers.py">
