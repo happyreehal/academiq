@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
 load_dotenv()
 
 router = APIRouter()
@@ -62,7 +63,9 @@ def send_otp_email(to_email: str, otp: str, name: str):
 
         msg.attach(MIMEText(html, "html"))
 
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        # --- UPDATED SMTP STARTTLS LOGIC ---
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()  # Port 587 ke liye TLS encryption start karna padta hai
             server.login(GMAIL_USER, GMAIL_PASS)
             server.sendmail(GMAIL_USER, to_email, msg.as_string())
 
