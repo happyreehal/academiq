@@ -277,6 +277,17 @@ export default function AdminDashboard() {
     ? ((subjects[form.department]?.[form.course]?.[form.semester]) || [])
     : [];
 
+  // ✅ FIX: Cloudinary URL ko /raw/upload/ mein convert karo taaki PDF sahi mile
+  const viewUrl = (url) => {
+    const cleanUrl = url.replace("/image/upload/fl_attachment/", "/raw/upload/")
+                        .replace("/image/upload/", "/raw/upload/");
+    return `https://docs.google.com/viewer?url=${encodeURIComponent(cleanUrl)}`;
+  };
+
+  const downloadUrl = (url) => {
+    return `${API}/papers/download?url=${encodeURIComponent(url)}`;
+  };
+
   const filteredPapers = papers.filter(p => {
     if (filterDept && p.department !== filterDept) return false;
     if (filterSem && p.semester !== filterSem) return false;
@@ -355,7 +366,6 @@ export default function AdminDashboard() {
         
         .card { background:rgba(255,255,255,0.02); border-radius:4px; border:1px solid rgba(255,255,255,0.06); padding:36px; backdrop-filter: blur(20px); }
         
-        /* Headers inside cards */
         .card-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; color: white; margin: 0 0 24px; }
         .label-text { display:block; font-size:11px; font-weight:600; color:rgba(255,255,255,0.5); margin-bottom:8px; letter-spacing:1px; text-transform:uppercase; }
       `}</style>
@@ -491,9 +501,13 @@ export default function AdminDashboard() {
                   <div style={{color:"rgba(255,255,255,0.3)", fontSize:"11px"}}>By: {paper.uploaded_by}</div>
                 </div>
                 <div style={{display:"flex", gap:"12px"}}>
-                  <a href={paper.file_url} target="_blank" rel="noreferrer"
+                  <a href={viewUrl(paper.file_url)} target="_blank" rel="noreferrer"
                     style={{padding:"8px 16px", background:"rgba(29,158,117,0.1)", color:"#1D9E75", borderRadius:"4px", fontSize:"12px", fontWeight:"500", textDecoration:"none", border:"1px solid rgba(29,158,117,0.3)", transition:"all 0.3s"}}>
                     👁️ View
+                  </a>
+                  <a href={downloadUrl(paper.file_url)} target="_blank" rel="noreferrer"
+                    style={{padding:"8px 16px", background:"linear-gradient(135deg, #1D9E75, #0d7a5a)", color:"white", borderRadius:"4px", fontSize:"12px", fontWeight:"500", textDecoration:"none", border:"none", transition:"all 0.3s"}}>
+                    ⬇️ Download
                   </a>
                   <button className="btn-danger" onClick={() => deletePaper(paper.public_id)}>🗑️ Delete</button>
                 </div>
