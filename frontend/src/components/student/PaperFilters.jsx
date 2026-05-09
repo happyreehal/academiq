@@ -9,7 +9,6 @@ export default function PaperFilters({ departments, deptCourses, subjects, loadi
     subject: "" 
   });
 
-  // Get filtered options based on selections
   const filteredCourses = filters.department 
     ? (deptCourses[filters.department] || []) 
     : [];
@@ -18,8 +17,12 @@ export default function PaperFilters({ departments, deptCourses, subjects, loadi
     ? (subjects[filters.department]?.[filters.course]?.[filters.semester] || [])
     : [];
 
-  const handleSearch = () => {
-    onSearch(filters);
+  const handleSearch = () => onSearch(filters);
+
+  // ✅ Fix 3 — Reset handler
+  const handleReset = () => {
+    setFilters({ department: "", course: "", semester: "", subject: "" });
+    onSearch({ department: "", course: "", semester: "", subject: "" });
   };
 
   return (
@@ -34,6 +37,7 @@ export default function PaperFilters({ departments, deptCourses, subjects, loadi
           <select 
             className="student-form-input" 
             value={filters.department}
+            disabled={loading}
             onChange={e => setFilters({ 
               ...filters, 
               department: e.target.value, 
@@ -59,7 +63,7 @@ export default function PaperFilters({ departments, deptCourses, subjects, loadi
               semester: "", 
               subject: "" 
             })}
-            disabled={!filters.department}
+            disabled={!filters.department || loading}
           >
             <option value="">
               {filters.department ? "All Courses" : "Select Department first"}
@@ -79,7 +83,7 @@ export default function PaperFilters({ departments, deptCourses, subjects, loadi
               semester: e.target.value, 
               subject: "" 
             })}
-            disabled={!filters.course}
+            disabled={!filters.course || loading}
           >
             <option value="">
               {filters.course ? "All Semesters" : "Select Course first"}
@@ -95,7 +99,7 @@ export default function PaperFilters({ departments, deptCourses, subjects, loadi
             className="student-form-input" 
             value={filters.subject}
             onChange={e => setFilters({ ...filters, subject: e.target.value })}
-            disabled={!filters.semester}
+            disabled={!filters.semester || loading}
           >
             <option value="">
               {filters.semester ? "All Subjects" : "Select Semester first"}
@@ -105,14 +109,29 @@ export default function PaperFilters({ departments, deptCourses, subjects, loadi
         </div>
       </div>
 
-      {/* Search Button */}
-      <button 
-        onClick={handleSearch} 
-        disabled={loading}
-        className="btn-search"
-      >
-        {loading ? "⏳ Searching..." : "🔍 Search Papers"}
-      </button>
+      {/* Buttons */}
+      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+        {/* ✅ Fix 1 — department required */}
+        <button 
+          onClick={handleSearch} 
+          disabled={loading || !filters.department}
+          className="btn-search"
+          style={{ flex: 1 }}
+        >
+          {loading ? "⏳ Searching..." : "🔍 Search Papers"}
+        </button>
+
+        {/* ✅ Fix 3 — Reset button */}
+        {(filters.department || filters.course || filters.semester || filters.subject) && (
+          <button
+            onClick={handleReset}
+            disabled={loading}
+            className="btn-reset"
+          >
+            ✕ Reset
+          </button>
+        )}
+      </div>
     </div>
   );
 }

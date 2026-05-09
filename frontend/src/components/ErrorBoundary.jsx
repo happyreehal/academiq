@@ -73,7 +73,7 @@ class ErrorBoundary extends Component {
             marginBottom: "8px",
             fontWeight: "300",
           }}>
-            Don't worry, it happens sometimes. Our team has been notified.
+            Try refreshing the page or going back home.
           </p>
           
           <p style={{
@@ -81,7 +81,7 @@ class ErrorBoundary extends Component {
             fontSize: "13px",
             marginBottom: "40px",
           }}>
-            Try refreshing the page or going back home.
+            If the problem persists, please try again later.
           </p>
 
           {/* Buttons */}
@@ -141,8 +141,8 @@ class ErrorBoundary extends Component {
             </button>
           </div>
 
-          {/* Error Details (Development only) */}
-          {process.env.NODE_ENV === "development" && this.state.error && (
+          {/* ✅ Fix: process.env → import.meta.env.DEV */}
+          {import.meta.env.DEV && this.state.error && (
             <details style={{
               marginTop: "48px",
               padding: "20px",

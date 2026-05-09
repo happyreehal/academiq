@@ -1,22 +1,27 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Magnetic Button Component
 function MagneticButton({ children, onClick, className, primary = false }) {
   const buttonRef = useRef(null);
+  const rafRef = useRef(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const handleMouseMove = (e) => {
-    if (!buttonRef.current) return;
-    const rect = buttonRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    // Magnetic strength (lower = subtler)
-    setPosition({ x: x * 0.3, y: y * 0.3 });
-  };
+  // ✅ Fix — RAF throttled
+  const handleMouseMove = useCallback((e) => {
+    if (rafRef.current) return;
+    rafRef.current = requestAnimationFrame(() => {
+      if (!buttonRef.current) { rafRef.current = null; return; }
+      const rect = buttonRef.current.getBoundingClientRect();
+      const x = (e.clientX - rect.left - rect.width / 2) * 0.3;
+      const y = (e.clientY - rect.top - rect.height / 2) * 0.3;
+      setPosition({ x, y });
+      rafRef.current = null;
+    });
+  }, []);
 
   const handleMouseLeave = () => {
+    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
     setPosition({ x: 0, y: 0 });
   };
 
@@ -42,15 +47,8 @@ export default function CTA() {
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section 
-      ref={sectionRef}
-      style={{ 
-        padding: "120px 6%", 
-        background: "#040b14", 
-        position: "relative", 
-        textAlign: "center" 
-      }}
-    >
+    <section ref={sectionRef} style={{ padding: "120px 6%", background: "#040b14", position: "relative", textAlign: "center" }}>
+      
       <motion.div 
         initial={{ scaleX: 0 }}
         animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
@@ -61,7 +59,6 @@ export default function CTA() {
         }} 
       />
       
-      {/* Animated Background Glow */}
       <motion.div 
         initial={{ opacity: 0, scale: 0.5 }}
         animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}
@@ -77,19 +74,12 @@ export default function CTA() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6 }}
-          style={{ 
-            fontSize: "11px", color: "#1D9E75", letterSpacing: "3px", 
-            textTransform: "uppercase", marginBottom: "24px" 
-          }}
+          style={{ fontSize: "11px", color: "#1D9E75", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}
         >
           — Get Started
         </motion.div>
         
-        <h2 style={{ 
-          fontFamily: "'Cormorant Garamond', serif", 
-          fontSize: "clamp(32px,5vw,64px)", fontWeight: "300", 
-          color: "white", marginBottom: "24px", lineHeight: "1.1" 
-        }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px,5vw,64px)", fontWeight: "300", color: "white", marginBottom: "24px", lineHeight: "1.1" }}>
           <motion.span
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
@@ -103,11 +93,7 @@ export default function CTA() {
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            style={{ 
-              fontStyle: "italic", color: "#1D9E75", 
-              textShadow: "0 0 15px rgba(29,158,117,0.3)",
-              display: "inline-block",
-            }}
+            style={{ fontStyle: "italic", color: "#1D9E75", textShadow: "0 0 15px rgba(29,158,117,0.3)", display: "inline-block" }}
           >
             Your Exams?
           </motion.span>
@@ -124,10 +110,7 @@ export default function CTA() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          style={{ 
-            color: "rgba(255,255,255,0.35)", fontSize: "14px", 
-            marginBottom: "48px", lineHeight: "1.8", fontWeight: "300" 
-          }}
+          style={{ color: "rgba(255,255,255,0.35)", fontSize: "14px", marginBottom: "48px", lineHeight: "1.8", fontWeight: "300" }}
         >
           Join AcademiQ and access years of question papers with AI-powered practice tests.
         </motion.p>
@@ -139,18 +122,10 @@ export default function CTA() {
           className="cta-btns" 
           style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}
         >
-          <MagneticButton 
-            onClick={() => navigate("/register")}
-            className="btn-primary hover-target"
-            primary={true}
-          >
+          <MagneticButton onClick={() => navigate("/register")} className="btn-primary hover-target" primary={true}>
             Register Now — It's Free
           </MagneticButton>
-          
-          <MagneticButton 
-            onClick={() => navigate("/login")}
-            className="btn-outline hover-target"
-          >
+          <MagneticButton onClick={() => navigate("/login")} className="btn-outline hover-target">
             Sign In →
           </MagneticButton>
         </motion.div>

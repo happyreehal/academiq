@@ -5,17 +5,17 @@ export default function PaperCard({ paper, viewUrl, downloadUrl }) {
       {/* Paper Info */}
       <div>
         <div className="paper-title">
-          {paper.subject} — <span className="paper-year">{paper.academic_year}</span>
+          {paper.subject ?? "Unknown"} — <span className="paper-year">{paper.academic_year ?? "N/A"}</span>
         </div>
         <div className="paper-meta">
-          {paper.department} · {paper.class_name} · {paper.semester} Semester
+          {paper.department ?? "—"} · {paper.class_name ?? "—"} · {paper.semester ?? "—"} Semester
         </div>
       </div>
 
       {/* Action Buttons */}
       <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
         <a 
-          href={viewUrl} 
+          href={viewUrl || "#"} 
           target="_blank" 
           rel="noreferrer" 
           className="btn-view"
@@ -23,7 +23,7 @@ export default function PaperCard({ paper, viewUrl, downloadUrl }) {
           👁️ View
         </a>
         <a 
-          href={downloadUrl} 
+          href={downloadUrl || "#"} 
           target="_blank" 
           rel="noreferrer" 
           className="btn-download"

@@ -218,3 +218,63 @@ def login(user: UserLogin):
         "name": db_user["name"],
         "is_super": is_super,
     }
+@router.post("/forgot-password")
+def forgot_password(body: dict):
+    email = body.get("email")
+    role = body.get("role", "student")
+
+    if not email:
+        raise HTTPException(400, "Email required")
+
+    user = users_col.find_one({"email": email, "role": role})
+    if not user:
+        raise HTTPException(404, "No account found with this email")
+
+    otp = str(random.randint(100000, 999999))
+    expires_at = datetime.utcnow() + timedelta(minutes=10)
+
+    otp_col.update_one(
+        {"email": email, "role": role, "type": "reset"},
+        {"$set": {"otp": otp, "expires_at": expires_at, "verified": False}},
+        upsert=True
+    )
+
+    sent = send_otp_email(email, otp, user.get("name", "User"))
+    if not sent:
+        raise HTTPException(500, "Failed to send OTP email")
+
+    return {"message": "OTP sent to your email"}
+
+
+@router.post("/reset-password")
+def reset_password(body: dict):
+    email = body.get("email")
+    otp = body.get("otp")
+    new_password = body.get("new_password")
+    role = body.get("role", "student")
+
+    if not all([email, otp, new_password]):
+        raise HTTPException(400, "All fields required")
+
+    if len(new_password) < 8:
+        raise HTTPException(400, "Password must be at least 8 characters")
+
+    record = otp_col.find_one({"email": email, "role": role, "type": "reset"})
+    if not record:
+        raise HTTPException(400, "OTP not found. Please request again.")
+
+    if datetime.utcnow() > record["expires_at"]:
+        raise HTTPException(400, "OTP expired. Please request again.")
+
+    if record["otp"] != otp:
+        raise HTTPException(400, "Invalid OTP. Please try again.")
+
+    hashed_pw = pwd_ctx.hash(new_password)
+    users_col.update_one(
+        {"email": email, "role": role},
+        {"$set": {"password": hashed_pw}}
+    )
+
+    otp_col.delete_one({"email": email, "role": role, "type": "reset"})
+
+    return {"message": "Password reset successfully"}

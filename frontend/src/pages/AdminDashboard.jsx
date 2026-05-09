@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import useAdminData from "../hooks/useAdminData";
 import "../styles/admin.css";
 
-// Components
 import AdminNavbar from "../components/admin/AdminNavbar";
 import AdminTabs from "../components/admin/AdminTabs";
 import UploadTab from "../components/admin/UploadTab";
@@ -18,7 +17,6 @@ export default function AdminDashboard() {
   const isSuperAdmin = user?.is_super;
   const [activeTab, setActiveTab] = useState("upload");
 
-  // All data and actions from custom hook
   const {
     departments, courses, subjects, deptCourses,
     students, admins, papers, currentSecret,
@@ -33,9 +31,14 @@ export default function AdminDashboard() {
     deletePaper, uploadPaper,
   } = useAdminData(activeTab, isSuperAdmin);
 
-  // Counts for badges
   const pendingStudentsCount = students.filter(s => s.status === "pending").length;
   const pendingAdminsCount = admins.filter(a => a.status === "pending").length;
+
+  // ✅ Page title
+  useEffect(() => {
+    document.title = "Admin Dashboard | AcademiQ";
+    return () => { document.title = "AcademiQ"; };
+  }, []);
 
   return (
     <div style={{ 
@@ -46,8 +49,8 @@ export default function AdminDashboard() {
       {/* Navbar */}
       <AdminNavbar />
 
-      {/* Main Content */}
-      <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "40px 20px" }}>
+      {/* ✅ Fix: padding-top 100px so content not hidden behind navbar */}
+      <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "100px 20px 40px" }}>
         
         {/* Tabs Navigation */}
         <AdminTabs 

@@ -1,50 +1,55 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { API, authHeaders } from "../data/adminConstants";
 
 export default function useAdminData(activeTab, isSuperAdmin) {
-  // ============ STATES ============
-  
-  // Settings data
+
   const [departments, setDepartments] = useState([]);
   const [courses, setCourses] = useState([]);
   const [subjects, setSubjects] = useState({});
   const [deptCourses, setDeptCourses] = useState({});
-  
-  // Students & Admins
   const [students, setStudents] = useState([]);
   const [admins, setAdmins] = useState([]);
-  
-  // Papers
   const [papers, setPapers] = useState([]);
-  
-  // Secret
   const [currentSecret, setCurrentSecret] = useState("");
-  
-  // Messages
   const [settingsMsg, setSettingsMsg] = useState("");
   const [papersMsg, setPapersMsg] = useState("");
   const [superMsg, setSuperMsg] = useState("");
 
-  // ============ FLASH MESSAGES ============
-  
-  const flash = (msg) => { 
-    setSettingsMsg(msg); 
-    setTimeout(() => setSettingsMsg(""), 3000); 
-  };
-  
-  const flashPapers = (msg) => { 
-    setPapersMsg(msg); 
-    setTimeout(() => setPapersMsg(""), 3000); 
-  };
-  
-  const flashSuper = (msg) => { 
-    setSuperMsg(msg); 
-    setTimeout(() => setSuperMsg(""), 3000); 
+  // ✅ Fix 1 — timeout refs for cleanup
+  const settingsTimer = useRef(null);
+  const papersTimer = useRef(null);
+  const superTimer = useRef(null);
+
+  const flash = (msg) => {
+    if (settingsTimer.current) clearTimeout(settingsTimer.current);
+    setSettingsMsg(msg);
+    settingsTimer.current = setTimeout(() => setSettingsMsg(""), 3000);
   };
 
+  const flashPapers = (msg) => {
+    if (papersTimer.current) clearTimeout(papersTimer.current);
+    setPapersMsg(msg);
+    papersTimer.current = setTimeout(() => setPapersMsg(""), 3000);
+  };
+
+  const flashSuper = (msg) => {
+    if (superTimer.current) clearTimeout(superTimer.current);
+    setSuperMsg(msg);
+    superTimer.current = setTimeout(() => setSuperMsg(""), 3000);
+  };
+
+  // ✅ Fix 1 cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (settingsTimer.current) clearTimeout(settingsTimer.current);
+      if (papersTimer.current) clearTimeout(papersTimer.current);
+      if (superTimer.current) clearTimeout(superTimer.current);
+    };
+  }, []);
+
   // ============ FETCH FUNCTIONS ============
-  
+
   async function fetchSettings() {
     try {
       const [d, c, s, dc] = await Promise.all([
@@ -57,39 +62,49 @@ export default function useAdminData(activeTab, isSuperAdmin) {
       setCourses(c.data.courses);
       setSubjects(s.data.subjects);
       setDeptCourses(dc.data.dept_courses);
-    } catch (_) {}
+    } catch {
+      // ✅ Fix 2 — silent ok hai settings ke liye
+      console.error("Failed to load settings");
+    }
   }
 
   async function fetchStudents() {
     try {
       const res = await axios.get(`${API}/settings/students`, { headers: authHeaders() });
       setStudents(res.data.students);
-    } catch (_) {}
+    } catch {
+      console.error("Failed to load students");
+    }
   }
 
   async function fetchPapers() {
     try {
       const res = await axios.get(`${API}/papers/all`, { headers: authHeaders() });
       setPapers(res.data.papers);
-    } catch (_) {}
+    } catch {
+      console.error("Failed to load papers");
+    }
   }
 
   async function fetchAdmins() {
     try {
       const res = await axios.get(`${API}/settings/admins`, { headers: authHeaders() });
       setAdmins(res.data.admins);
-    } catch (_) {}
+    } catch {
+      console.error("Failed to load admins");
+    }
   }
 
   async function fetchSecret() {
     try {
       const res = await axios.get(`${API}/settings/admin-secret`, { headers: authHeaders() });
       setCurrentSecret(res.data.secret);
-    } catch (_) {}
+    } catch {
+      console.error("Failed to load secret");
+    }
   }
 
-  // ============ EFFECTS ============
-  
+  // ✅ Fix 3 — proper dependencies
   useEffect(() => { fetchSettings(); }, []);
   useEffect(() => { if (activeTab === "students") fetchStudents(); }, [activeTab]);
   useEffect(() => { if (activeTab === "papers") fetchPapers(); }, [activeTab]);
@@ -97,13 +112,13 @@ export default function useAdminData(activeTab, isSuperAdmin) {
   useEffect(() => { if (activeTab === "superadmin" && isSuperAdmin) fetchSecret(); }, [activeTab, isSuperAdmin]);
 
   // ============ STUDENT ACTIONS ============
-  
+
   async function approveStudent(email) {
     try {
       await axios.post(`${API}/settings/students/${encodeURIComponent(email)}/approve`, {}, { headers: authHeaders() });
       setStudents(prev => prev.map(s => s.email === email ? { ...s, status: "active" } : s));
       flash("✅ Student approved");
-    } catch (err) { flash("⚠️ Error"); }
+    } catch { flash("⚠️ Error approving student"); }
   }
 
   async function rejectStudent(email) {
@@ -111,7 +126,7 @@ export default function useAdminData(activeTab, isSuperAdmin) {
       await axios.post(`${API}/settings/students/${encodeURIComponent(email)}/reject`, {}, { headers: authHeaders() });
       setStudents(prev => prev.map(s => s.email === email ? { ...s, status: "rejected" } : s));
       flash("❌ Student rejected");
-    } catch (err) { flash("⚠️ Error"); }
+    } catch { flash("⚠️ Error rejecting student"); }
   }
 
   async function removeStudent(email) {
@@ -119,18 +134,18 @@ export default function useAdminData(activeTab, isSuperAdmin) {
     try {
       await axios.delete(`${API}/settings/students/${encodeURIComponent(email)}`, { headers: authHeaders() });
       setStudents(prev => prev.filter(s => s.email !== email));
-      flash("🗑️ Removed");
-    } catch (err) { flash("⚠️ Error"); }
+      flash("🗑️ Student removed");
+    } catch { flash("⚠️ Error removing student"); }
   }
 
   // ============ ADMIN ACTIONS ============
-  
+
   async function approveAdmin(email) {
     try {
       await axios.post(`${API}/settings/admins/${encodeURIComponent(email)}/approve`, {}, { headers: authHeaders() });
       setAdmins(prev => prev.map(a => a.email === email ? { ...a, status: "active" } : a));
       flashSuper("✅ Admin approved");
-    } catch (err) { flashSuper("⚠️ Error"); }
+    } catch { flashSuper("⚠️ Error approving admin"); }
   }
 
   async function rejectAdmin(email) {
@@ -138,7 +153,7 @@ export default function useAdminData(activeTab, isSuperAdmin) {
       await axios.post(`${API}/settings/admins/${encodeURIComponent(email)}/reject`, {}, { headers: authHeaders() });
       setAdmins(prev => prev.map(a => a.email === email ? { ...a, status: "rejected" } : a));
       flashSuper("❌ Admin rejected");
-    } catch (err) { flashSuper("⚠️ Error"); }
+    } catch { flashSuper("⚠️ Error rejecting admin"); }
   }
 
   async function removeAdmin(email) {
@@ -146,13 +161,13 @@ export default function useAdminData(activeTab, isSuperAdmin) {
     try {
       await axios.delete(`${API}/settings/admins/${encodeURIComponent(email)}`, { headers: authHeaders() });
       setAdmins(prev => prev.filter(a => a.email !== email));
-      flashSuper("🗑️ Removed");
-    } catch (err) { flashSuper("⚠️ Error"); }
+      flashSuper("🗑️ Admin removed");
+    } catch { flashSuper("⚠️ Error removing admin"); }
   }
 
   async function updateSecret(newSecret) {
-    if (newSecret.length < 8) { 
-      flashSuper("⚠️ Min 8 characters"); 
+    if (newSecret.length < 8) {
+      flashSuper("⚠️ Min 8 characters");
       return false;
     }
     try {
@@ -160,14 +175,14 @@ export default function useAdminData(activeTab, isSuperAdmin) {
       setCurrentSecret(newSecret);
       flashSuper("✅ Secret updated");
       return true;
-    } catch (err) { 
-      flashSuper("⚠️ Error"); 
+    } catch {
+      flashSuper("⚠️ Error updating secret");
       return false;
     }
   }
 
   // ============ DEPARTMENT ACTIONS ============
-  
+
   async function addDept(newDept) {
     if (!newDept.trim()) return;
     try {
@@ -183,12 +198,12 @@ export default function useAdminData(activeTab, isSuperAdmin) {
       const res = await axios.delete(`${API}/settings/departments/${encodeURIComponent(name)}`, { headers: authHeaders() });
       setDepartments(res.data.departments);
       fetchSettings();
-      flash("🗑️ Removed");
-    } catch (err) { flash("⚠️ Error"); }
+      flash("🗑️ Department removed");
+    } catch { flash("⚠️ Error removing department"); }
   }
 
   // ============ COURSE ACTIONS ============
-  
+
   async function addCourse(newCourse) {
     if (!newCourse.trim()) return;
     try {
@@ -203,12 +218,12 @@ export default function useAdminData(activeTab, isSuperAdmin) {
     try {
       const res = await axios.delete(`${API}/settings/courses/${encodeURIComponent(name)}`, { headers: authHeaders() });
       setCourses(res.data.courses);
-      flash("🗑️ Removed");
-    } catch (err) { flash("⚠️ Error"); }
+      flash("🗑️ Course removed");
+    } catch { flash("⚠️ Error removing course"); }
   }
 
   // ============ SUBJECT ACTIONS ============
-  
+
   async function addSubject(dept, course, sem, subj) {
     if (!dept || !course || !sem || !subj.trim()) {
       flash("⚠️ All fields required for subject");
@@ -230,12 +245,12 @@ export default function useAdminData(activeTab, isSuperAdmin) {
         { headers: authHeaders() }
       );
       setSubjects(res.data.subjects);
-      flash("🗑️ Removed");
-    } catch (err) { flash("⚠️ Error"); }
+      flash("🗑️ Subject removed");
+    } catch { flash("⚠️ Error removing subject"); }
   }
 
   // ============ DEPT-COURSE MAPPING ============
-  
+
   async function addDeptCourse(dept, course) {
     if (!dept || !course) return;
     try {
@@ -249,12 +264,12 @@ export default function useAdminData(activeTab, isSuperAdmin) {
     try {
       const res = await axios.delete(`${API}/settings/dept-courses/${encodeURIComponent(dept)}/${encodeURIComponent(course)}`, { headers: authHeaders() });
       setDeptCourses(res.data.dept_courses);
-      flash("🗑️ Removed");
-    } catch (err) { flash("⚠️ Error"); }
+      flash("🗑️ Course unlinked");
+    } catch { flash("⚠️ Error removing course link"); }
   }
 
   // ============ PAPER ACTIONS ============
-  
+
   async function deletePaper(public_id) {
     if (!window.confirm("Delete this paper permanently?")) return;
     try {
@@ -271,24 +286,19 @@ export default function useAdminData(activeTab, isSuperAdmin) {
       });
       return { success: true, message: "Paper uploaded successfully!" };
     } catch (err) {
-      return { 
-        success: false, 
-        message: err.response?.data?.detail || "Upload failed" 
+      return {
+        success: false,
+        message: err.response?.data?.detail || "Upload failed"
       };
     }
   }
 
-  // ============ RETURN EVERYTHING ============
-  
+  // ============ RETURN ============
+
   return {
-    // Data
     departments, courses, subjects, deptCourses,
     students, admins, papers, currentSecret,
-    
-    // Messages
     settingsMsg, papersMsg, superMsg,
-    
-    // Actions
     approveStudent, rejectStudent, removeStudent,
     approveAdmin, rejectAdmin, removeAdmin,
     updateSecret,

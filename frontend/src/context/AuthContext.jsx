@@ -4,8 +4,14 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem("academiq_user");
-    return saved ? JSON.parse(saved) : null;
+    try {
+      const saved = localStorage.getItem("academiq_user");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      localStorage.removeItem("academiq_user");
+      localStorage.removeItem("academiq_token");
+      return null;
+    }
   });
 
   const login = (userData, token) => {

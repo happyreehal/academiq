@@ -2,13 +2,11 @@ import { useEffect } from "react";
 import useAIGenerator from "../hooks/useAIGenerator";
 import "../styles/ai.css";
 
-// Components
 import AINavbar from "../components/ai/AINavbar";
 import PdfUploadCard from "../components/ai/PdfUploadCard";
 import ResultDisplay from "../components/ai/ResultDisplay";
 
 export default function AIGenerator() {
-  // All AI logic from custom hook
   const {
     syllabusPdf, setSyllabusPdf,
     pastPapersPdf, setPastPapersPdf,
@@ -19,12 +17,10 @@ export default function AIGenerator() {
     generatePaper, submitFeedback,
   } = useAIGenerator();
 
-  // Set body background
+  // ✅ Page title
   useEffect(() => {
-    document.body.style.margin = "0";
-    document.body.style.backgroundColor = "#030810";
-    document.body.style.overflowX = "hidden";
-    return () => { document.body.style.margin = ""; };
+    document.title = "AI Generator | AcademiQ";
+    return () => { document.title = "AcademiQ"; };
   }, []);
 
   return (
@@ -39,7 +35,7 @@ export default function AIGenerator() {
       position: "relative"
     }}>
       
-      {/* Floating Particles - Background */}
+      {/* Floating Particles */}
       <div className="ai-particle" style={{ width: '40px', height: '40px', left: '10%', animationDelay: '0s' }} />
       <div className="ai-particle" style={{ width: '20px', height: '20px', left: '30%', animationDelay: '5s' }} />
       <div className="ai-particle" style={{ width: '60px', height: '60px', left: '70%', animationDelay: '2s' }} />
@@ -57,8 +53,8 @@ export default function AIGenerator() {
       <div style={{ 
         maxWidth: "800px", 
         width: "100%", 
-        margin: "60px auto", 
-        padding: "0 20px", 
+        margin: "0 auto", 
+        padding: "100px 20px 60px",
         flex: 1, 
         position: "relative", 
         zIndex: 1 
@@ -91,7 +87,7 @@ export default function AIGenerator() {
         {/* Generate Button */}
         <button 
           onClick={generatePaper} 
-          disabled={loading} 
+          disabled={loading || !syllabusPdf}
           className="btn-generate"
         >
           {loading ? "⚡ Processing Data..." : "🤖 Generate Practice Paper"}

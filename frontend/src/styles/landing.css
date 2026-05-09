@@ -363,3 +363,8 @@ div:hover > .divider {
   }
   .feat-grid { grid-template-columns: 1fr !important; }
 }
+@media (max-width: 768px) {
+  .nav-links { display: none !important; }
+  .nav-actions { display: none !important; }
+  .nav-hamburger { display: flex !important; }
+}

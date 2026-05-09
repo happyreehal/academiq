@@ -1,28 +1,47 @@
 import { useState } from "react";
 import { SEMESTERS } from "../../data/adminConstants";
 
+const MAX_FILE_SIZE_MB = 10;
+
 export default function UploadTab({ departments, deptCourses, subjects, uploadPaper }) {
   const [form, setForm] = useState({ 
-    department: "", 
-    course: "", 
-    semester: "", 
-    subject: "", 
-    academic_year: "", 
-    file: null 
+    department: "", course: "", semester: "", 
+    subject: "", academic_year: "", file: null 
   });
   const [dragOver, setDragOver] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadMsg, setUploadMsg] = useState("");
   const [uploadErr, setUploadErr] = useState("");
 
-  // Get filtered options based on selections
   const uploadCourses = form.department ? (deptCourses[form.department] || []) : [];
   const uploadSubjects = (form.department && form.course && form.semester)
     ? ((subjects[form.department]?.[form.course]?.[form.semester]) || [])
     : [];
 
+  // ✅ Fix 3 — auto clear messages
+  const showMsg = (msg) => {
+    setUploadMsg(msg);
+    setTimeout(() => setUploadMsg(""), 4000);
+  };
+  const showErr = (msg) => {
+    setUploadErr(msg);
+    setTimeout(() => setUploadErr(""), 4000);
+  };
+
+  // ✅ Fix 1 — file validation
+  const validateFile = (file) => {
+    if (!file) return "No file selected";
+    if (!file.name.endsWith(".pdf")) return "Only PDF files allowed";
+    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) return `File too large. Max ${MAX_FILE_SIZE_MB}MB`;
+    return null;
+  };
+
   const handleUpload = async (e) => {
     e.preventDefault();
+    
+    const fileError = validateFile(form.file);
+    if (fileError) { showErr(fileError); return; }
+
     setUploading(true);
     setUploadMsg(""); 
     setUploadErr("");
@@ -38,10 +57,10 @@ export default function UploadTab({ departments, deptCourses, subjects, uploadPa
     const result = await uploadPaper(data);
     
     if (result.success) {
-      setUploadMsg(result.message);
+      showMsg(result.message);
       setForm({ department: "", course: "", semester: "", subject: "", academic_year: "", file: null });
     } else {
-      setUploadErr(result.message);
+      showErr(result.message);
     }
     
     setUploading(false);
@@ -51,10 +70,14 @@ export default function UploadTab({ departments, deptCourses, subjects, uploadPa
     e.preventDefault();
     setDragOver(false);
     const f = e.dataTransfer.files[0];
-    if (f?.name.endsWith(".pdf")) {
-      setForm({ ...form, file: f });
-    }
+    if (!f) return;
+    const err = validateFile(f);
+    if (err) { showErr(err); return; }
+    setForm({ ...form, file: f });
   };
+
+  // ✅ Fix 2 — current year dynamic
+  const currentYear = new Date().getFullYear();
 
   return (
     <div className="card">
@@ -65,7 +88,6 @@ export default function UploadTab({ departments, deptCourses, subjects, uploadPa
       
       <form onSubmit={handleUpload} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
         
-        {/* Top Row: Dept + Course + Sem + Year */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
           {/* Department */}
           <div>
@@ -75,6 +97,7 @@ export default function UploadTab({ departments, deptCourses, subjects, uploadPa
               value={form.department} 
               onChange={e => setForm({ ...form, department: e.target.value, course: "", semester: "", subject: "" })} 
               required
+              disabled={uploading}
             >
               <option value="">Select Department</option>
               {departments.map(d => <option key={d}>{d}</option>)}
@@ -89,7 +112,7 @@ export default function UploadTab({ departments, deptCourses, subjects, uploadPa
               value={form.course} 
               onChange={e => setForm({ ...form, course: e.target.value, semester: "", subject: "" })} 
               required 
-              disabled={!form.department}
+              disabled={!form.department || uploading}
             >
               <option value="">{form.department ? "Select Course" : "Select Dept first"}</option>
               {uploadCourses.map(c => <option key={c}>{c}</option>)}
@@ -104,7 +127,7 @@ export default function UploadTab({ departments, deptCourses, subjects, uploadPa
               value={form.semester} 
               onChange={e => setForm({ ...form, semester: e.target.value, subject: "" })} 
               required 
-              disabled={!form.course}
+              disabled={!form.course || uploading}
             >
               <option value="">{form.course ? "Select Semester" : "Select Course first"}</option>
               {SEMESTERS.map(s => <option key={s}>{s}</option>)}
@@ -122,7 +145,8 @@ export default function UploadTab({ departments, deptCourses, subjects, uploadPa
               required 
               placeholder="e.g. 2024" 
               min="2000" 
-              max="2030" 
+              max={currentYear + 1}
+              disabled={uploading}
             />
           </div>
         </div>
@@ -135,11 +159,11 @@ export default function UploadTab({ departments, deptCourses, subjects, uploadPa
             value={form.subject} 
             onChange={e => setForm({ ...form, subject: e.target.value })} 
             required 
-            disabled={!form.semester}
+            disabled={!form.semester || uploading}
           >
             <option value="">
               {form.semester 
-                ? (uploadSubjects.length > 0 ? "Select Subject" : "No subjects for this semester — add in Settings") 
+                ? (uploadSubjects.length > 0 ? "Select Subject" : "No subjects — add in Settings") 
                 : "Select Semester first"}
             </option>
             {uploadSubjects.map(s => <option key={s}>{s}</option>)}
@@ -148,7 +172,7 @@ export default function UploadTab({ departments, deptCourses, subjects, uploadPa
 
         {/* PDF Drop Zone */}
         <div>
-          <label className="label-text">Upload PDF</label>
+          <label className="label-text">Upload PDF (Max {MAX_FILE_SIZE_MB}MB)</label>
           <div 
             className={`drop-zone ${dragOver ? "active" : ""}`}
             onDragOver={e => { e.preventDefault(); setDragOver(true); }}
@@ -161,7 +185,12 @@ export default function UploadTab({ departments, deptCourses, subjects, uploadPa
               type="file" 
               accept=".pdf" 
               style={{ display: "none" }} 
-              onChange={e => setForm({ ...form, file: e.target.files[0] })} 
+              onChange={e => {
+                const f = e.target.files[0];
+                const err = validateFile(f);
+                if (err) { showErr(err); return; }
+                setForm({ ...form, file: f });
+              }} 
             />
             
             {form.file ? (
@@ -169,7 +198,7 @@ export default function UploadTab({ departments, deptCourses, subjects, uploadPa
                 <div style={{ fontSize: "32px", marginBottom: "12px" }}>📄</div>
                 <div style={{ color: "#1D9E75", fontWeight: "500" }}>{form.file.name}</div>
                 <div style={{ color: "rgba(255,255,255,0.4)", fontSize: "12px", marginTop: "6px" }}>
-                  Click to change
+                  {(form.file.size / 1024 / 1024).toFixed(2)} MB • Click to change
                 </div>
               </div>
             ) : (
@@ -186,7 +215,7 @@ export default function UploadTab({ departments, deptCourses, subjects, uploadPa
           </div>
         </div>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <button 
           type="submit" 
           disabled={uploading} 

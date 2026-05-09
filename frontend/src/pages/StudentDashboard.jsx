@@ -1,13 +1,12 @@
+import { useEffect } from "react";
 import useStudentData from "../hooks/useStudentData";
 import "../styles/student.css";
 
-// Components
 import StudentNavbar from "../components/student/StudentNavbar";
 import PaperFilters from "../components/student/PaperFilters";
 import PaperResults from "../components/student/PaperResults";
 
 export default function StudentDashboard() {
-  // All data and actions from custom hook
   const {
     departments,
     deptCourses,
@@ -20,6 +19,12 @@ export default function StudentDashboard() {
     getDownloadUrl,
   } = useStudentData();
 
+  // ✅ Page title
+  useEffect(() => {
+    document.title = "Student Dashboard | AcademiQ";
+    return () => { document.title = "AcademiQ"; };
+  }, []);
+
   return (
     <div style={{ 
       minHeight: "100vh", 
@@ -30,7 +35,7 @@ export default function StudentDashboard() {
       <StudentNavbar />
 
       {/* Main Content */}
-      <div style={{ maxWidth: "860px", margin: "0 auto", padding: "60px 20px" }}>
+      <div style={{ maxWidth: "860px", margin: "0 auto", padding: "100px 20px 60px" }}>
         
         {/* Filter Card */}
         <PaperFilters 
@@ -41,14 +46,13 @@ export default function StudentDashboard() {
           onSearch={searchPapers}
         />
 
-        {/* Results - only show after first search */}
-        {searched && (
-          <PaperResults 
-            papers={papers}
-            getViewUrl={getViewUrl}
-            getDownloadUrl={getDownloadUrl}
-          />
-        )}
+        {/* ✅ Always render — searched prop se handle hoga */}
+        <PaperResults 
+          papers={papers}
+          searched={searched}
+          getViewUrl={getViewUrl}
+          getDownloadUrl={getDownloadUrl}
+        />
       </div>
     </div>
   );

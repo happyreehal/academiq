@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Lenis from "lenis";
 
-// Context & Wrappers (Keep these eagerly loaded)
+// Context & Wrappers
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -11,7 +11,7 @@ import Loader from "./components/Loader";
 import PageTransition from "./components/PageTransition";
 
 // ============================================
-// LAZY LOAD PAGES (Code Splitting)
+// LAZY LOAD PAGES
 // ============================================
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
@@ -23,7 +23,7 @@ const AIGenerator = lazy(() => import("./pages/AIGenerator"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // ============================================
-// MINI LOADER (For lazy loading)
+// MINI LOADER
 // ============================================
 
 function MiniLoader() {
@@ -56,7 +56,7 @@ function MiniLoader() {
 }
 
 // ============================================
-// ANIMATED ROUTES (with page transitions)
+// ANIMATED ROUTES
 // ============================================
 
 function AnimatedRoutes() {
@@ -112,7 +112,7 @@ function AnimatedRoutes() {
             </ProtectedRoute>
           } />
           
-          {/* 404 - Must be LAST route */}
+          {/* 404 */}
           <Route path="*" element={
             <PageTransition>
               <NotFound />
@@ -126,13 +126,13 @@ function AnimatedRoutes() {
 }
 
 // ============================================
-// MAIN APP COMPONENT
+// MAIN APP
 // ============================================
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
-  // Smooth Scroll Setup (Lenis)
+  // ✅ Fix 1 — RAF loop properly cancel hota hai
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -143,23 +143,22 @@ function App() {
       touchMultiplier: 2,
     });
 
+    let rafId;
     function raf(time) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
-
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
       lenis.destroy();
+      cancelAnimationFrame(rafId);
     };
   }, []);
 
-  // Initial Loader (2 seconds)
+  // ✅ Fix 2 — 1200ms (optimized)
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+    const timer = setTimeout(() => setIsLoading(false), 1200);
     return () => clearTimeout(timer);
   }, []);
 
@@ -179,5 +178,13 @@ function App() {
     </ErrorBoundary>
   );
 }
+// Import add karo
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 
+// Routes me add karo — /login route ke baad
+<Route path="/forgot-password" element={
+  <PageTransition>
+    <ForgotPassword />
+  </PageTransition>
+} />
 export default App;

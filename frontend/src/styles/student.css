@@ -317,3 +317,19 @@
     padding: 24px;
   }
 }
+.btn-reset {
+  padding: 12px 20px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.4);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.3s;
+}
+
+.btn-reset:hover {
+  border-color: #EF4444;
+  color: #EF4444;
+}

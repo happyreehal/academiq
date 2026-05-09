@@ -24,7 +24,7 @@ export default function Footer() {
           className="hover-glow hover-target" 
           style={{ 
             display: "flex", alignItems: "center", 
-            gap: "12px", cursor: "none" 
+            gap: "12px", cursor: "pointer"
           }}
         >
           <img 

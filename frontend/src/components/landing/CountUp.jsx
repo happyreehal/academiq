@@ -6,7 +6,6 @@ export default function CountUp({ value, suffix = "", duration = 2 }) {
   const isInView = useInView(ref, { once: true });
   const motionValue = useMotionValue(0);
   
-  // Check if value is a number or string like "AI", "24/7"
   const numericValue = parseInt(value);
   const isNumeric = !isNaN(numericValue);
   
@@ -14,6 +13,7 @@ export default function CountUp({ value, suffix = "", duration = 2 }) {
     Math.round(latest) + suffix
   );
 
+  // ✅ Fix — all dependencies added
   useEffect(() => {
     if (isInView && isNumeric) {
       const controls = animate(motionValue, numericValue, {
@@ -22,9 +22,8 @@ export default function CountUp({ value, suffix = "", duration = 2 }) {
       });
       return controls.stop;
     }
-  }, [isInView, numericValue, duration]);
+  }, [isInView, isNumeric, numericValue, duration, motionValue]);
 
-  // If not a pure number (like "AI" or "24/7"), just show with fade
   if (!isNumeric) {
     return (
       <motion.span 
@@ -38,6 +37,5 @@ export default function CountUp({ value, suffix = "", duration = 2 }) {
     );
   }
 
-  // For numbers, animate count up
   return <motion.span ref={ref}>{rounded}</motion.span>;
 }

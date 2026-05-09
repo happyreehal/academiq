@@ -3,20 +3,15 @@ import axios from "axios";
 import { API } from "../data/adminConstants";
 
 export default function useStudentData() {
-  // ============ STATES ============
-  
-  // Settings data
+
   const [departments, setDepartments] = useState([]);
   const [deptCourses, setDeptCourses] = useState({});
   const [subjects, setSubjects] = useState({});
-  
-  // Papers data
   const [papers, setPapers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [error, setError] = useState("");
 
-  // ============ FETCH SETTINGS ON MOUNT ============
-  
   useEffect(() => {
     async function fetchSettings() {
       try {
@@ -28,16 +23,25 @@ export default function useStudentData() {
         setDepartments(d.data.departments);
         setDeptCourses(dc.data.dept_courses);
         setSubjects(s.data.subjects);
-      } catch (_) {}
+      } catch {
+        console.error("Failed to load settings");
+      }
     }
     fetchSettings();
   }, []);
 
-  // ============ SEARCH PAPERS ============
-  
   const searchPapers = async (filters) => {
     setLoading(true);
     setSearched(true);
+    setError("");
+
+    if (!filters.department) {
+      setPapers([]);
+      setSearched(false);
+      setLoading(false);
+      return;
+    }
+
     try {
       const params = {};
       if (filters.department) params.department = filters.department;
@@ -48,14 +52,14 @@ export default function useStudentData() {
       const res = await axios.get(`${API}/papers/list`, { params });
       setPapers(res.data.papers);
     } catch (err) {
-      console.error(err);
+      setError(err.response?.data?.detail || "Failed to fetch papers");
+      setPapers([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // ============ URL HELPERS ============
-  
+  // ✅ Google Docs viewer wapas
   const getViewUrl = (url) => {
     const cleanUrl = url
       .replace("/image/upload/fl_attachment/", "/raw/upload/")
@@ -67,8 +71,6 @@ export default function useStudentData() {
     return `${API}/papers/download?url=${encodeURIComponent(url)}`;
   };
 
-  // ============ RETURN EVERYTHING ============
-  
   return {
     departments,
     deptCourses,
@@ -76,6 +78,7 @@ export default function useStudentData() {
     papers,
     loading,
     searched,
+    error,
     searchPapers,
     getViewUrl,
     getDownloadUrl,

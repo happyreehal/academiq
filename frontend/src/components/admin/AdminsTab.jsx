@@ -1,7 +1,5 @@
-import { SUPER_ADMIN_EMAIL } from "../../data/adminConstants";
-
+// ✅ Fix 1 — SUPER_ADMIN_EMAIL import remove, is_super use karo
 export default function AdminsTab({ admins, approveAdmin, rejectAdmin, removeAdmin }) {
-  // Filter admins by status
   const pendingAdmins = admins.filter(a => a.status === "pending");
   const activeAdmins = admins.filter(a => a.status === "active");
 
@@ -23,16 +21,13 @@ export default function AdminsTab({ admins, approveAdmin, rejectAdmin, removeAdm
           pendingAdmins.map(a => (
             <div key={a.email} className="list-item">
               <div>
-                <div className="list-item-name">{a.name}</div>
+                {/* ✅ Fix 2 — fallback */}
+                <div className="list-item-name">{a.name ?? "Unknown"}</div>
                 <div className="list-item-info">{a.email}</div>
               </div>
               <div style={{ display: "flex", gap: "10px" }}>
-                <button className="btn-approve" onClick={() => approveAdmin(a.email)}>
-                  ✅ Approve
-                </button>
-                <button className="btn-reject" onClick={() => rejectAdmin(a.email)}>
-                  ❌ Reject
-                </button>
+                <button className="btn-approve" onClick={() => approveAdmin(a.email)}>✅ Approve</button>
+                <button className="btn-reject" onClick={() => rejectAdmin(a.email)}>❌ Reject</button>
               </div>
             </div>
           ))
@@ -54,20 +49,18 @@ export default function AdminsTab({ admins, approveAdmin, rejectAdmin, removeAdm
           activeAdmins.map(a => (
             <div key={a.email} className="list-item">
               <div>
-                <div 
-                  className="list-item-name" 
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  {a.name}
-                  {a.email === SUPER_ADMIN_EMAIL && (
+                <div className="list-item-name" style={{ display: "flex", alignItems: "center" }}>
+                  {a.name ?? "Unknown"}
+                  {/* ✅ Fix 1 — is_super use karo */}
+                  {a.is_super && (
                     <span className="badge-super">SUPER</span>
                   )}
                 </div>
                 <div className="list-item-info">{a.email}</div>
               </div>
               
-              {/* Don't show remove button for super admin */}
-              {a.email !== SUPER_ADMIN_EMAIL && (
+              {/* ✅ Fix 1 — is_super se check */}
+              {!a.is_super && (
                 <button className="btn-danger" onClick={() => removeAdmin(a.email)}>
                   🗑️ Remove
                 </button>

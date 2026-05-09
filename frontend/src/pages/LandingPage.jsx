@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import "../styles/landing.css";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -17,8 +17,20 @@ export default function LandingPage() {
   const [visibleSections, setVisibleSections] = useState({});
   const canvasRef = useRef(null);
 
-  // Particle Canvas Animation
+  // ✅ Check mobile + reduced motion
+  const isMobile = window.innerWidth <= 768;
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const enableCanvas = !isMobile && !prefersReducedMotion;
+
+  // ✅ Page title
   useEffect(() => {
+    document.title = "AcademiQ | Smart Question Paper Portal";
+    return () => { document.title = "AcademiQ"; };
+  }, []);
+
+  // Particle Canvas — only on desktop
+  useEffect(() => {
+    if (!enableCanvas) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -26,7 +38,8 @@ export default function LandingPage() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const particles = Array.from({ length: 80 }, () => ({
+    // ✅ Reduced particles: 80 → 50
+    const particles = Array.from({ length: 50 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       r: Math.random() * 1.5 + 0.3,
@@ -73,22 +86,35 @@ export default function LandingPage() {
       cancelAnimationFrame(animId); 
       window.removeEventListener("resize", resize); 
     };
+  }, [enableCanvas]);
+
+  // ✅ Throttled scroll + mouse
+  const handleScroll = useCallback(() => {
+    setScrollY(window.scrollY);
   }, []);
 
-  // Scroll + Mouse Tracking
+  // ✅ Throttled mousemove — RAF based
+  const mouseMoveRaf = useRef(null);
+  const handleMouseMove = useCallback((e) => {
+    if (mouseMoveRaf.current) return;
+    mouseMoveRaf.current = requestAnimationFrame(() => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+      mouseMoveRaf.current = null;
+    });
+  }, []);
+
   useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY);
-    const onMouse = (e) => setMousePos({ x: e.clientX, y: e.clientY });
-    window.addEventListener("scroll", onScroll);
-    window.addEventListener("mousemove", onMouse);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    if (!isMobile) window.addEventListener("mousemove", handleMouseMove);
     setTimeout(() => setIsLoaded(true), 100);
     return () => { 
-      window.removeEventListener("scroll", onScroll); 
-      window.removeEventListener("mousemove", onMouse); 
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
+      if (mouseMoveRaf.current) cancelAnimationFrame(mouseMoveRaf.current);
     };
-  }, []);
+  }, [handleScroll, handleMouseMove, isMobile]);
 
-  // Intersection Observer for Scroll Animations
+  // Intersection Observer
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => {
@@ -112,26 +138,31 @@ export default function LandingPage() {
         overflowX: "hidden"
       }}
     >
-      {/* Custom Cursor */}
-      <div className="cursor-dot" style={{ left: mousePos.x, top: mousePos.y }} />
-      <div className="cursor-ring" style={{ left: mousePos.x, top: mousePos.y }} />
+      {/* ✅ Custom Cursor — only desktop */}
+      {!isMobile && (
+        <>
+          <div className="cursor-dot" style={{ left: mousePos.x, top: mousePos.y }} />
+          <div className="cursor-ring" style={{ left: mousePos.x, top: mousePos.y }} />
+        </>
+      )}
 
-      {/* Particle Canvas */}
-      <canvas 
-        ref={canvasRef} 
-        style={{ position: "fixed", top: 0, left: 0, zIndex: 0, pointerEvents: "none" }} 
-      />
+      {/* ✅ Canvas — only desktop */}
+      {enableCanvas && (
+        <canvas 
+          ref={canvasRef} 
+          style={{ position: "fixed", top: 0, left: 0, zIndex: 0, pointerEvents: "none" }} 
+        />
+      )}
 
-      {/* All Sections */}
-<Navbar scrollY={scrollY} />
-<Hero isLoaded={isLoaded} mousePos={mousePos} />
-<Marquee />              {/* ← YEH ADD KARO */}
-<Features />
-<About />
-<HowItWorks />
-<Developer />
-<CTA />
-<Footer />
+      <Navbar scrollY={scrollY} />
+      <Hero isLoaded={isLoaded} mousePos={mousePos} />
+      <Marquee />
+      <Features />
+      <About />
+      <HowItWorks />
+      <Developer />
+      <CTA />
+      <Footer />
     </div>
   );
 }

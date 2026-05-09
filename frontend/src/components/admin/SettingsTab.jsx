@@ -6,37 +6,40 @@ export default function SettingsTab({
   addDept, removeDept, addCourse, removeCourse,
   addSubject, removeSubject, addDeptCourse, removeDeptCourse 
 }) {
-  // Local input states
   const [newDept, setNewDept] = useState("");
   const [newCourse, setNewCourse] = useState("");
   const [mapDept, setMapDept] = useState("");
   const [mapCourse, setMapCourse] = useState("");
-  
-  // Subject form states
   const [newSubjDept, setNewSubjDept] = useState("");
   const [newSubjCourse, setNewSubjCourse] = useState("");
   const [newSubjSem, setNewSubjSem] = useState("");
   const [newSubj, setNewSubj] = useState("");
 
-  // Handlers
+  // ✅ Fix 1 — trim() + clear only if value exists
   const handleAddDept = () => {
-    addDept(newDept);
+    if (!newDept.trim()) return;
+    addDept(newDept.trim());
     setNewDept("");
   };
 
   const handleAddCourse = () => {
-    addCourse(newCourse);
+    if (!newCourse.trim()) return;
+    addCourse(newCourse.trim());
     setNewCourse("");
   };
 
   const handleAddSubject = () => {
-    addSubject(newSubjDept, newSubjCourse, newSubjSem, newSubj);
+    if (!newSubj.trim()) return;
+    addSubject(newSubjDept, newSubjCourse, newSubjSem, newSubj.trim());
     setNewSubj("");
   };
 
+  // ✅ Fix 2 — mapDept bhi reset karo
   const handleAddDeptCourse = () => {
+    if (!mapDept || !mapCourse) return;
     addDeptCourse(mapDept, mapCourse);
     setMapCourse("");
+    setMapDept("");
   };
 
   return (
@@ -45,7 +48,6 @@ export default function SettingsTab({
       {/* ============ DEPARTMENTS ============ */}
       <div className="card">
         <h2 className="card-title">🏛️ Departments</h2>
-        
         <div style={{ display: "flex", gap: "12px" }}>
           <input 
             className="form-input" 
@@ -56,7 +58,6 @@ export default function SettingsTab({
           />
           <button className="btn-navy" onClick={handleAddDept}>Add</button>
         </div>
-
         <div style={{ marginTop: "20px" }}>
           {departments.length === 0 && (
             <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", fontWeight: "300" }}>
@@ -75,7 +76,6 @@ export default function SettingsTab({
       {/* ============ COURSES ============ */}
       <div className="card">
         <h2 className="card-title">🎓 Courses</h2>
-        
         <div style={{ display: "flex", gap: "12px" }}>
           <input 
             className="form-input" 
@@ -86,7 +86,6 @@ export default function SettingsTab({
           />
           <button className="btn-navy" onClick={handleAddCourse}>Add</button>
         </div>
-
         <div style={{ marginTop: "20px" }}>
           {courses.length === 0 && (
             <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", fontWeight: "300" }}>
@@ -107,56 +106,36 @@ export default function SettingsTab({
         <h2 className="card-title" style={{ marginBottom: "8px" }}>
           🔗 Department → Course Mapping
         </h2>
-        <p style={{ 
-          color: "rgba(255,255,255,0.4)", 
-          fontSize: "13px", 
-          margin: "0 0 24px", 
-          fontWeight: "300" 
-        }}>
+        <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", margin: "0 0 24px", fontWeight: "300" }}>
           Har department ke saath linked courses dikhenge
         </p>
-
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
           <select 
-            className="form-input" 
-            style={{ flex: 1 }} 
-            value={mapDept} 
-            onChange={e => setMapDept(e.target.value)}
+            className="form-input" style={{ flex: 1 }} 
+            value={mapDept} onChange={e => setMapDept(e.target.value)}
           >
             <option value="">Select Department</option>
             {departments.map(d => <option key={d}>{d}</option>)}
           </select>
           <select 
-            className="form-input" 
-            style={{ flex: 1 }} 
-            value={mapCourse} 
-            onChange={e => setMapCourse(e.target.value)}
+            className="form-input" style={{ flex: 1 }} 
+            value={mapCourse} onChange={e => setMapCourse(e.target.value)}
+            disabled={!mapDept}
           >
             <option value="">Select Course</option>
             {courses.map(c => <option key={c}>{c}</option>)}
           </select>
           <button className="btn-navy" onClick={handleAddDeptCourse}>Link</button>
         </div>
-
         <div style={{ marginTop: "24px" }}>
           {departments.map(d => (
-            <div 
-              key={d} 
-              style={{ 
-                marginBottom: "20px", 
-                background: "rgba(255,255,255,0.01)", 
-                padding: "16px", 
-                borderRadius: "4px", 
-                border: "1px solid rgba(255,255,255,0.04)" 
-              }}
-            >
+            <div key={d} style={{ 
+              marginBottom: "20px", background: "rgba(255,255,255,0.01)", 
+              padding: "16px", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.04)" 
+            }}>
               <div style={{ 
-                fontSize: "11px", 
-                fontWeight: "600", 
-                color: "rgba(255,255,255,0.6)", 
-                textTransform: "uppercase", 
-                letterSpacing: "1px", 
-                marginBottom: "10px" 
+                fontSize: "11px", fontWeight: "600", color: "rgba(255,255,255,0.6)", 
+                textTransform: "uppercase", letterSpacing: "1px", marginBottom: "10px" 
               }}>
                 {d}
               </div>
@@ -180,52 +159,31 @@ export default function SettingsTab({
       {/* ============ SUBJECTS ============ */}
       <div className="card">
         <h2 className="card-title" style={{ marginBottom: "8px" }}>📚 Subjects</h2>
-        <p style={{ 
-          color: "rgba(255,255,255,0.4)", 
-          fontSize: "13px", 
-          margin: "0 0 24px", 
-          fontWeight: "300" 
-        }}>
+        <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", margin: "0 0 24px", fontWeight: "300" }}>
           Department → Course → Semester ke hisaab se subjects add karo
         </p>
-
-        {/* Subject Form */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
-          <select 
-            className="form-input" 
-            value={newSubjDept} 
-            onChange={e => setNewSubjDept(e.target.value)}
-          >
+          <select className="form-input" value={newSubjDept} 
+            onChange={e => { setNewSubjDept(e.target.value); setNewSubjCourse(""); setNewSubjSem(""); }}>
             <option value="">Select Department</option>
             {departments.map(d => <option key={d}>{d}</option>)}
           </select>
-          
-          <select 
-            className="form-input" 
-            value={newSubjCourse} 
-            onChange={e => setNewSubjCourse(e.target.value)} 
-            disabled={!newSubjDept}
-          >
+          <select className="form-input" value={newSubjCourse} 
+            onChange={e => { setNewSubjCourse(e.target.value); setNewSubjSem(""); }}
+            disabled={!newSubjDept}>
             <option value="">{newSubjDept ? "Select Course" : "Select Dept first"}</option>
             {(deptCourses[newSubjDept] || []).map(c => <option key={c}>{c}</option>)}
           </select>
-          
-          <select 
-            className="form-input" 
-            value={newSubjSem} 
+          <select className="form-input" value={newSubjSem} 
             onChange={e => setNewSubjSem(e.target.value)} 
-            disabled={!newSubjCourse}
-          >
+            disabled={!newSubjCourse}>
             <option value="">{newSubjCourse ? "Select Semester" : "Select Course first"}</option>
             {SEMESTERS.map(s => <option key={s}>{s}</option>)}
           </select>
-          
           <div style={{ display: "flex", gap: "12px" }}>
             <input 
-              className="form-input" 
-              placeholder="Subject name" 
-              value={newSubj} 
-              onChange={e => setNewSubj(e.target.value)} 
+              className="form-input" placeholder="Subject name" 
+              value={newSubj} onChange={e => setNewSubj(e.target.value)} 
               onKeyDown={e => e.key === "Enter" && handleAddSubject()} 
               disabled={!newSubjSem} 
             />
@@ -233,70 +191,37 @@ export default function SettingsTab({
           </div>
         </div>
 
-        {/* Display subjects nested view */}
         <div style={{ marginTop: "32px" }}>
           {departments.length === 0 && (
             <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", fontWeight: "300" }}>
               Add departments first
             </span>
           )}
-          
           {departments.map(dept => (
             <div key={dept} style={{ marginBottom: "32px" }}>
               <div style={{ 
-                fontSize: "16px", 
-                fontWeight: "500", 
-                color: "white", 
-                marginBottom: "16px", 
-                paddingBottom: "8px", 
+                fontSize: "16px", fontWeight: "500", color: "white", 
+                marginBottom: "16px", paddingBottom: "8px", 
                 borderBottom: "1px solid rgba(255,255,255,0.06)" 
               }}>
                 🏛️ {dept}
               </div>
-              
               {(deptCourses[dept] || []).length === 0 ? (
-                <span style={{ 
-                  color: "rgba(255,255,255,0.3)", 
-                  fontSize: "12px", 
-                  paddingLeft: "16px", 
-                  fontStyle: "italic" 
-                }}>
+                <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "12px", paddingLeft: "16px", fontStyle: "italic" }}>
                   No courses linked
                 </span>
               ) : (
                 (deptCourses[dept] || []).map(course => (
-                  <div 
-                    key={course} 
-                    style={{ 
-                      marginBottom: "20px", 
-                      paddingLeft: "16px", 
-                      borderLeft: "1px solid rgba(255,255,255,0.06)" 
-                    }}
-                  >
-                    <div style={{ 
-                      fontSize: "13px", 
-                      fontWeight: "500", 
-                      color: "#1D9E75", 
-                      marginBottom: "12px", 
-                      letterSpacing: "0.5px" 
-                    }}>
+                  <div key={course} style={{ marginBottom: "20px", paddingLeft: "16px", borderLeft: "1px solid rgba(255,255,255,0.06)" }}>
+                    <div style={{ fontSize: "13px", fontWeight: "500", color: "#1D9E75", marginBottom: "12px", letterSpacing: "0.5px" }}>
                       🎓 {course}
                     </div>
-                    
                     {SEMESTERS.map(sem => {
                       const semSubjects = subjects[dept]?.[course]?.[sem] || [];
                       if (semSubjects.length === 0) return null;
-                      
                       return (
                         <div key={sem} style={{ marginBottom: "12px", paddingLeft: "16px" }}>
-                          <div style={{ 
-                            fontSize: "11px", 
-                            fontWeight: "600", 
-                            color: "rgba(255,255,255,0.5)", 
-                            marginBottom: "8px", 
-                            textTransform: "uppercase", 
-                            letterSpacing: "1px" 
-                          }}>
+                          <div style={{ fontSize: "11px", fontWeight: "600", color: "rgba(255,255,255,0.5)", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "1px" }}>
                             📅 {sem} Semester
                           </div>
                           <div>

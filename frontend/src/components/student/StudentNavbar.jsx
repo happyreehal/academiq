@@ -1,14 +1,17 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 export default function StudentNavbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
+
+  const isAIPage = location.pathname === "/ai-generator";
 
   return (
     <nav className="student-navbar">
@@ -23,10 +26,10 @@ export default function StudentNavbar() {
       {/* Right: AI Button + User + Logout */}
       <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
         <button 
-          onClick={() => navigate("/ai-generator")} 
+          onClick={() => navigate(isAIPage ? "/student" : "/ai-generator")} 
           className="btn-ai"
         >
-          🤖 AI Generator
+          {isAIPage ? "📋 Dashboard" : "🤖 AI Generator"}
         </button>
         
         <span style={{ 
@@ -34,7 +37,7 @@ export default function StudentNavbar() {
           fontSize: "13px", 
           letterSpacing: "1px" 
         }}>
-          👋 {user?.name}
+          👋 {user?.name ?? "Student"}
         </span>
         
         <button onClick={handleLogout} className="btn-logout-student">

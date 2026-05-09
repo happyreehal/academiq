@@ -29,7 +29,8 @@ export default function AdminNavbar() {
           fontSize: "13px", 
           letterSpacing: "1px" 
         }}>
-          👋 {user?.name}
+          {/* ✅ Fallback added */}
+          👋 {user?.name ?? "Admin"}
         </span>
         <button onClick={handleLogout} className="btn-logout">
           Logout

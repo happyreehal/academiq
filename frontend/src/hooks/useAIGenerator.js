@@ -1,46 +1,47 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { API } from "../data/adminConstants";
 
 export default function useAIGenerator() {
-  // ============ STATES ============
-  
+
   const [syllabusPdf, setSyllabusPdf] = useState(null);
   const [pastPapersPdf, setPastPapersPdf] = useState(null);
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  
-  // Feedback states
   const [feedback, setFeedback] = useState(null);
   const [comment, setComment] = useState("");
   const [feedbackSent, setFeedbackSent] = useState(false);
 
-  // Buffer ref for smooth streaming
   const bufferRef = useRef("");
   const intervalRef = useRef(null);
+  const drainRef = useRef(null);
 
-  // ============ SMOOTH TYPING EFFECT ============
-  
+  // ✅ Fix 2 — cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (drainRef.current) clearInterval(drainRef.current);
+    };
+  }, []);
+
+  // ============ SMOOTH TYPING ============
+
   const startSmoothTyping = () => {
-    // Clear any existing interval
     if (intervalRef.current) clearInterval(intervalRef.current);
-    
     intervalRef.current = setInterval(() => {
       if (bufferRef.current.length > 0) {
-        // Take 1-3 characters at a time for smooth effect
         const charsToAdd = Math.min(
-          Math.ceil(bufferRef.current.length / 20), // Faster if more buffered
+          Math.ceil(bufferRef.current.length / 20),
           3
         );
         const chunk = bufferRef.current.slice(0, charsToAdd);
         bufferRef.current = bufferRef.current.slice(charsToAdd);
         setResult(prev => prev + chunk);
       }
-    }, 15); // Update every 15ms for smooth typing
+    }, 15);
   };
 
   const stopSmoothTyping = () => {
-    // Flush remaining buffer
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -51,15 +52,14 @@ export default function useAIGenerator() {
     }
   };
 
-  // ============ GENERATE PAPER (with smooth streaming) ============
-  
+  // ============ GENERATE PAPER ============
+
   const generatePaper = async () => {
-    if (!syllabusPdf) { 
-      setError("Please upload syllabus PDF"); 
-      return; 
+    if (!syllabusPdf) {
+      setError("Please upload syllabus PDF");
+      return;
     }
-    
-    // Reset states
+
     setLoading(true);
     setError("");
     setResult("");
@@ -67,7 +67,6 @@ export default function useAIGenerator() {
     setFeedbackSent(false);
     bufferRef.current = "";
 
-    // Start smooth typing animation
     startSmoothTyping();
 
     try {
@@ -75,7 +74,8 @@ export default function useAIGenerator() {
       formData.append("syllabus_pdf", syllabusPdf);
       if (pastPapersPdf) formData.append("past_papers_pdf", pastPapersPdf);
 
-      const res = await fetch(`/api/ai/generate`, {
+      // ✅ Fix 1 — API constant use karo
+      const res = await fetch(`${API}/ai/generate`, {
         method: "POST",
         body: formData,
       });
@@ -85,7 +85,6 @@ export default function useAIGenerator() {
         throw new Error(errData.detail || "Generation failed");
       }
 
-      // Read stream and add to buffer
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
 
@@ -93,30 +92,30 @@ export default function useAIGenerator() {
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
-        // Add to buffer (smooth typing will pick it up)
         bufferRef.current += chunk;
       }
 
-      // Wait for buffer to drain
+      // ✅ Fix 3 — drainRef se cleanup possible
       await new Promise(resolve => {
-        const checkDrain = setInterval(() => {
+        drainRef.current = setInterval(() => {
           if (bufferRef.current.length === 0) {
-            clearInterval(checkDrain);
+            clearInterval(drainRef.current);
+            drainRef.current = null;
             resolve();
           }
         }, 50);
       });
 
     } catch (err) {
-      setError(err.message || "Generation failed");
+      setError(err.message || "Generation failed. Please try again.");
     } finally {
       stopSmoothTyping();
       setLoading(false);
     }
   };
 
-  // ============ FEEDBACK ACTIONS ============
-  
+  // ============ FEEDBACK ============
+
   const submitFeedback = () => {
     setFeedbackSent(true);
   };
@@ -127,8 +126,6 @@ export default function useAIGenerator() {
     setFeedbackSent(false);
   };
 
-  // ============ RETURN EVERYTHING ============
-  
   return {
     syllabusPdf,
     setSyllabusPdf,

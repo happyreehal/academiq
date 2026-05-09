@@ -124,7 +124,7 @@ export default function NotFound() {
         <motion.button
           whileHover={{ scale: 1.05, y: -3 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => navigate(-1)}
+          onClick={() => window.history.length > 1 ? navigate(-1) : navigate("/")}
           style={{
             background: "transparent",
             color: "rgba(255,255,255,0.8)",
