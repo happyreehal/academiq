@@ -1,0 +1,365 @@
+/* ============================================
+   LANDING PAGE STYLES
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+}
+
+/* Custom cursor only for landing page */
+.landing-page,
+.landing-page * { 
+  cursor: none !important; 
+}
+
+/* ============================================
+   CUSTOM CURSOR
+   ============================================ */
+
+.cursor-dot {
+  width: 8px; 
+  height: 8px; 
+  background: #1D9E75;
+  border-radius: 50%; 
+  position: fixed; 
+  pointer-events: none;
+  z-index: 9999; 
+  transition: transform 0.1s ease;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px #1D9E75, 0 0 20px #1D9E75;
+}
+
+.cursor-ring {
+  width: 36px; 
+  height: 36px;
+  border: 1px solid rgba(29,158,117,0.6);
+  border-radius: 50%; 
+  position: fixed; 
+  pointer-events: none;
+  z-index: 9998; 
+  transition: all 0.15s ease;
+  transform: translate(-50%, -50%);
+  box-shadow: inset 0 0 10px rgba(29,158,117,0.2);
+}
+
+.landing-page a:hover ~ .cursor-ring, 
+.landing-page button:hover ~ .cursor-ring, 
+.landing-page .hover-target:hover ~ .cursor-ring {
+  width: 50px; 
+  height: 50px; 
+  background: rgba(29,158,117,0.1); 
+  border-color: #1D9E75;
+}
+
+/* ============================================
+   SCROLL ANIMATIONS
+   ============================================ */
+
+.fade-up { 
+  opacity: 0; 
+  transform: translateY(60px); 
+  transition: all 1s cubic-bezier(0.16,1,0.3,1); 
+}
+.fade-up.visible { 
+  opacity: 1; 
+  transform: translateY(0); 
+}
+
+.fade-left { 
+  opacity: 0; 
+  transform: translateX(-60px); 
+  transition: all 1s cubic-bezier(0.16,1,0.3,1); 
+}
+.fade-left.visible { 
+  opacity: 1; 
+  transform: translateX(0); 
+}
+
+.fade-right { 
+  opacity: 0; 
+  transform: translateX(60px); 
+  transition: all 1s cubic-bezier(0.16,1,0.3,1); 
+}
+.fade-right.visible { 
+  opacity: 1; 
+  transform: translateX(0); 
+}
+
+/* ============================================
+   GLASSMORPHISM
+   ============================================ */
+
+.glass {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn-primary {
+  background: linear-gradient(135deg, #1D9E75, #0d7a5a);
+  color: white; 
+  border: none; 
+  padding: 16px 36px;
+  border-radius: 4px; 
+  font-size: 14px; 
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 2px; 
+  text-transform: uppercase;
+  transition: all 0.4s ease; 
+  position: relative; 
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: ''; 
+  position: absolute; 
+  inset: 0;
+  background: linear-gradient(135deg, #4ecba0, #1D9E75);
+  opacity: 0; 
+  transition: opacity 0.4s;
+}
+
+.btn-primary:hover::before { 
+  opacity: 1; 
+}
+
+.btn-primary:hover { 
+  transform: translateY(-3px); 
+  box-shadow: 0 10px 25px rgba(29,158,117,0.5), 0 0 15px rgba(29,158,117,0.3) inset;
+}
+
+.btn-primary span { 
+  position: relative; 
+  z-index: 1; 
+}
+
+.btn-outline {
+  background: transparent; 
+  color: rgba(255,255,255,0.8);
+  border: 1px solid rgba(255,255,255,0.2); 
+  padding: 16px 36px;
+  border-radius: 4px; 
+  font-size: 14px; 
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 2px; 
+  text-transform: uppercase;
+  transition: all 0.4s ease;
+}
+
+.btn-outline:hover { 
+  border-color: #1D9E75; 
+  color: #1D9E75; 
+  transform: translateY(-3px); 
+  box-shadow: 0 10px 25px rgba(29,158,117,0.2); 
+  background: rgba(29,158,117,0.05);
+}
+
+/* ============================================
+   FEATURE CARDS
+   ============================================ */
+
+.feat-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 2px; 
+  padding: 36px 28px;
+  transition: all 0.4s ease; 
+  position: relative; 
+  overflow: hidden;
+}
+
+.feat-card::before {
+  content: ''; 
+  position: absolute; 
+  bottom: 0; 
+  left: 0; 
+  right: 0;
+  height: 2px; 
+  background: linear-gradient(90deg, #1D9E75, transparent);
+  transform: scaleX(0); 
+  transform-origin: left; 
+  transition: transform 0.4s ease;
+}
+
+.feat-card:hover { 
+  background: rgba(29,158,117,0.04); 
+  border-color: rgba(29,158,117,0.2); 
+  transform: translateY(-8px); 
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+.feat-card:hover::before { 
+  transform: scaleX(1); 
+}
+
+/* ============================================
+   EMOJI ANIMATIONS
+   ============================================ */
+
+.emoji { 
+  display: inline-block; 
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+}
+
+.feat-card:hover .emoji, 
+.emoji:hover { 
+  transform: scale(1.4) rotate(15deg); 
+  text-shadow: 0 0 15px rgba(255,255,255,0.4); 
+}
+
+/* ============================================
+   HOVER GLOW
+   ============================================ */
+
+.hover-glow { 
+  transition: all 0.4s ease; 
+}
+
+.hover-glow:hover { 
+  transform: scale(1.08); 
+  filter: drop-shadow(0 0 15px rgba(29,158,117,0.6)); 
+}
+
+/* ============================================
+   FLOATING ANIMATION
+   ============================================ */
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+.floating { 
+  animation: float 6s ease-in-out infinite; 
+}
+
+/* ============================================
+   SPIN & PULSE ANIMATIONS
+   ============================================ */
+
+@keyframes spin { 
+  from { transform: rotate(0deg); } 
+  to { transform: rotate(360deg); } 
+}
+
+@keyframes pulse { 
+  0%, 100% { 
+    opacity: 1; 
+    box-shadow: 0 0 10px #1D9E75;
+  } 
+  50% { 
+    opacity: 0.4; 
+    box-shadow: none;
+  } 
+}
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+
+.nav-link {
+  color: rgba(255,255,255,0.5); 
+  text-decoration: none;
+  font-size: 12px; 
+  font-weight: 500; 
+  letter-spacing: 2px;
+  text-transform: uppercase; 
+  transition: color 0.3s, transform 0.3s;
+  background: none; 
+  border: none;
+}
+
+.nav-link:hover { 
+  color: #1D9E75; 
+  transform: translateY(-2px); 
+}
+
+/* ============================================
+   STATS
+   ============================================ */
+
+.stat-num { 
+  font-family: 'Cormorant Garamond', serif; 
+  font-size: 56px; 
+  font-weight: 300; 
+  color: #1D9E75; 
+  line-height: 1; 
+  transition: transform 0.4s; 
+}
+
+div:hover > .stat-num { 
+  transform: scale(1.1); 
+}
+
+/* ============================================
+   DIVIDER
+   ============================================ */
+
+.divider { 
+  width: 60px; 
+  height: 1px; 
+  background: #1D9E75; 
+  margin: 20px 0; 
+  transition: width 0.4s; 
+}
+
+div:hover > .divider { 
+  width: 100px; 
+  box-shadow: 0 0 10px #1D9E75; 
+}
+
+/* ============================================
+   STEP CARDS
+   ============================================ */
+
+.step-num {
+  font-family: 'Cormorant Garamond', serif; 
+  font-size: 80px; 
+  font-weight: 300;
+  color: rgba(29,158,117,0.1); 
+  line-height: 1;
+  position: absolute; 
+  top: -10px; 
+  right: 20px; 
+  transition: color 0.4s, transform 0.4s;
+}
+
+.step-card:hover .step-num { 
+  color: rgba(29,158,117,0.2); 
+  transform: scale(1.1) translateX(-10px); 
+}
+
+/* ============================================
+   MOBILE RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .hero-grid { grid-template-columns: 1fr !important; }
+  .hero-visual { display: none !important; }
+  .about-grid { grid-template-columns: 1fr !important; }
+  .about-visual { display: none !important; }
+  .steps-grid { grid-template-columns: 1fr !important; }
+  .nav-links { display: none !important; }
+  .stats-row { gap: 24px !important; }
+  .cta-btns { 
+    flex-direction: column !important; 
+    align-items: flex-start !important; 
+  }
+  .dev-card { padding: 32px 20px !important; }
+  .dev-inner { 
+    flex-direction: column !important; 
+    text-align: center !important; 
+  }
+  .feat-grid { grid-template-columns: 1fr !important; }
+}

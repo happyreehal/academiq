@@ -3,3 +3,69 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+html, body {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  background: #030810;
+  color: white;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ============================================
+   LENIS SMOOTH SCROLL
+   ============================================ */
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* ============================================
+   CUSTOM SCROLLBAR (Premium Look)
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030810;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #1D9E75, #0d7a5a);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #4ecba0, #1D9E75);
+}
+
+/* ============================================
+   SELECTION COLOR
+   ============================================ */
+
+::selection {
+  background: rgba(29, 158, 117, 0.3);
+  color: white;
+}

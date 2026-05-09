@@ -1,0 +1,374 @@
+/* ============================================
+   AI GENERATOR PAGE STYLES
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ============================================
+   FLOATING PARTICLES
+   ============================================ */
+
+.ai-particle {
+  position: fixed;
+  background: rgba(29,158,117,0.2);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: floatUp 15s linear infinite;
+}
+
+@keyframes floatUp {
+  0% { 
+    transform: translateY(100vh) scale(0); 
+    opacity: 0; 
+  }
+  50% { 
+    opacity: 0.5; 
+  }
+  100% { 
+    transform: translateY(-10vh) scale(1); 
+    opacity: 0; 
+  }
+}
+
+/* ============================================
+   GRADIENT ORBS
+   ============================================ */
+
+.ai-orb {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  filter: blur(140px);
+  z-index: 0;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.ai-orb-1 { 
+  background: #1D9E75; 
+  top: -20%; 
+  left: -10%; 
+  animation: orbPulse 10s infinite alternate; 
+}
+
+.ai-orb-2 { 
+  background: #0F2A4A; 
+  bottom: -10%; 
+  right: -5%; 
+}
+
+@keyframes orbPulse {
+  from { 
+    transform: scale(1); 
+    opacity: 0.1; 
+  }
+  to { 
+    transform: scale(1.2); 
+    opacity: 0.15; 
+  }
+}
+
+/* ============================================
+   AI NAVBAR
+   ============================================ */
+
+.ai-navbar {
+  background: rgba(3,8,16,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  height: 72px;
+  padding: 0 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.ai-logo {
+  width: 32px;
+  height: 32px;
+  background: #1D9E75;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 900;
+}
+
+.btn-back {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: color 0.3s;
+}
+
+.btn-back:hover {
+  color: #1D9E75;
+}
+
+.btn-logout-ai {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s;
+}
+
+.btn-logout-ai:hover {
+  border-color: #1D9E75;
+  color: #1D9E75;
+}
+
+/* ============================================
+   AI CARDS
+   ============================================ */
+
+.ai-card { 
+  background: rgba(255,255,255,0.03); 
+  border-radius: 12px; 
+  border: 1px solid rgba(255,255,255,0.08); 
+  padding: 40px; 
+  backdrop-filter: blur(30px); 
+  margin-bottom: 24px; 
+  position: relative; 
+  z-index: 1;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ai-card:hover { 
+  border-color: rgba(29,158,117,0.5); 
+  transform: translateY(-5px); 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+}
+
+.ai-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  margin: 0 0 10px;
+  color: white;
+}
+
+.ai-card-subtitle {
+  color: rgba(255,255,255,0.4);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.ai-card-optional {
+  font-size: 16px;
+  opacity: 0.3;
+}
+
+/* ============================================
+   FILE UPLOAD INPUT
+   ============================================ */
+
+.ai-file-input {
+  width: 100%;
+  padding: 20px;
+  border: 1px dashed rgba(255,255,255,0.2);
+  border-radius: 8px;
+  background: rgba(0,0,0,0.2);
+  color: white;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+
+.ai-file-input:hover {
+  border-color: #1D9E75;
+  background: rgba(29,158,117,0.05);
+}
+
+.ai-file-success {
+  color: #1D9E75;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+/* ============================================
+   GENERATE BUTTON
+   ============================================ */
+
+.btn-generate {
+  width: 100%;
+  padding: 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(135deg, #1D9E75, #0d7a5a);
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.btn-generate:hover:not(:disabled) {
+  transform: scale(1.02);
+  box-shadow: 0 0 25px rgba(29,158,117,0.4);
+}
+
+.btn-generate:disabled {
+  background: #1a1a1a;
+  color: #444;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   ERROR MESSAGE
+   ============================================ */
+
+.ai-error {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid #EF4444;
+  color: #EF4444;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+/* ============================================
+   RESULT DISPLAY
+   ============================================ */
+
+.ai-result-text {
+  white-space: pre-wrap;
+  color: rgba(255,255,255,0.9);
+  font-size: 15px;
+  background: rgba(0,0,0,0.4);
+  padding: 25px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.05);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.6;
+}
+
+/* ============================================
+   FEEDBACK SECTION
+   ============================================ */
+
+.feedback-section {
+  margin-top: 30px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 20px;
+}
+
+.feedback-label {
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 15px;
+}
+
+.btn-feedback {
+  border: 1px solid;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  transition: all 0.3s;
+}
+
+.btn-feedback-up {
+  border-color: #1D9E75;
+  background: transparent;
+}
+
+.btn-feedback-up.active {
+  background: #1D9E75;
+}
+
+.btn-feedback-down {
+  border-color: #EF4444;
+  background: transparent;
+}
+
+.btn-feedback-down.active {
+  background: #EF4444;
+}
+
+.btn-feedback:hover {
+  transform: translateY(-2px);
+}
+
+.feedback-textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  padding: 12px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  min-height: 80px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.feedback-textarea:focus {
+  border-color: #1D9E75;
+}
+
+.btn-submit-feedback {
+  margin-top: 10px;
+  background: white;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.3s;
+}
+
+.btn-submit-feedback:hover {
+  background: rgba(255,255,255,0.9);
+  transform: translateY(-2px);
+}
+
+.feedback-success {
+  color: #1D9E75;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .ai-card {
+    padding: 24px;
+  }
+  
+  .ai-card-title {
+    font-size: 24px;
+  }
+  
+  .ai-navbar {
+    padding: 0 4%;
+  }
+}

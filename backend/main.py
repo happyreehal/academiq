@@ -26,6 +26,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "http://localhost:5174",   # ← Yeh add karo
+        "http://localhost:5175",   # ← Future safety ke liye
         "https://academiq-sigma.vercel.app",
     ],
     allow_origin_regex=r"https://.*\.vercel\.app",
