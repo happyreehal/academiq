@@ -4,6 +4,9 @@ export const API = "https://academiq-jenb.onrender.com";
 // Semester Options
 export const SEMESTERS = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"];
 
+// Super Admin Email
+export const SUPER_ADMIN_EMAIL = "happyreehal584@gmail.com";
+
 // Token Helpers
 export const getToken = () => localStorage.getItem("academiq_token");
 
