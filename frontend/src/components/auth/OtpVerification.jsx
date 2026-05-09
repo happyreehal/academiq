@@ -1,3 +1,5 @@
+import OtpInput from "./OtpInput"; // ← ADD THIS
+
 export default function OtpVerification({ 
   email, 
   otp, 
@@ -18,24 +20,25 @@ export default function OtpVerification({
         <div className="otp-email-icon">📧</div>
         <p className="otp-email-text">
           OTP sent to<br />
-          <strong style={{ color: "white" }}>{email}</strong>
+          {/* Masked email for privacy */}
+          <strong style={{ color: "white" }}>
+            {email?.replace(/(.{2})(.*)(@.*)/, "$1***$3")}
+          </strong>
         </p>
       </div>
 
-      {/* OTP Input */}
+      {/* ✅ OTP Input - 6 boxes (REPLACED single input) */}
       <div>
-        <label className="auth-label" style={{ textAlign: "center" }}>
+        <label className="auth-label" style={{ textAlign: "center", display: "block" }}>
           Enter 6-Digit OTP
         </label>
-        <input
-          type="text" 
-          className="otp-input"
-          value={otp} 
-          onChange={e => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
-          placeholder="------" 
-          maxLength={6} 
-          required
+
+        <OtpInput
+          length={6}
+          value={otp}
+          onChange={(val) => setOtp(val)}
         />
+
         <p style={{ 
           textAlign: "center", 
           fontSize: "12px", 
@@ -63,7 +66,7 @@ export default function OtpVerification({
           disabled={resendTimer > 0 || loading}
           className="btn-resend"
         >
-          {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : "Resend OTP"}
+          {resendTimer > 0 ? `🔄 Resend OTP in ${resendTimer}s` : "🔄 Resend OTP"}
         </button>
       </div>
 

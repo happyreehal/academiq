@@ -88,11 +88,12 @@
   letter-spacing: 1px;
 }
 
+/* ✅ FIX 1: letterSpacing → letter-spacing */
 .auth-logo-subtitle {
   color: rgba(255,255,255,0.3);
   margin: 0;
   font-size: 13px;
-  letterSpacing: 1px;
+  letter-spacing: 1px;
 }
 
 /* ============================================
@@ -234,4 +235,173 @@
 
 .auth-link:hover {
   color: #4ecba0;
+}
+
+/* ============================================
+   REGISTER PAGE EXTRAS
+   ============================================ */
+
+/* Progress Indicator */
+.progress-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.progress-step {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.1);
+  transition: all 0.3s;
+}
+
+.progress-step.active {
+  background: #1D9E75;
+}
+
+/* Success Message */
+.auth-success {
+  background: rgba(29,158,117,0.1);
+  border: 1px solid rgba(29,158,117,0.3);
+  color: #1D9E75;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+/* Admin Code Box */
+.admin-code-box {
+  background: rgba(234,179,8,0.08);
+  border: 1px solid rgba(234,179,8,0.2);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.admin-code-hint {
+  font-size: 12px;
+  color: rgba(234,179,8,0.6);
+  margin-top: 6px;
+  margin-bottom: 0;
+}
+
+/* ============================================
+   OTP EMAIL BOX
+   ============================================ */
+
+.otp-email-box {
+  text-align: center;
+  padding: 16px;
+  background: rgba(29,158,117,0.05);
+  border: 1px solid rgba(29,158,117,0.15);
+  border-radius: 8px;
+}
+
+.otp-email-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.otp-email-text {
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+  margin: 0;
+}
+
+/* ============================================
+   OTP 6-BOX INPUT
+   ============================================ */
+
+.otp-boxes-container {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+/* ✅ FIX 2 & 3: appearance: none added */
+.otp-box {
+  width: 48px;
+  height: 56px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.2s ease;
+  caret-color: #1D9E75;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: none;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.otp-box--filled {
+  border-color: #1D9E75;
+  background: rgba(29, 158, 117, 0.1);
+  box-shadow: 0 0 12px rgba(29, 158, 117, 0.2);
+}
+
+.otp-box:focus {
+  border-color: #1D9E75 !important;
+  background: rgba(29, 158, 117, 0.12) !important;
+  box-shadow: 0 0 0 3px rgba(29, 158, 117, 0.2),
+              0 0 18px rgba(29, 158, 117, 0.15) !important;
+  transform: scale(1.08);
+}
+
+@media (max-width: 400px) {
+  .otp-box {
+    width: 40px;
+    height: 48px;
+    font-size: 18px;
+    border-radius: 10px;
+  }
+  .otp-boxes-container {
+    gap: 7px;
+  }
+}
+
+/* ============================================
+   RESEND & BACK BUTTONS
+   ============================================ */
+
+.btn-resend {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #1D9E75;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  transition: color 0.3s;
+}
+
+.btn-resend:disabled {
+  cursor: not-allowed;
+  color: rgba(255,255,255,0.2);
+}
+
+.btn-resend:not(:disabled):hover {
+  color: #4ecba0;
+}
+
+.btn-back-step {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.4);
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.3s;
+}
+
+.btn-back-step:hover {
+  border-color: #1D9E75;
+  color: #1D9E75;
 }
