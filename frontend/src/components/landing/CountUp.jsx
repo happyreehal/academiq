@@ -6,8 +6,8 @@ export default function CountUp({ value, suffix = "", duration = 2 }) {
   const isInView = useInView(ref, { once: true });
   const motionValue = useMotionValue(0);
   
+  const isNumeric = !isNaN(parseInt(value)) && !value.includes("/");
   const numericValue = parseInt(value);
-  const isNumeric = !isNaN(numericValue);
   
   const rounded = useTransform(motionValue, (latest) => 
     Math.round(latest) + suffix

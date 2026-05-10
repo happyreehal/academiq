@@ -2,7 +2,7 @@
 export const heroStats = [
   { num: "10+", label: "Years of Papers" },
   { num: "AI", label: "Question Generator" },
-  { num: "24/7", label: "Access Anywhere" },
+  { num: "24/7", label: "Access Anywhere", isText: true  }
 ];
 
 // Features Section

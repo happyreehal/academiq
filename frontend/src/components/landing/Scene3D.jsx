@@ -223,7 +223,7 @@ export default function Scene3D() {
         camera={{ position: [0, 0, 6], fov: 52 }}
         style={{ background: "transparent" }}
         gl={{ alpha: true, antialias: !reduceQuality }}  // ✅ antialias off on low-end
-        dpr={[1, reduceQuality ? 1 : 1.5]}               // ✅ DPR limit
+        dpr={[1, reduceQuality ? 1 : 1.5]}              // ✅ DPR limit
       >
         <ambientLight intensity={0.3} />
         <directionalLight position={[5, 5, 5]} intensity={0.8} color="#ffffff" />

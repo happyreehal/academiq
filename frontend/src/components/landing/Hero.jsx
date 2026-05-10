@@ -84,7 +84,7 @@ export default function Hero({ isLoaded, mousePos }) {
 
       {/* Hero Grid */}
       <div className="hero-grid" style={{
-        maxWidth: "1200px", margin: "0 auto", padding: "80px 6%",
+        maxWidth: "1200px", margin: "0 auto", padding: "clamp(20px, 5vw, 80px) 6%",
         display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px",
         alignItems: "center", width: "100%", position: "relative", zIndex: 1
       }}>
