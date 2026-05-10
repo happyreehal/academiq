@@ -1,6 +1,7 @@
 // API Configuration
 export const API = import.meta.env.VITE_API_URL;
-
+// frontend/src/data/adminConstants.js
+export const SUPER_ADMIN_EMAIL = "happyreehal584@gmail.com";
 // Semester Options
 export const SEMESTERS = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"];
 
