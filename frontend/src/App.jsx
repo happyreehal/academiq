@@ -3,61 +3,37 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Lenis from "lenis";
 
-// Context & Wrappers
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Loader from "./components/Loader";
 import PageTransition from "./components/PageTransition";
 
-// ============================================
-// LAZY LOAD PAGES
-// ============================================
-
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const StudentDashboard = lazy(() => import("./pages/StudentDashboard"));
 const AIGenerator = lazy(() => import("./pages/AIGenerator"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-// ============================================
-// MINI LOADER
-// ============================================
-
 function MiniLoader() {
   return (
     <div style={{
-      position: "fixed",
-      inset: 0,
-      background: "#030810",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      zIndex: 9999,
+      position: "fixed", inset: 0, background: "#030810",
+      display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999,
     }}>
       <div style={{
-        width: "40px",
-        height: "40px",
+        width: "40px", height: "40px",
         border: "3px solid rgba(29,158,117,0.2)",
-        borderTopColor: "#1D9E75",
-        borderRadius: "50%",
+        borderTopColor: "#1D9E75", borderRadius: "50%",
         animation: "spin 0.8s linear infinite",
       }} />
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }
-
-// ============================================
-// ANIMATED ROUTES
-// ============================================
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -67,57 +43,32 @@ function AnimatedRoutes() {
       <Suspense fallback={<MiniLoader />}>
         <Routes location={location} key={location.pathname}>
           
-          {/* Public Routes */}
-          <Route path="/" element={
-            <PageTransition>
-              <LandingPage />
-            </PageTransition>
-          } />
+          <Route path="/" element={<PageTransition><LandingPage /></PageTransition>} />
+          <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
+          <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
           
-          <Route path="/login" element={
-            <PageTransition>
-              <Login />
-            </PageTransition>
-          } />
+          {/* ✅ Forgot Password Route */}
+          <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
           
-          <Route path="/register" element={
-            <PageTransition>
-              <Register />
-            </PageTransition>
-          } />
-          
-          {/* Protected Routes - Admin */}
           <Route path="/admin" element={
             <ProtectedRoute role="admin">
-              <PageTransition>
-                <AdminDashboard />
-              </PageTransition>
+              <PageTransition><AdminDashboard /></PageTransition>
             </ProtectedRoute>
           } />
           
-          {/* Protected Routes - Student */}
           <Route path="/student" element={
             <ProtectedRoute role="student">
-              <PageTransition>
-                <StudentDashboard />
-              </PageTransition>
+              <PageTransition><StudentDashboard /></PageTransition>
             </ProtectedRoute>
           } />
           
           <Route path="/ai-generator" element={
             <ProtectedRoute role="student">
-              <PageTransition>
-                <AIGenerator />
-              </PageTransition>
+              <PageTransition><AIGenerator /></PageTransition>
             </ProtectedRoute>
           } />
           
-          {/* 404 */}
-          <Route path="*" element={
-            <PageTransition>
-              <NotFound />
-            </PageTransition>
-          } />
+          <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
           
         </Routes>
       </Suspense>
@@ -125,14 +76,9 @@ function AnimatedRoutes() {
   );
 }
 
-// ============================================
-// MAIN APP
-// ============================================
-
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
-  // ✅ Fix 1 — RAF loop properly cancel hota hai
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -156,7 +102,6 @@ function App() {
     };
   }, []);
 
-  // ✅ Fix 2 — 1200ms (optimized)
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1200);
     return () => clearTimeout(timer);
@@ -178,13 +123,5 @@ function App() {
     </ErrorBoundary>
   );
 }
-// Import add karo
-const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 
-// Routes me add karo — /login route ke baad
-<Route path="/forgot-password" element={
-  <PageTransition>
-    <ForgotPassword />
-  </PageTransition>
-} />
 export default App;

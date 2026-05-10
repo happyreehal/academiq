@@ -12,9 +12,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ 
-    email: "", 
-    password: "", 
-    role: "student" 
+    email: "", password: "", role: "student" 
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,7 +22,6 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    
     try {
       const res = await axios.post(`${API}/auth/login`, form);
       login({
@@ -33,10 +30,8 @@ export default function Login() {
         is_super: res.data.is_super,
         email: form.email,
       }, res.data.token);
-      
       if (res.data.role === "admin") navigate("/admin");
       else navigate("/student");
-      
     } catch (err) {
       setError(err.response?.data?.detail || "Login failed. Please check your credentials.");
     } finally {
@@ -47,15 +42,13 @@ export default function Login() {
   return (
     <div className="auth-page" style={{ position: "relative", overflow: "hidden" }}>
 
-      {/* Background Glow Top Left */}
+      {/* Background Glows */}
       <div style={{
         position: "absolute", top: "-200px", left: "-200px",
         width: "600px", height: "600px",
         background: "radial-gradient(circle, rgba(29,158,117,0.08) 0%, transparent 70%)",
         borderRadius: "50%", pointerEvents: "none",
       }} />
-
-      {/* Background Glow Bottom Right */}
       <div style={{
         position: "absolute", bottom: "-200px", right: "-200px",
         width: "500px", height: "500px",
@@ -67,28 +60,17 @@ export default function Login() {
       <motion.div
         animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          position: "absolute", top: "10%", left: "8%",
-          fontSize: "50px", opacity: 0.06, pointerEvents: "none",
-        }}
+        style={{ position: "absolute", top: "10%", left: "8%", fontSize: "50px", opacity: 0.06, pointerEvents: "none" }}
       >📚</motion.div>
-
       <motion.div
         animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          position: "absolute", bottom: "10%", right: "8%",
-          fontSize: "50px", opacity: 0.06, pointerEvents: "none",
-        }}
+        style={{ position: "absolute", bottom: "10%", right: "8%", fontSize: "50px", opacity: 0.06, pointerEvents: "none" }}
       >🎓</motion.div>
-
       <motion.div
         animate={{ y: [0, -15, 0] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          position: "absolute", top: "50%", right: "5%",
-          fontSize: "40px", opacity: 0.04, pointerEvents: "none",
-        }}
+        style={{ position: "absolute", top: "50%", right: "5%", fontSize: "40px", opacity: 0.04, pointerEvents: "none" }}
       >📝</motion.div>
 
       {/* Auth Card */}
@@ -98,59 +80,39 @@ export default function Login() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="auth-card"
       >
-        {/* Top Accent Line */}
         <div className="auth-card-accent" />
-
-        {/* Logo Header */}
         <AuthLogo subtitle="SIGN IN TO YOUR ACCOUNT" />
 
         {/* Role Tabs */}
         <div className="role-tabs">
-          <button 
-            className={`role-tab ${form.role === "student" ? "active" : ""}`}
-            onClick={() => setForm({ ...form, role: "student" })}
-          >
+          <button className={`role-tab ${form.role === "student" ? "active" : ""}`} onClick={() => setForm({ ...form, role: "student" })}>
             👨‍🎓 Student
           </button>
-          <button 
-            className={`role-tab ${form.role === "admin" ? "active" : ""}`}
-            onClick={() => setForm({ ...form, role: "admin" })}
-          >
+          <button className={`role-tab ${form.role === "admin" ? "active" : ""}`} onClick={() => setForm({ ...form, role: "admin" })}>
             👨‍💼 Admin
           </button>
         </div>
 
-        {/* Error Message */}
+        {/* Error */}
         {error && (
-          <motion.div
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="auth-error"
-          >
+          <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="auth-error">
             ⚠️ {error}
           </motion.div>
         )}
 
-        {/* Login Form */}
-        <form 
-          onSubmit={handleSubmit} 
-          style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-        >
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          
           {/* Email */}
           <div>
             <label className="auth-label">Email Address</label>
             <div style={{ position: "relative" }}>
-              <span style={{
-                position: "absolute", left: "14px", top: "50%",
-                transform: "translateY(-50%)", fontSize: "15px",
-              }}>✉️</span>
+              <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "15px" }}>✉️</span>
               <input 
-                type="email" 
-                className="auth-input" 
+                type="email" className="auth-input" 
                 value={form.email}
                 onChange={e => setForm({ ...form, email: e.target.value })}
-                required 
-                placeholder="you@example.com"
+                required placeholder="you@example.com"
                 style={{ paddingLeft: "40px" }}
               />
             </div>
@@ -160,20 +122,15 @@ export default function Login() {
           <div>
             <label className="auth-label">Password</label>
             <div style={{ position: "relative" }}>
-              <span style={{
-                position: "absolute", left: "14px", top: "50%",
-                transform: "translateY(-50%)", fontSize: "15px",
-              }}>🔒</span>
+              <span style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", fontSize: "15px" }}>🔒</span>
               <input 
                 type={showPassword ? "text" : "password"}
                 className="auth-input" 
                 value={form.password}
                 onChange={e => setForm({ ...form, password: e.target.value })}
-                required 
-                placeholder="••••••••"
+                required placeholder="••••••••"
                 style={{ paddingLeft: "40px", paddingRight: "44px" }}
               />
-              {/* Show/Hide Password */}
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -189,13 +146,18 @@ export default function Login() {
             </div>
           </div>
 
+          {/* Forgot Password */}
+          <div style={{ textAlign: "right", marginTop: "-8px" }}>
+            <Link to="/forgot-password" className="auth-link" style={{ fontSize: "12px" }}>
+              Forgot Password?
+            </Link>
+          </div>
+
           {/* Submit */}
           <motion.button
             whileHover={{ scale: loading ? 1 : 1.02, y: loading ? 0 : -2 }}
             whileTap={{ scale: loading ? 1 : 0.98 }}
-            type="submit"
-            disabled={loading}
-            className="auth-btn"
+            type="submit" disabled={loading} className="auth-btn"
             style={{ marginTop: "4px" }}
           >
             {loading ? (
@@ -213,13 +175,19 @@ export default function Login() {
         </form>
 
         {/* Divider */}
-        <div style={{
-          display: "flex", alignItems: "center", gap: "12px", margin: "20px 0 4px",
-        }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "20px 0 4px" }}>
           <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.06)" }} />
           <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "11px", letterSpacing: "1px" }}>OR</span>
           <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.06)" }} />
         </div>
+
+        {/* ✅ Spam Note */}
+        <p style={{ 
+          textAlign: "center", fontSize: "11px", 
+          color: "rgba(255,255,255,0.2)", marginTop: "12px" 
+        }}>
+          📧 Also check OTP in email spam folder
+        </p>
 
         {/* Footer */}
         <p className="auth-footer">
@@ -228,7 +196,6 @@ export default function Login() {
         </p>
       </motion.div>
 
-      {/* Spin animation for loader */}
       <style>{`
         @keyframes spin {
           from { transform: rotate(0deg); }
@@ -238,9 +205,3 @@ export default function Login() {
     </div>
   );
 }
-{/* Forgot Password Link */}
-<div style={{ textAlign: "right", marginTop: "-8px" }}>
-  <Link to="/forgot-password" className="auth-link" style={{ fontSize: "12px" }}>
-    Forgot Password?
-  </Link>
-</div>

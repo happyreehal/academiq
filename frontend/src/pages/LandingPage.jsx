@@ -17,7 +17,7 @@ export default function LandingPage() {
   const [visibleSections, setVisibleSections] = useState({});
   const canvasRef = useRef(null);
 
-  // ✅ Check mobile + reduced motion
+  // ✅ Mobile + reduced motion check
   const isMobile = window.innerWidth <= 768;
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const enableCanvas = !isMobile && !prefersReducedMotion;
@@ -28,7 +28,7 @@ export default function LandingPage() {
     return () => { document.title = "AcademiQ"; };
   }, []);
 
-  // Particle Canvas — only on desktop
+  // ✅ Particle Canvas — only desktop
   useEffect(() => {
     if (!enableCanvas) return;
     const canvas = canvasRef.current;
@@ -38,7 +38,6 @@ export default function LandingPage() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // ✅ Reduced particles: 80 → 50
     const particles = Array.from({ length: 50 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
@@ -77,23 +76,23 @@ export default function LandingPage() {
     };
     animate();
 
-    const resize = () => { 
-      canvas.width = window.innerWidth; 
-      canvas.height = window.innerHeight; 
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     };
     window.addEventListener("resize", resize);
-    return () => { 
-      cancelAnimationFrame(animId); 
-      window.removeEventListener("resize", resize); 
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
     };
   }, [enableCanvas]);
 
-  // ✅ Throttled scroll + mouse
+  // ✅ Throttled scroll
   const handleScroll = useCallback(() => {
     setScrollY(window.scrollY);
   }, []);
 
-  // ✅ Throttled mousemove — RAF based
+  // ✅ RAF throttled mousemove — desktop only
   const mouseMoveRaf = useRef(null);
   const handleMouseMove = useCallback((e) => {
     if (mouseMoveRaf.current) return;
@@ -107,7 +106,7 @@ export default function LandingPage() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     if (!isMobile) window.addEventListener("mousemove", handleMouseMove);
     setTimeout(() => setIsLoaded(true), 100);
-    return () => { 
+    return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleMouseMove);
       if (mouseMoveRaf.current) cancelAnimationFrame(mouseMoveRaf.current);
@@ -127,18 +126,16 @@ export default function LandingPage() {
     return () => observer.disconnect();
   }, []);
 
-  const isVisible = (id) => visibleSections[id];
-
   return (
-    <div 
+    <div
       className="landing-page"
-      style={{ 
-        fontFamily: "'DM Sans', sans-serif", 
-        background: "#030810", 
+      style={{
+        fontFamily: "'DM Sans', sans-serif",
+        background: "#030810",
         overflowX: "hidden"
       }}
     >
-      {/* ✅ Custom Cursor — only desktop */}
+      {/* ✅ Custom Cursor — desktop only */}
       {!isMobile && (
         <>
           <div className="cursor-dot" style={{ left: mousePos.x, top: mousePos.y }} />
@@ -146,11 +143,11 @@ export default function LandingPage() {
         </>
       )}
 
-      {/* ✅ Canvas — only desktop */}
+      {/* ✅ Canvas particles — desktop only */}
       {enableCanvas && (
-        <canvas 
-          ref={canvasRef} 
-          style={{ position: "fixed", top: 0, left: 0, zIndex: 0, pointerEvents: "none" }} 
+        <canvas
+          ref={canvasRef}
+          style={{ position: "fixed", top: 0, left: 0, zIndex: 0, pointerEvents: "none" }}
         />
       )}
 

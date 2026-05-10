@@ -23,12 +23,9 @@ SUPER_ADMIN_EMAIL = "happyreehal584@gmail.com"
 
 def send_otp_email(to_email: str, otp: str, name: str):
     try:
-        # Render ke environment variables se keys uthayega
         api_key = os.getenv('MAILJET_API_KEY')
         api_secret = os.getenv('MAILJET_SECRET_KEY')
-        
-        # Mailjet sender email (aapki registered email)
-        sender_email = "happyreehal584@gmail.com" 
+        sender_email = "happyreehal584@gmail.com"
 
         mailjet = Client(auth=(api_key, api_secret), version='v3.1')
         
@@ -55,7 +52,7 @@ def send_otp_email(to_email: str, otp: str, name: str):
                           letter-spacing:12px;">{otp}</div>
             </div>
             <p style="color:rgba(255,255,255,0.3);font-size:12px;">
-              If you didn't create an AcademiQ account, ignore this email.</p>
+              If you didn't request this, ignore this email.</p>
           </div>
         </div>
         """
@@ -63,17 +60,9 @@ def send_otp_email(to_email: str, otp: str, name: str):
         data = {
           'Messages': [
             {
-              "From": {
-                "Email": sender_email,
-                "Name": "AcademiQ"
-              },
-              "To": [
-                {
-                  "Email": to_email,
-                  "Name": name
-                }
-              ],
-              "Subject": "AcademiQ — Email Verification OTP",
+              "From": {"Email": sender_email, "Name": "AcademiQ"},
+              "To": [{"Email": to_email, "Name": name}],
+              "Subject": "Your AcademiQ Access Code",
               "HTMLPart": html_content
             }
           ]
@@ -91,11 +80,13 @@ def send_otp_email(to_email: str, otp: str, name: str):
         print("MAILJET ERROR:", str(e))
         return False
 
+
 def get_admin_secret():
     doc = settings_col.find_one({"_id": "main"})
     if doc and "admin_secret" in doc:
         return doc["admin_secret"]
     return os.getenv("ADMIN_SECRET", "academiq_admin_2026")
+
 
 @router.post("/send-otp")
 def send_otp(body: dict):
@@ -124,13 +115,20 @@ def send_otp(body: dict):
 
     return {"message": "OTP sent successfully"}
 
+
+# ✅ Updated — type support added
 @router.post("/verify-otp")
 def verify_otp(body: dict):
     email = body.get("email")
     otp = body.get("otp")
     role = body.get("role", "student")
+    otp_type = body.get("type", "register")
 
-    record = otp_col.find_one({"email": email, "role": role})
+    query = {"email": email, "role": role}
+    if otp_type == "reset":
+        query["type"] = "reset"
+
+    record = otp_col.find_one(query)
     if not record:
         raise HTTPException(400, "OTP not found. Please request again.")
 
@@ -140,8 +138,9 @@ def verify_otp(body: dict):
     if record["otp"] != otp:
         raise HTTPException(400, "Invalid OTP. Please try again.")
 
-    otp_col.update_one({"email": email, "role": role}, {"$set": {"verified": True}})
+    otp_col.update_one(query, {"$set": {"verified": True}})
     return {"message": "Email verified successfully"}
+
 
 @router.post("/register")
 def register(user: UserRegister):
@@ -180,12 +179,12 @@ def register(user: UserRegister):
         "status": status,
     }
     users_col.insert_one(user_doc)
-
     otp_col.delete_one({"email": user.email, "role": user.role})
 
     if status == "pending":
         return {"message": "Registration successful. Please wait for approval."}
     return {"message": "Registration successful"}
+
 
 @router.post("/login")
 def login(user: UserLogin):
@@ -218,6 +217,8 @@ def login(user: UserLogin):
         "name": db_user["name"],
         "is_super": is_super,
     }
+
+
 @router.post("/forgot-password")
 def forgot_password(body: dict):
     email = body.get("email")

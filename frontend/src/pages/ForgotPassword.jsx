@@ -10,7 +10,7 @@ import "../styles/auth.css";
 export default function ForgotPassword() {
   const navigate = useNavigate();
 
-  const [step, setStep] = useState(1); // 1=email, 2=otp, 3=new password
+  const [step, setStep] = useState(1);
   const [role, setRole] = useState("student");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -53,7 +53,10 @@ export default function ForgotPassword() {
     if (otp.length !== 6) { setError("Enter 6 digit OTP"); return; }
     setLoading(true); setError(""); setSuccess("");
     try {
-      await axios.post(`${API}/auth/verify-otp`, { email, otp, role });
+      // ✅ type: "reset" add kiya
+      await axios.post(`${API}/auth/verify-otp`, { 
+        email, otp, role, type: "reset" 
+      });
       setStep(3);
       setSuccess("OTP verified! Set your new password.");
     } catch (err) {
@@ -161,8 +164,6 @@ export default function ForgotPassword() {
         {/* STEP 1 — Email */}
         {step === 1 && (
           <form onSubmit={handleSendOtp} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            
-            {/* Role Tabs */}
             <div className="role-tabs">
               <button type="button" className={`role-tab ${role === "student" ? "active" : ""}`} onClick={() => setRole("student")}>
                 👨‍🎓 Student
@@ -198,7 +199,6 @@ export default function ForgotPassword() {
         {/* STEP 2 — OTP */}
         {step === 2 && (
           <form onSubmit={handleVerifyOtp} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            
             <div className="otp-email-box">
               <div className="otp-email-icon">📧</div>
               <p className="otp-email-text">
@@ -241,7 +241,6 @@ export default function ForgotPassword() {
         {/* STEP 3 — New Password */}
         {step === 3 && (
           <form onSubmit={handleResetPassword} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            
             <div>
               <label className="auth-label">New Password</label>
               <div style={{ position: "relative" }}>
@@ -289,6 +288,7 @@ export default function ForgotPassword() {
           Yaad aa gaya?{" "}
           <Link to="/login" className="auth-link">Sign in</Link>
         </p>
+        <p className="auth-footer">Also check OTP in spam folder </p>
       </motion.div>
     </div>
   );

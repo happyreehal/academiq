@@ -14,6 +14,7 @@ export default function StudentDashboard() {
     papers,
     loading,
     searched,
+    error,
     searchPapers,
     getViewUrl,
     getDownloadUrl,
@@ -46,7 +47,14 @@ export default function StudentDashboard() {
           onSearch={searchPapers}
         />
 
-        {/* ✅ Always render — searched prop se handle hoga */}
+        {/* Error Message */}
+        {error && (
+          <div className="alert alert-error" style={{ marginTop: "16px" }}>
+            ⚠️ {error}
+          </div>
+        )}
+
+        {/* Results */}
         <PaperResults 
           papers={papers}
           searched={searched}

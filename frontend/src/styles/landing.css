@@ -10,7 +10,6 @@
   box-sizing: border-box; 
 }
 
-/* Custom cursor only for landing page */
 .landing-page,
 .landing-page * { 
   cursor: none !important; 
@@ -117,6 +116,7 @@
   transition: all 0.4s ease; 
   position: relative; 
   overflow: hidden;
+  cursor: pointer;
 }
 
 .btn-primary::before {
@@ -154,6 +154,7 @@
   letter-spacing: 2px; 
   text-transform: uppercase;
   transition: all 0.4s ease;
+  cursor: pointer;
 }
 
 .btn-outline:hover { 
@@ -245,7 +246,7 @@
 }
 
 /* ============================================
-   SPIN & PULSE ANIMATIONS
+   SPIN & PULSE
    ============================================ */
 
 @keyframes spin { 
@@ -254,14 +255,8 @@
 }
 
 @keyframes pulse { 
-  0%, 100% { 
-    opacity: 1; 
-    box-shadow: 0 0 10px #1D9E75;
-  } 
-  50% { 
-    opacity: 0.4; 
-    box-shadow: none;
-  } 
+  0%, 100% { opacity: 1; box-shadow: 0 0 10px #1D9E75; } 
+  50% { opacity: 0.4; box-shadow: none; } 
 }
 
 /* ============================================
@@ -278,11 +273,17 @@
   transition: color 0.3s, transform 0.3s;
   background: none; 
   border: none;
+  cursor: pointer;
 }
 
 .nav-link:hover { 
   color: #1D9E75; 
   transform: translateY(-2px); 
+}
+
+/* ✅ Hamburger — desktop pe hidden */
+.nav-hamburger {
+  display: none;
 }
 
 /* ============================================
@@ -341,30 +342,113 @@ div:hover > .divider {
 }
 
 /* ============================================
-   MOBILE RESPONSIVE
+   TABLET (769px - 1024px)
+   ============================================ */
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .hero-grid { gap: 40px !important; }
+  .hero-visual { height: 380px !important; }
+  .about-grid { gap: 40px !important; }
+  .steps-grid { grid-template-columns: 1fr 1fr !important; }
+  .feat-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .stat-num { font-size: 42px !important; }
+  .stats-row { gap: 28px !important; }
+}
+
+/* ============================================
+   MOBILE (max 768px)
    ============================================ */
 
 @media (max-width: 768px) {
-  .hero-grid { grid-template-columns: 1fr !important; }
-  .hero-visual { display: none !important; }
-  .about-grid { grid-template-columns: 1fr !important; }
-  .about-visual { display: none !important; }
-  .steps-grid { grid-template-columns: 1fr !important; }
-  .nav-links { display: none !important; }
-  .stats-row { gap: 24px !important; }
-  .cta-btns { 
-    flex-direction: column !important; 
-    align-items: flex-start !important; 
+
+  /* Cursor hide */
+  .cursor-dot,
+  .cursor-ring { 
+    display: none !important; 
   }
-  .dev-card { padding: 32px 20px !important; }
-  .dev-inner { 
-    flex-direction: column !important; 
-    text-align: center !important; 
+
+  /* Hero */
+  .hero-grid { 
+    grid-template-columns: 1fr !important; 
+    padding: 40px 5% !important;
+    gap: 0 !important;
   }
-  .feat-grid { grid-template-columns: 1fr !important; }
-}
-@media (max-width: 768px) {
+
+  /* ✅ 3D Scene — hide nahi, chhota karo */
+  .hero-visual { 
+    display: flex !important;
+    height: 280px !important;
+    width: 100% !important;
+    margin-top: 16px !important;
+  }
+
+  /* About */
+  .about-grid { 
+    grid-template-columns: 1fr !important; 
+    gap: 32px !important;
+  }
+  .about-visual { 
+    display: none !important; 
+  }
+
+  /* Steps */
+  .steps-grid { 
+    grid-template-columns: 1fr !important; 
+  }
+
+  /* Features */
+  .feat-grid { 
+    grid-template-columns: 1fr !important; 
+  }
+
+  /* Navbar */
   .nav-links { display: none !important; }
   .nav-actions { display: none !important; }
   .nav-hamburger { display: flex !important; }
+
+  /* Stats */
+  .stats-row { 
+    gap: 20px !important; 
+    flex-wrap: wrap !important;
+  }
+  .stat-num { font-size: 38px !important; }
+
+  /* CTA Buttons */
+  .cta-btns { 
+    flex-direction: column !important; 
+    align-items: stretch !important; 
+  }
+  .btn-primary,
+  .btn-outline {
+    width: 100% !important;
+    text-align: center !important;
+    padding: 14px 24px !important;
+  }
+
+  /* Developer */
+  .dev-card { padding: 28px 16px !important; }
+  .dev-inner { 
+    flex-direction: column !important; 
+    text-align: center !important; 
+    gap: 24px !important;
+  }
+
+  /* Floating off */
+  .floating { animation: none !important; }
+}
+
+/* ============================================
+   PREFERS REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .floating,
+  .fade-up,
+  .fade-left,
+  .fade-right {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
