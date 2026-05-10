@@ -1,13 +1,16 @@
-import { motion, useInView } from "framer-motion";
-import { useRef, useState, useCallback } from "react";
+import { motion } from "framer-motion";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 function MagneticButton({ children, onClick, className, primary = false }) {
   const buttonRef = useRef(null);
   const rafRef = useRef(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  // ✅ Fix — RAF throttled
   const handleMouseMove = useCallback((e) => {
     if (rafRef.current) return;
     rafRef.current = requestAnimationFrame(() => {
@@ -44,91 +47,67 @@ function MagneticButton({ children, onClick, className, primary = false }) {
 export default function CTA() {
   const navigate = useNavigate();
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Content scale + fade in on scroll
+      gsap.fromTo(contentRef.current,
+        { opacity: 0, scale: 0.85, y: 60 },
+        {
+          opacity: 1, scale: 1, y: 0, duration: 1.2, ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section ref={sectionRef} style={{ padding: "120px 6%", background: "#040b14", position: "relative", textAlign: "center" }}>
       
-      <motion.div 
-        initial={{ scaleX: 0 }}
-        animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
-        transition={{ duration: 1 }}
-        style={{ 
-          position: "absolute", top: 0, left: 0, right: 0, height: "1px", 
-          background: "linear-gradient(90deg, transparent, rgba(29,158,117,0.3), transparent)" 
-        }} 
-      />
+      <div style={{ 
+        position: "absolute", top: 0, left: 0, right: 0, height: "1px", 
+        background: "linear-gradient(90deg, transparent, rgba(29,158,117,0.3), transparent)" 
+      }} />
       
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}
-        transition={{ duration: 1.5 }}
-        style={{ 
-          position: "absolute", inset: 0, 
-          background: "radial-gradient(ellipse at center, rgba(29,158,117,0.06) 0%, transparent 70%)" 
-        }} 
-      />
+      <div style={{ 
+        position: "absolute", inset: 0, 
+        background: "radial-gradient(ellipse at center, rgba(29,158,117,0.06) 0%, transparent 70%)" 
+      }} />
 
-      <div style={{ maxWidth: "600px", margin: "0 auto", position: "relative" }}>
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6 }}
-          style={{ fontSize: "11px", color: "#1D9E75", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}
-        >
+      <div ref={contentRef} style={{ maxWidth: "600px", margin: "0 auto", position: "relative" }}>
+        <div style={{ fontSize: "11px", color: "#1D9E75", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "24px" }}>
           — Get Started
-        </motion.div>
+        </div>
         
         <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px,5vw,64px)", fontWeight: "300", color: "white", marginBottom: "24px", lineHeight: "1.1" }}>
-          <motion.span
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            style={{ display: "inline-block" }}
-          >
-            Ready to Ace
-          </motion.span>
+          <span style={{ display: "inline-block" }}>Ready to Ace</span>
           <br />
-          <motion.span 
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            style={{ fontStyle: "italic", color: "#1D9E75", textShadow: "0 0 15px rgba(29,158,117,0.3)", display: "inline-block" }}
-          >
+          <span style={{ fontStyle: "italic", color: "#1D9E75", textShadow: "0 0 15px rgba(29,158,117,0.3)", display: "inline-block" }}>
             Your Exams?
-          </motion.span>
+          </span>
         </h2>
         
-        <motion.div 
-          initial={{ width: 0 }}
-          animate={isInView ? { width: 60 } : { width: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          style={{ height: "1px", background: "#1D9E75", margin: "0 auto 32px" }}
-        />
+        <div style={{ height: "1px", background: "#1D9E75", margin: "0 auto 32px", width: "60px" }} />
         
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          style={{ color: "rgba(255,255,255,0.35)", fontSize: "14px", marginBottom: "48px", lineHeight: "1.8", fontWeight: "300" }}
-        >
+        <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "14px", marginBottom: "48px", lineHeight: "1.8", fontWeight: "300" }}>
           Join AcademiQ and access years of question papers with AI-powered practice tests.
-        </motion.p>
+        </p>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: 1 }}
-          className="cta-btns" 
-          style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}
-        >
+        <div className="cta-btns" style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
           <MagneticButton onClick={() => navigate("/register")} className="btn-primary hover-target" primary={true}>
             Register Now — It's Free
           </MagneticButton>
           <MagneticButton onClick={() => navigate("/login")} className="btn-outline hover-target">
             Sign In →
           </MagneticButton>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

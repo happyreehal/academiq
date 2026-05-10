@@ -1,77 +1,97 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
+import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { steps } from "../../data/landingData";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function HowItWorks() {
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const titleRef = useRef(null);
+  const stepsRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Title fade up
+      gsap.fromTo(titleRef.current,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1, y: 0, duration: 1, ease: "power3.out",
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      // Steps stagger reveal
+      const cards = stepsRef.current?.querySelectorAll(".step-card");
+      if (cards) {
+        gsap.fromTo(cards,
+          { opacity: 0, y: 80, scale: 0.85 },
+          {
+            opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.2, ease: "power3.out",
+            scrollTrigger: {
+              trigger: stepsRef.current,
+              start: "top 80%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section ref={sectionRef} style={{ padding: "120px 6%", background: "#040b14", position: "relative" }}>
       
-      <motion.div 
-        initial={{ scaleX: 0 }}
-        animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
-        transition={{ duration: 1 }}
-        style={{ 
-          position: "absolute", top: 0, left: 0, right: 0, height: "1px", 
-          background: "linear-gradient(90deg, transparent, rgba(29,158,117,0.3), transparent)" 
-        }} 
-      />
+      <div style={{ 
+        position: "absolute", top: 0, left: 0, right: 0, height: "1px", 
+        background: "linear-gradient(90deg, transparent, rgba(29,158,117,0.3), transparent)" 
+      }} />
 
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
         
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.8 }}
-          style={{ textAlign: "center", marginBottom: "80px" }}
-        >
+        <div ref={titleRef} style={{ textAlign: "center", marginBottom: "80px" }}>
           <div style={{ fontSize: "11px", color: "#1D9E75", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "20px" }}>
             — How It Works
           </div>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(28px,4vw,52px)", fontWeight: "300", color: "white" }}>
             Three Simple{" "}
-            <motion.span 
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              style={{ fontStyle: "italic", color: "#1D9E75", display: "inline-block" }}
-            >
+            <span style={{ fontStyle: "italic", color: "#1D9E75", display: "inline-block" }}>
               Steps
-            </motion.span>
+            </span>
           </h2>
-        </motion.div>
+        </div>
 
-        <motion.div 
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          variants={{ visible: { transition: { staggerChildren: 0.2, delayChildren: 0.5 } } }}
+        <div 
+          ref={stepsRef}
           className="steps-grid" 
           style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "2px", background: "rgba(255,255,255,0.04)" }}
         >
-          {/* ✅ Fix — key={s.step} */}
           {steps.map((s) => (
-            <motion.div 
+            <div 
               key={s.step}
-              variants={{
-                hidden: { opacity: 0, y: 50, scale: 0.9 },
-                visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", damping: 15 } }
-              }}
-              whileHover={{ y: -10, transition: { duration: 0.3 } }}
               className="step-card hover-target" 
               style={{ 
                 background: "#040b14", padding: "48px 36px", 
                 position: "relative", overflow: "hidden", 
                 borderTop: "2px solid transparent", cursor: "pointer",
+                transition: "all 0.3s",
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.borderTopColor = "#1D9E75"; 
                 e.currentTarget.style.boxShadow = "0 20px 40px rgba(0,0,0,0.4)";
+                e.currentTarget.style.transform = "translateY(-10px)";
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.borderTopColor = "transparent"; 
                 e.currentTarget.style.boxShadow = "none";
+                e.currentTarget.style.transform = "translateY(0)";
               }}
             >
               <div className="step-num">{s.step}</div>
@@ -90,9 +110,9 @@ export default function HowItWorks() {
               <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "13px", lineHeight: "1.8", fontWeight: "300" }}>
                 {s.desc}
               </p>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

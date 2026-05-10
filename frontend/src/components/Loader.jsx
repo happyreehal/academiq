@@ -1,6 +1,24 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 export default function Loader() {
+  const [progress, setProgress] = useState(0);
+
+  // ✅ Counter 0 → 100
+  useEffect(() => {
+    let current = 0;
+    const interval = setInterval(() => {
+      current += Math.random() * 8 + 2; // random increment for realistic feel
+      if (current >= 100) {
+        current = 100;
+        clearInterval(interval);
+      }
+      setProgress(Math.floor(current));
+    }, 60);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 1 }}
@@ -23,11 +41,7 @@ export default function Loader() {
       <motion.div
         initial={{ scale: 0, rotate: -180 }}
         animate={{ scale: 1, rotate: 0 }}
-        transition={{ 
-          duration: 0.8, 
-          type: "spring", 
-          damping: 12 
-        }}
+        transition={{ duration: 0.8, type: "spring", damping: 12 }}
         style={{
           width: "80px",
           height: "80px",
@@ -50,7 +64,7 @@ export default function Loader() {
         </span>
       </motion.div>
 
-      {/* Title */}
+      {/* Title with Letter Reveal */}
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -83,33 +97,65 @@ export default function Loader() {
         Loading Experience
       </motion.p>
 
-      {/* Loading Bar */}
+      {/* ✅ Progress Bar with Counter */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
         style={{
-          width: "200px",
-          height: "2px",
-          background: "rgba(255,255,255,0.1)",
-          borderRadius: "2px",
-          overflow: "hidden",
+          width: "240px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
         }}
       >
-        <motion.div
-          initial={{ x: "-100%" }}
-          animate={{ x: "100%" }}
-          transition={{ 
-            duration: 1.5, 
-            repeat: Infinity, 
-            ease: "easeInOut" 
-          }}
-          style={{
-            width: "50%",
-            height: "100%",
-            background: "linear-gradient(90deg, transparent, #1D9E75, transparent)",
-          }}
-        />
+        {/* Counter */}
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}>
+          <span style={{
+            color: "#1D9E75",
+            fontSize: "11px",
+            letterSpacing: "2px",
+            fontWeight: "600",
+            fontFamily: "'DM Sans', sans-serif",
+          }}>
+            LOADING
+          </span>
+          <span style={{
+            color: "white",
+            fontSize: "13px",
+            fontWeight: "700",
+            fontFamily: "'DM Sans', sans-serif",
+            fontVariantNumeric: "tabular-nums",
+            minWidth: "40px",
+            textAlign: "right",
+          }}>
+            {progress}%
+          </span>
+        </div>
+
+        {/* Progress Track */}
+        <div style={{
+          width: "100%",
+          height: "2px",
+          background: "rgba(255,255,255,0.08)",
+          borderRadius: "2px",
+          overflow: "hidden",
+          position: "relative",
+        }}>
+          <motion.div
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            style={{
+              height: "100%",
+              background: "linear-gradient(90deg, #1D9E75, #4ecba0)",
+              boxShadow: "0 0 10px rgba(29,158,117,0.6)",
+            }}
+          />
+        </div>
       </motion.div>
 
       {/* Bottom Text */}

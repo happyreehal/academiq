@@ -16,44 +16,69 @@
 }
 
 /* ============================================
-   CUSTOM CURSOR
+   PREMIUM CURSOR
    ============================================ */
 
 .cursor-dot {
-  width: 8px; 
-  height: 8px; 
+  width: 6px;
+  height: 6px;
   background: #1D9E75;
-  border-radius: 50%; 
-  position: fixed; 
+  border-radius: 50%;
+  position: fixed;
   pointer-events: none;
-  z-index: 9999; 
-  transition: transform 0.1s ease;
-  transform: translate(-50%, -50%);
+  z-index: 999999;  /* ✅ Pehle 9999 tha, ab 999999 */
+  top: 0;
+  left: 0;
   box-shadow: 0 0 10px #1D9E75, 0 0 20px #1D9E75;
+  transition: width 0.3s, height 0.3s, background 0.3s;
+  will-change: transform;
+}
+
+.cursor-dot--hover {
+  width: 12px;
+  height: 12px;
+  background: #4ecba0;
 }
 
 .cursor-ring {
-  width: 36px; 
+  width: 36px;
   height: 36px;
-  border: 1px solid rgba(29,158,117,0.6);
-  border-radius: 50%; 
-  position: fixed; 
+  border: 1.5px solid rgba(29, 158, 117, 0.5);
+  border-radius: 50%;
+  position: fixed;
   pointer-events: none;
-  z-index: 9998; 
-  transition: all 0.15s ease;
-  transform: translate(-50%, -50%);
-  box-shadow: inset 0 0 10px rgba(29,158,117,0.2);
+  z-index: 999998;  /* ✅ Pehle 9998 tha, ab 999998 */
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.3s ease, height 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+  will-change: transform;
 }
-
-.landing-page a:hover ~ .cursor-ring, 
-.landing-page button:hover ~ .cursor-ring, 
-.landing-page .hover-target:hover ~ .cursor-ring {
-  width: 50px; 
-  height: 50px; 
-  background: rgba(29,158,117,0.1); 
+.cursor-ring--hover {
+  width: 70px;
+  height: 70px;
+  background: rgba(29, 158, 117, 0.1);
   border-color: #1D9E75;
+  backdrop-filter: blur(2px);
 }
 
+.cursor-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #1D9E75;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: labelFadeIn 0.3s forwards;
+}
+
+@keyframes labelFadeIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
 /* ============================================
    SCROLL ANIMATIONS
    ============================================ */
@@ -450,5 +475,287 @@ div:hover > .divider {
     transition: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+/* ============================================
+   PREMIUM 3D ICON (CSS-based)
+   ============================================ */
+
+.icon-3d-wrapper {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  perspective: 800px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-3d-cube {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  transform-style: preserve-3d;
+  animation: cube-rotate 8s infinite linear, cube-float 3s infinite ease-in-out;
+  transition: animation-duration 0.4s ease;
+}
+
+.icon-3d-face {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  background: linear-gradient(135deg, rgba(29,158,117,0.15) 0%, rgba(29,158,117,0.05) 100%);
+  border: 1px solid rgba(29,158,117,0.3);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    inset 0 0 20px rgba(29,158,117,0.1),
+    0 0 15px rgba(29,158,117,0.2);
+}
+
+.icon-3d-front  { transform: translateZ(30px); }
+.icon-3d-back   { transform: translateZ(-30px) rotateY(180deg); }
+.icon-3d-right  { transform: rotateY(90deg) translateZ(30px); }
+.icon-3d-left   { transform: rotateY(-90deg) translateZ(30px); }
+.icon-3d-top    { transform: rotateX(90deg) translateZ(30px); }
+.icon-3d-bottom { transform: rotateX(-90deg) translateZ(30px); }
+
+.icon-3d-glow {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle, rgba(29,158,117,0.4) 0%, transparent 70%);
+  filter: blur(20px);
+  z-index: -1;
+  animation: glow-pulse 3s infinite ease-in-out;
+}
+
+@keyframes cube-rotate {
+  from { transform: rotateX(0deg) rotateY(0deg); }
+  to   { transform: rotateX(360deg) rotateY(360deg); }
+}
+
+@keyframes cube-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50%      { opacity: 0.8; transform: scale(1.2); }
+}
+
+/* ✅ Hover effect — speed up rotation */
+.feat-card:hover .icon-3d-cube {
+  animation-duration: 3s, 1.5s;
+}
+
+.feat-card:hover .icon-3d-glow {
+  animation-duration: 1.5s;
+}
+
+/* Mobile — disable heavy animations */
+@media (max-width: 768px) {
+  .icon-3d-cube {
+    animation-duration: 12s, 4s;
+  }
+}
+/* ============================================
+   PREMIUM 3D GRADUATION CAP (About Section)
+   ============================================ */
+
+.grad-cap-wrapper {
+  position: relative;
+  width: 320px;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+}
+
+.grad-cap-scene {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  transform-style: preserve-3d;
+  animation: grad-rotate 12s infinite linear, grad-float 4s infinite ease-in-out;
+}
+
+.grad-cap-top {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+}
+
+.grad-cap-face {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 140px;
+  filter: drop-shadow(0 0 30px rgba(29,158,117,0.6));
+}
+
+.grad-cap-face-top {
+  transform: translateZ(20px);
+}
+
+.grad-cap-tassel {
+  position: absolute;
+  width: 4px;
+  height: 60px;
+  background: linear-gradient(180deg, #1D9E75 0%, #4ecba0 100%);
+  top: 50%;
+  left: 60%;
+  transform: translateZ(40px) rotate(15deg);
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(29,158,117,0.8);
+  animation: tassel-swing 3s infinite ease-in-out;
+  transform-origin: top center;
+}
+
+.grad-cap-tassel::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: -6px;
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle, #4ecba0, #1D9E75);
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(29,158,117,1);
+}
+
+.grad-cap-glow {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(29,158,117,0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(40px);
+  z-index: -1;
+  animation: grad-glow-pulse 3s infinite ease-in-out;
+}
+
+.grad-particle {
+  position: absolute;
+  font-size: 24px;
+  filter: drop-shadow(0 0 10px rgba(29,158,117,0.5));
+  animation: particle-orbit 8s infinite linear;
+}
+
+.grad-particle-1 {
+  top: 10%;
+  left: 5%;
+  animation-delay: 0s;
+}
+
+.grad-particle-2 {
+  top: 15%;
+  right: 5%;
+  animation-delay: 2s;
+}
+
+.grad-particle-3 {
+  bottom: 15%;
+  left: 5%;
+  animation-delay: 4s;
+}
+
+.grad-particle-4 {
+  bottom: 10%;
+  right: 5%;
+  animation-delay: 6s;
+}
+
+.grad-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100px;
+  height: 60px;
+  background: linear-gradient(135deg, #1D9E75, #0d7a5a);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 15px 30px rgba(29,158,117,0.5);
+  cursor: pointer;
+  transition: transform 0.3s;
+  z-index: 5;
+  animation: badge-pulse 3s infinite ease-in-out;
+}
+
+.grad-badge:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+@keyframes grad-rotate {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(360deg); }
+}
+
+@keyframes grad-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-15px); }
+}
+
+@keyframes tassel-swing {
+  0%, 100% { transform: translateZ(40px) rotate(15deg); }
+  50%      { transform: translateZ(40px) rotate(-15deg); }
+}
+
+@keyframes grad-glow-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%      { opacity: 0.9; transform: scale(1.15); }
+}
+
+@keyframes particle-orbit {
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 0.6; }
+  25%  { transform: translate(30px, -20px) rotate(90deg); opacity: 1; }
+  50%  { transform: translate(0, -40px) rotate(180deg); opacity: 0.6; }
+  75%  { transform: translate(-30px, -20px) rotate(270deg); opacity: 1; }
+  100% { transform: translate(0, 0) rotate(360deg); opacity: 0.6; }
+}
+
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 15px 30px rgba(29,158,117,0.5); }
+  50%      { box-shadow: 0 15px 50px rgba(29,158,117,0.8), 0 0 30px rgba(29,158,117,0.6); }
+}
+
+/* Mobile — disable heavy animations */
+@media (max-width: 768px) {
+  .grad-cap-wrapper {
+    width: 240px;
+    height: 320px;
+  }
+  
+  .grad-cap-scene {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .grad-cap-face {
+    width: 150px;
+    height: 150px;
+    font-size: 100px;
+  }
+  
+  .grad-cap-glow {
+    width: 200px;
+    height: 200px;
   }
 }

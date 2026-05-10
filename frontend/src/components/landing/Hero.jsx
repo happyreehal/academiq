@@ -1,8 +1,13 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { heroStats } from "../../data/landingData";
 import CountUp from "./CountUp";
 import Scene3D from "./Scene3D";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -41,6 +46,29 @@ const AnimatedText = ({ text, className, style }) => {
 
 export default function Hero({ isLoaded, mousePos }) {
   const navigate = useNavigate();
+  const heroRef = useRef(null);
+  const visualRef = useRef(null);
+  const contentRef = useRef(null);
+
+  // ✅ GSAP ScrollTrigger — Parallax + Fade Out on Scroll
+  useEffect(() => {
+  const ctx = gsap.context(() => {
+    // ✅ Sirf content pe parallax — 3D scene pe nahi (performance ke liye)
+    gsap.to(contentRef.current, {
+      y: -80,
+      opacity: 0.4,
+      ease: "none",
+      scrollTrigger: {
+        trigger: heroRef.current,
+        start: "top top",
+        end: "bottom top",
+        scrub: 1,
+      },
+    });
+  }, heroRef);
+
+  return () => ctx.revert();
+}, []);
 
   const winW = window.innerWidth || 1440;
   const winH = window.innerHeight || 900;
@@ -50,15 +78,18 @@ export default function Hero({ isLoaded, mousePos }) {
   const parallaxY = (my - winH / 2) * 0.02;
 
   return (
-    <section style={{
-      minHeight: "100vh",
-      paddingTop: "72px",
-      display: "flex",
-      alignItems: "center",
-      position: "relative",
-      overflow: "hidden",
-      background: "linear-gradient(135deg, #030810 0%, #06121f 50%, #030810 100%)",
-    }}>
+    <section 
+      ref={heroRef}
+      style={{
+        minHeight: "100vh",
+        paddingTop: "72px",
+        display: "flex",
+        alignItems: "center",
+        position: "relative",
+        overflow: "hidden",
+        background: "linear-gradient(135deg, #030810 0%, #06121f 50%, #030810 100%)",
+      }}
+    >
 
       {/* Gradient Orbs */}
       <div style={{
@@ -90,7 +121,7 @@ export default function Hero({ isLoaded, mousePos }) {
       }}>
 
         {/* Left Content */}
-        <div>
+        <div ref={contentRef}>
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}
@@ -209,19 +240,20 @@ export default function Hero({ isLoaded, mousePos }) {
         </div>
 
         {/* ✅ Right Visual — 3D Scene */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
-          className="hero-visual"
-          style={{
-            display: "flex", justifyContent: "center", alignItems: "center",
-            height: "500px", width: "100%",
-          }}
-        >
-          <Scene3D />
-        </motion.div>
-
+<motion.div
+  ref={visualRef}
+  initial={{ opacity: 0, scale: 0.8 }}
+  animate={{ opacity: 1, scale: 1 }}
+  transition={{ delay: 0.5, duration: 1, ease: "easeOut" }}
+  className="hero-visual"
+  style={{
+    display: "flex", justifyContent: "center", alignItems: "center",
+    height: "600px",
+    width: "100%",
+  }}
+>
+  <Scene3D />
+</motion.div>
       </div> {/* hero-grid end */}
 
       {/* Scroll Indicator */}

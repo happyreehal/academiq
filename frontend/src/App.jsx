@@ -2,12 +2,17 @@ import { useEffect, useState, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Lenis from "lenis";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Loader from "./components/Loader";
 import PageTransition from "./components/PageTransition";
+
+gsap.registerPlugin(ScrollTrigger);
+window.ScrollTrigger = ScrollTrigger;
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const Login = lazy(() => import("./pages/Login"));
@@ -42,34 +47,26 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Suspense fallback={<MiniLoader />}>
         <Routes location={location} key={location.pathname}>
-          
           <Route path="/" element={<PageTransition><LandingPage /></PageTransition>} />
           <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
           <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
-          
-          {/* ✅ Forgot Password Route */}
           <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
-          
           <Route path="/admin" element={
             <ProtectedRoute role="admin">
               <PageTransition><AdminDashboard /></PageTransition>
             </ProtectedRoute>
           } />
-          
           <Route path="/student" element={
             <ProtectedRoute role="student">
               <PageTransition><StudentDashboard /></PageTransition>
             </ProtectedRoute>
           } />
-          
           <Route path="/ai-generator" element={
             <ProtectedRoute role="student">
               <PageTransition><AIGenerator /></PageTransition>
             </ProtectedRoute>
           } />
-          
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
-          
         </Routes>
       </Suspense>
     </AnimatePresence>
@@ -89,6 +86,9 @@ function App() {
       touchMultiplier: 2,
     });
 
+    // ✅ Lenis + GSAP ScrollTrigger sync
+    lenis.on("scroll", ScrollTrigger.update);
+
     let rafId;
     function raf(time) {
       lenis.raf(time);
@@ -103,7 +103,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1200);
+    const timer = setTimeout(() => setIsLoading(false), 2000);
     return () => clearTimeout(timer);
   }, []);
 

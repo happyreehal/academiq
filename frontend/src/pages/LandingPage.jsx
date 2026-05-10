@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 import "../styles/landing.css";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -14,21 +15,87 @@ export default function LandingPage() {
   const [scrollY, setScrollY] = useState(0);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isLoaded, setIsLoaded] = useState(false);
-  const [visibleSections, setVisibleSections] = useState({});
+  const [cursorState, setCursorState] = useState({ hovering: false, label: "" });
   const canvasRef = useRef(null);
+  const cursorDotRef = useRef(null);
+  const cursorRingRef = useRef(null);
 
-  // ✅ Mobile + reduced motion check
-  const isMobile = window.innerWidth <= 768;
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const enableCanvas = !isMobile && !prefersReducedMotion;
 
-  // ✅ Page title
+  // Page title
   useEffect(() => {
     document.title = "AcademiQ | Smart Question Paper Portal";
     return () => { document.title = "AcademiQ"; };
   }, []);
 
-  // ✅ Particle Canvas — only desktop
+  // ✅ Smooth cursor with lag (using requestAnimationFrame)
+  useEffect(() => {
+    if (isMobile) return;
+
+    let dotX = 0, dotY = 0;
+    let ringX = 0, ringY = 0;
+    let mouseX = 0, mouseY = 0;
+    let rafId;
+
+    const animate = () => {
+      dotX += (mouseX - dotX) * 0.9;
+      dotY += (mouseY - dotY) * 0.9;
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+
+      if (cursorDotRef.current) {
+        cursorDotRef.current.style.transform = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
+      }
+      if (cursorRingRef.current) {
+        cursorRingRef.current.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
+      }
+      rafId = requestAnimationFrame(animate);
+    };
+
+    const handleMouse = (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseOver = (e) => {
+      const target = e.target;
+      const isLink = target.closest("a");
+      const isButton = target.closest("button");
+      const isHoverTarget = target.closest(".hover-target");
+
+      if (isButton) {
+        setCursorState({ hovering: true, label: "Click" });
+      } else if (isLink) {
+        setCursorState({ hovering: true, label: "View" });
+      } else if (isHoverTarget) {
+        setCursorState({ hovering: true, label: "" });
+      } else {
+        setCursorState({ hovering: false, label: "" });
+      }
+    };
+
+    window.addEventListener("mousemove", handleMouse);
+    window.addEventListener("mouseover", handleMouseOver);
+    rafId = requestAnimationFrame(animate);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouse);
+      window.removeEventListener("mouseover", handleMouseOver);
+      cancelAnimationFrame(rafId);
+    };
+  }, [isMobile]);
+
+  // Particle Canvas
   useEffect(() => {
     if (!enableCanvas) return;
     const canvas = canvasRef.current;
@@ -87,44 +154,16 @@ export default function LandingPage() {
     };
   }, [enableCanvas]);
 
-  // ✅ Throttled scroll
+  // Throttled scroll
   const handleScroll = useCallback(() => {
     setScrollY(window.scrollY);
   }, []);
 
-  // ✅ RAF throttled mousemove — desktop only
-  const mouseMoveRaf = useRef(null);
-  const handleMouseMove = useCallback((e) => {
-    if (mouseMoveRaf.current) return;
-    mouseMoveRaf.current = requestAnimationFrame(() => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-      mouseMoveRaf.current = null;
-    });
-  }, []);
-
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true });
-    if (!isMobile) window.addEventListener("mousemove", handleMouseMove);
     setTimeout(() => setIsLoaded(true), 100);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("mousemove", handleMouseMove);
-      if (mouseMoveRaf.current) cancelAnimationFrame(mouseMoveRaf.current);
-    };
-  }, [handleScroll, handleMouseMove, isMobile]);
-
-  // Intersection Observer
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          setVisibleSections(prev => ({ ...prev, [e.target.id]: true }));
-        }
-      });
-    }, { threshold: 0.15 });
-    document.querySelectorAll("[data-animate]").forEach(el => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   return (
     <div
@@ -135,15 +174,27 @@ export default function LandingPage() {
         overflowX: "hidden"
       }}
     >
-      {/* ✅ Custom Cursor — desktop only */}
-      {!isMobile && (
+      {/* ✅ Premium Cursor — Portal to body (bypass filter parent issue) */}
+      {!isMobile && createPortal(
         <>
-          <div className="cursor-dot" style={{ left: mousePos.x, top: mousePos.y }} />
-          <div className="cursor-ring" style={{ left: mousePos.x, top: mousePos.y }} />
-        </>
+          <div 
+            ref={cursorDotRef}
+            className={`cursor-dot ${cursorState.hovering ? "cursor-dot--hover" : ""}`}
+            style={{ zIndex: 2147483647 }}
+          />
+          <div 
+            ref={cursorRingRef}
+            className={`cursor-ring ${cursorState.hovering ? "cursor-ring--hover" : ""}`}
+            style={{ zIndex: 2147483646 }}
+          >
+            {cursorState.label && (
+              <span className="cursor-label">{cursorState.label}</span>
+            )}
+          </div>
+        </>,
+        document.body
       )}
 
-      {/* ✅ Canvas particles — desktop only */}
       {enableCanvas && (
         <canvas
           ref={canvasRef}

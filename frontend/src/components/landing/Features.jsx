@@ -1,32 +1,51 @@
-import { motion, useInView } from "framer-motion";
-import { useRef, useState, useCallback } from "react";
+import { motion } from "framer-motion";
+import { useRef, useState, useCallback, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { features } from "../../data/landingData";
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-};
+gsap.registerPlugin(ScrollTrigger);
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 60, scale: 0.9 },
-  visible: {
-    opacity: 1, y: 0, scale: 1,
-    transition: { type: "spring", damping: 15, stiffness: 100 },
-  },
-};
+// ✅ Premium 3D Icon Component
+function Icon3D({ icon, index }) {
+  return (
+    <div className="icon-3d-wrapper">
+      <div className="icon-3d-cube" style={{ animationDelay: `${index * 0.3}s` }}>
+        <div className="icon-3d-face icon-3d-front">{icon}</div>
+        <div className="icon-3d-face icon-3d-back">{icon}</div>
+        <div className="icon-3d-face icon-3d-right">{icon}</div>
+        <div className="icon-3d-face icon-3d-left">{icon}</div>
+        <div className="icon-3d-face icon-3d-top">{icon}</div>
+        <div className="icon-3d-face icon-3d-bottom">{icon}</div>
+      </div>
+      <div className="icon-3d-glow" />
+    </div>
+  );
+}
 
-const titleVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
-};
-
-function TiltCard({ feature }) {
+function TiltCard({ feature, index }) {
   const cardRef = useRef(null);
   const rafRef = useRef(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [glowPos, setGlowPos] = useState({ x: 50, y: 50 });
 
-  // ✅ Fix — RAF throttled mousemove
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+
+    gsap.fromTo(el, 
+      { opacity: 0, y: 80, scale: 0.85 },
+      {
+        opacity: 1, y: 0, scale: 1, duration: 1, delay: index * 0.1, ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      }
+    );
+  }, [index]);
+
   const handleMouseMove = useCallback((e) => {
     if (rafRef.current) return;
     rafRef.current = requestAnimationFrame(() => {
@@ -53,9 +72,8 @@ function TiltCard({ feature }) {
   };
 
   return (
-    <motion.div
+    <div
       ref={cardRef}
-      variants={cardVariants}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className="feat-card hover-target"
@@ -66,7 +84,6 @@ function TiltCard({ feature }) {
         position: "relative", overflow: "hidden",
       }}
     >
-      {/* Dynamic Glow */}
       <div style={{
         position: "absolute", inset: 0,
         background: `radial-gradient(circle at ${glowPos.x}% ${glowPos.y}%, rgba(29,158,117,0.15) 0%, transparent 50%)`,
@@ -79,82 +96,73 @@ function TiltCard({ feature }) {
         {feature.num}
       </div>
 
-      <motion.div 
-        whileHover={{ scale: 1.4, rotate: 15 }}
-        transition={{ type: "spring", damping: 10 }}
-        style={{ fontSize: "28px", marginBottom: "16px", position: "relative", zIndex: 1, display: "inline-block" }}
-      >
-        {feature.icon}
-      </motion.div>
+      {/* ✅ Premium 3D Icon */}
+      <Icon3D icon={feature.icon} index={index} />
 
-      <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: "400", color: "white", marginBottom: "12px", position: "relative", zIndex: 1 }}>
+      <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: "400", color: "white", marginBottom: "12px", marginTop: "20px", position: "relative", zIndex: 1 }}>
         {feature.title}
       </h3>
 
       <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "13px", lineHeight: "1.8", fontWeight: "300", position: "relative", zIndex: 1 }}>
         {feature.desc}
       </p>
-    </motion.div>
+    </div>
   );
 }
 
 export default function Features() {
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const titleRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(titleRef.current,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1, y: 0, duration: 1, ease: "power3.out",
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section id="features" ref={sectionRef} style={{ padding: "120px 6%", background: "#040b14", position: "relative" }}>
       
-      <motion.div 
-        initial={{ scaleX: 0 }}
-        animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
-        transition={{ duration: 1, ease: "easeOut" }}
-        style={{ 
-          position: "absolute", top: 0, left: 0, right: 0, height: "1px", 
-          background: "linear-gradient(90deg, transparent, rgba(29,158,117,0.3), transparent)",
-          transformOrigin: "center",
-        }} 
-      />
+      <div style={{ 
+        position: "absolute", top: 0, left: 0, right: 0, height: "1px", 
+        background: "linear-gradient(90deg, transparent, rgba(29,158,117,0.3), transparent)",
+      }} />
 
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        <motion.div 
-          variants={titleVariants} initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          style={{ marginBottom: "80px" }}
-        >
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-            transition={{ duration: 0.6 }}
-            style={{ fontSize: "11px", color: "#1D9E75", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "20px" }}
-          >
+        <div ref={titleRef} style={{ marginBottom: "80px" }}>
+          <div style={{ fontSize: "11px", color: "#1D9E75", letterSpacing: "3px", textTransform: "uppercase", marginBottom: "20px" }}>
             — Features
-          </motion.div>
+          </div>
           
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px,4vw,52px)", fontWeight: "300", color: "white", maxWidth: "500px", lineHeight: "1.2" }}>
             Everything You Need
             <br />
-            <motion.span 
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              style={{ fontStyle: "italic", color: "#1D9E75", display: "inline-block" }}
-            >
+            <span style={{ fontStyle: "italic", color: "#1D9E75", display: "inline-block" }}>
               to Excel
-            </motion.span>
+            </span>
           </h2>
-        </motion.div>
+        </div>
 
-        <motion.div 
-          variants={containerVariants} initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+        <div 
           className="feat-grid" 
           style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1px", background: "rgba(255,255,255,0.04)" }}
         >
           {features.map((feature, i) => (
             <TiltCard key={feature.num} feature={feature} index={i} />
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
