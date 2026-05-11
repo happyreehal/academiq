@@ -883,3 +883,59 @@ div:hover > .divider {
   outline: 2px solid #1D9E75;
   outline-offset: 2px;
 }
+/* ============================================
+   MOUSE CURSOR FIX — Desktop pe show, Mobile pe hide
+   ============================================ */
+
+/* Desktop: Custom cursor ON, default cursor OFF */
+@media (hover: hover) and (pointer: fine) {
+  .landing-page,
+  .landing-page * {
+    cursor: none !important;
+  }
+  
+  .cursor-dot,
+  .cursor-ring {
+    display: block !important;
+  }
+  
+  /* Interactive elements pe custom cursor */
+  .landing-page a,
+  .landing-page button,
+  .landing-page [role="button"],
+  .landing-page input,
+  .landing-page textarea,
+  .landing-page select {
+    cursor: none !important;
+  }
+}
+
+/* Mobile/Touch: Default cursor ON, custom cursor OFF */
+@media (hover: none), (pointer: coarse) {
+  .landing-page,
+  .landing-page * {
+    cursor: auto !important;
+  }
+  
+  .cursor-dot,
+  .cursor-ring {
+    display: none !important;
+  }
+  
+  .landing-page a,
+  .landing-page button,
+  .landing-page [role="button"],
+  .landing-page input,
+  .landing-page textarea,
+  .landing-page select {
+    cursor: pointer !important;
+  }
+}
+
+/* Fallback — agar media query na chale */
+@supports not (hover: hover) {
+  .landing-page,
+  .landing-page * {
+    cursor: auto !important;
+  }
+}
