@@ -36,6 +36,8 @@ export default function LandingPage() {
     typeof window !== "undefined"
       ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
       : false;
+  
+  // ✅ Canvas sirf desktop pe
   const enableCanvas = !isMobile && !prefersReducedMotion;
 
   // Page title
@@ -46,7 +48,7 @@ export default function LandingPage() {
     };
   }, []);
 
-  // ✅ FIXED: Custom cursor — RAF synced, NO setState on mouse move
+  // Custom cursor — desktop only
   useEffect(() => {
     if (isMobile) return;
 
@@ -58,7 +60,6 @@ export default function LandingPage() {
     const animate = () => {
       if (!isActive) return;
 
-      // Smooth lerp
       dotX += (targetX - dotX) * 0.2;
       dotY += (targetY - dotY) * 0.2;
       ringX += (targetX - ringX) * 0.08;
@@ -109,14 +110,18 @@ export default function LandingPage() {
     };
   }, [isMobile]);
 
-  // ✅ FIXED: Particle Canvas with visibility + RAF optimization
+  // Particle Canvas — desktop only, with touch-action fix
   useEffect(() => {
     if (!enableCanvas) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d", { alpha: true }); // Alpha optimization
-
+    
+    // ✅ CRITICAL: Allow scroll through canvas
+    canvas.style.touchAction = "pan-y";
+    
+    const ctx = canvas.getContext("2d", { alpha: true });
     const dpr = Math.min(window.devicePixelRatio, 1.5);
+    
     const setSize = () => {
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
@@ -126,11 +131,11 @@ export default function LandingPage() {
     };
     setSize();
 
-    const particles = Array.from({ length: 40 }, () => ({ // Reduced from 50
+    const particles = Array.from({ length: 30 }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
-      r: Math.random() * 1.2 + 0.3, // Smaller
-      dx: (Math.random() - 0.5) * 0.3, // Slower
+      r: Math.random() * 1.2 + 0.3,
+      dx: (Math.random() - 0.5) * 0.3,
       dy: (Math.random() - 0.5) * 0.3,
       opacity: Math.random() * 0.4 + 0.1,
     }));
@@ -141,50 +146,27 @@ export default function LandingPage() {
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      
       if (!isVisible) return;
       frameCount++;
-      if (frameCount % 2 !== 0) return; // 30fps particles
+      if (frameCount % 2 !== 0) return;
 
       ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
       
       particles.forEach((p) => {
-        p.x += p.dx;
-        p.y += p.dy;
+        p.x += p.dx; p.y += p.dy;
         if (p.x < 0 || p.x > window.innerWidth) p.dx *= -1;
         if (p.y < 0 || p.y > window.innerHeight) p.dy *= -1;
-        
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(29,158,117,${p.opacity})`;
         ctx.fill();
       });
-
-      // Only draw connections every 3rd frame
-      if (frameCount % 6 === 0) {
-        particles.forEach((a, i) => {
-          particles.slice(i + 1).forEach((b) => {
-            const dist = Math.hypot(a.x - b.x, a.y - b.y);
-            if (dist < 80) { // Reduced from 100
-              ctx.beginPath();
-              ctx.moveTo(a.x, a.y);
-              ctx.lineTo(b.x, b.y);
-              ctx.strokeStyle = `rgba(29,158,117,${0.06 * (1 - dist / 80)})`;
-              ctx.lineWidth = 0.5;
-              ctx.stroke();
-            }
-          });
-        });
-      }
     };
     animate();
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        isVisible = entry.isIntersecting;
-      },
-      { threshold: 0 }
-    );
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+    }, { threshold: 0 });
     observer.observe(canvas);
 
     const resize = () => setSize();
@@ -197,7 +179,7 @@ export default function LandingPage() {
     };
   }, [enableCanvas]);
 
-  // ✅ FIXED: Throttled scroll with RAF
+  // Throttled scroll
   const handleScroll = useCallback(() => {
     if (scrollRafRef.current) return;
     scrollRafRef.current = requestAnimationFrame(() => {
@@ -222,6 +204,10 @@ export default function LandingPage() {
         fontFamily: "'DM Sans', sans-serif",
         background: "#030810",
         overflowX: "hidden",
+        // ✅ CRITICAL: Allow vertical scroll
+        overflowY: "auto",
+        minHeight: "100vh",
+        position: "relative",
       }}
     >
       {!isMobile &&
@@ -259,6 +245,7 @@ export default function LandingPage() {
           document.body
         )}
 
+      {/* ✅ Canvas with touch-action fix */}
       {enableCanvas && (
         <canvas
           ref={canvasRef}
@@ -267,7 +254,8 @@ export default function LandingPage() {
             top: 0,
             left: 0,
             zIndex: 0,
-            pointerEvents: "none",
+            pointerEvents: "none", // Let clicks pass through
+            touchAction: "pan-y", // Allow vertical scroll
           }}
         />
       )}
