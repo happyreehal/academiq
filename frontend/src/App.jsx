@@ -1,7 +1,6 @@
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense, useRef } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -14,7 +13,9 @@ import PageTransition from "./components/PageTransition";
 gsap.registerPlugin(ScrollTrigger);
 window.ScrollTrigger = ScrollTrigger;
 
-const LandingPage = lazy(() => import("./pages/LandingPage"));
+// Eager load landing for fast FCP
+import LandingPage from "./pages/LandingPage";
+
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
@@ -22,6 +23,18 @@ const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const StudentDashboard = lazy(() => import("./pages/StudentDashboard"));
 const AIGenerator = lazy(() => import("./pages/AIGenerator"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+
+// Prefetch after idle
+const prefetchRoutes = () => {
+  const routes = [
+    () => import("./pages/Login"),
+    () => import("./pages/Register"),
+  ];
+  
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => routes.forEach(r => r()), { timeout: 3000 });
+  }
+};
 
 function MiniLoader() {
   return (
@@ -76,34 +89,45 @@ function AnimatedRoutes() {
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
+  // Conditional Lenis — only desktop
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
-    });
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isMobile = window.innerWidth <= 768 || 'ontouchstart' in window;
+    
+    if (prefersReducedMotion || isMobile) return;
 
-    // ✅ Lenis + GSAP ScrollTrigger sync
-    lenis.on("scroll", ScrollTrigger.update);
+    import("lenis").then(({ default: Lenis }) => {
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: "vertical",
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        touchMultiplier: 2,
+      });
 
-    let rafId;
-    function raf(time) {
-      lenis.raf(time);
+      lenis.on("scroll", ScrollTrigger.update);
+
+      let rafId;
+      function raf(time) {
+        lenis.raf(time);
+        rafId = requestAnimationFrame(raf);
+      }
       rafId = requestAnimationFrame(raf);
-    }
-    rafId = requestAnimationFrame(raf);
 
-    return () => {
-      lenis.destroy();
-      cancelAnimationFrame(rafId);
-    };
+      return () => {
+        lenis.destroy();
+        cancelAnimationFrame(rafId);
+      };
+    });
   }, []);
 
+  // ✅ Faster load — 1s instead of 1.5s
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 2000);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      prefetchRoutes();
+    }, 1000);
     return () => clearTimeout(timer);
   }, []);
 

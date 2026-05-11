@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
+    "build:analyze": "vite build --mode analyze",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -33,6 +33,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
+    "rollup-plugin-visualizer": "^7.0.1",
     "vite": "^8.0.10"
   }
 }

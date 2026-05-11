@@ -13,14 +13,18 @@ import Marquee from "../components/landing/Marquee";
 
 export default function LandingPage() {
   const [scrollY, setScrollY] = useState(0);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isLoaded, setIsLoaded] = useState(false);
   const [cursorState, setCursorState] = useState({ hovering: false, label: "" });
   const canvasRef = useRef(null);
   const cursorDotRef = useRef(null);
   const cursorRingRef = useRef(null);
+  const mousePosRef = useRef({ x: 0, y: 0 });
+  const scrollRafRef = useRef(null);
+  const cursorRafRef = useRef(null);
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -28,43 +32,52 @@ export default function LandingPage() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const prefersReducedMotion =
+    typeof window !== "undefined"
+      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      : false;
   const enableCanvas = !isMobile && !prefersReducedMotion;
 
   // Page title
   useEffect(() => {
     document.title = "AcademiQ | Smart Question Paper Portal";
-    return () => { document.title = "AcademiQ"; };
+    return () => {
+      document.title = "AcademiQ";
+    };
   }, []);
 
-  // ✅ Smooth cursor with lag (using requestAnimationFrame)
+  // ✅ FIXED: Custom cursor — RAF synced, NO setState on mouse move
   useEffect(() => {
     if (isMobile) return;
 
     let dotX = 0, dotY = 0;
     let ringX = 0, ringY = 0;
-    let mouseX = 0, mouseY = 0;
-    let rafId;
+    let targetX = 0, targetY = 0;
+    let isActive = true;
 
     const animate = () => {
-      dotX += (mouseX - dotX) * 0.9;
-      dotY += (mouseY - dotY) * 0.9;
-      ringX += (mouseX - ringX) * 0.15;
-      ringY += (mouseY - ringY) * 0.15;
+      if (!isActive) return;
+
+      // Smooth lerp
+      dotX += (targetX - dotX) * 0.2;
+      dotY += (targetY - dotY) * 0.2;
+      ringX += (targetX - ringX) * 0.08;
+      ringY += (targetY - ringY) * 0.08;
 
       if (cursorDotRef.current) {
-        cursorDotRef.current.style.transform = `translate(${dotX}px, ${dotY}px) translate(-50%, -50%)`;
+        cursorDotRef.current.style.transform = `translate3d(${dotX}px, ${dotY}px, 0) translate(-50%, -50%)`;
       }
       if (cursorRingRef.current) {
-        cursorRingRef.current.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
+        cursorRingRef.current.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
       }
-      rafId = requestAnimationFrame(animate);
+
+      cursorRafRef.current = requestAnimationFrame(animate);
     };
 
     const handleMouse = (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      setMousePos({ x: e.clientX, y: e.clientY });
+      targetX = e.clientX;
+      targetY = e.clientY;
+      mousePosRef.current = { x: e.clientX, y: e.clientY };
     };
 
     const handleMouseOver = (e) => {
@@ -84,85 +97,122 @@ export default function LandingPage() {
       }
     };
 
-    window.addEventListener("mousemove", handleMouse);
-    window.addEventListener("mouseover", handleMouseOver);
-    rafId = requestAnimationFrame(animate);
+    window.addEventListener("mousemove", handleMouse, { passive: true });
+    window.addEventListener("mouseover", handleMouseOver, { passive: true });
+    cursorRafRef.current = requestAnimationFrame(animate);
 
     return () => {
+      isActive = false;
       window.removeEventListener("mousemove", handleMouse);
       window.removeEventListener("mouseover", handleMouseOver);
-      cancelAnimationFrame(rafId);
+      if (cursorRafRef.current) cancelAnimationFrame(cursorRafRef.current);
     };
   }, [isMobile]);
 
-  // Particle Canvas
+  // ✅ FIXED: Particle Canvas with visibility + RAF optimization
   useEffect(() => {
     if (!enableCanvas) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: true }); // Alpha optimization
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio, 1.5);
+    const setSize = () => {
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      ctx.scale(dpr, dpr);
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+    };
+    setSize();
 
-    const particles = Array.from({ length: 50 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 1.5 + 0.3,
-      dx: (Math.random() - 0.5) * 0.4,
-      dy: (Math.random() - 0.5) * 0.4,
-      opacity: Math.random() * 0.5 + 0.1,
+    const particles = Array.from({ length: 40 }, () => ({ // Reduced from 50
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 1.2 + 0.3, // Smaller
+      dx: (Math.random() - 0.5) * 0.3, // Slower
+      dy: (Math.random() - 0.5) * 0.3,
+      opacity: Math.random() * 0.4 + 0.1,
     }));
 
     let animId;
+    let isVisible = true;
+    let frameCount = 0;
+
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
-        p.x += p.dx; p.y += p.dy;
-        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+      animId = requestAnimationFrame(animate);
+      
+      if (!isVisible) return;
+      frameCount++;
+      if (frameCount % 2 !== 0) return; // 30fps particles
+
+      ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+      
+      particles.forEach((p) => {
+        p.x += p.dx;
+        p.y += p.dy;
+        if (p.x < 0 || p.x > window.innerWidth) p.dx *= -1;
+        if (p.y < 0 || p.y > window.innerHeight) p.dy *= -1;
+        
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(29,158,117,${p.opacity})`;
         ctx.fill();
       });
-      particles.forEach((a, i) => {
-        particles.slice(i + 1).forEach(b => {
-          const dist = Math.hypot(a.x - b.x, a.y - b.y);
-          if (dist < 100) {
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(29,158,117,${0.08 * (1 - dist / 100)})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
+
+      // Only draw connections every 3rd frame
+      if (frameCount % 6 === 0) {
+        particles.forEach((a, i) => {
+          particles.slice(i + 1).forEach((b) => {
+            const dist = Math.hypot(a.x - b.x, a.y - b.y);
+            if (dist < 80) { // Reduced from 100
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.strokeStyle = `rgba(29,158,117,${0.06 * (1 - dist / 80)})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          });
         });
-      });
-      animId = requestAnimationFrame(animate);
+      }
     };
     animate();
 
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    observer.observe(canvas);
+
+    const resize = () => setSize();
     window.addEventListener("resize", resize);
+    
     return () => {
       cancelAnimationFrame(animId);
+      observer.disconnect();
       window.removeEventListener("resize", resize);
     };
   }, [enableCanvas]);
 
-  // Throttled scroll
+  // ✅ FIXED: Throttled scroll with RAF
   const handleScroll = useCallback(() => {
-    setScrollY(window.scrollY);
+    if (scrollRafRef.current) return;
+    scrollRafRef.current = requestAnimationFrame(() => {
+      setScrollY(window.scrollY);
+      scrollRafRef.current = null;
+    });
   }, []);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     setTimeout(() => setIsLoaded(true), 100);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollRafRef.current) cancelAnimationFrame(scrollRafRef.current);
+    };
   }, [handleScroll]);
 
   return (
@@ -171,39 +221,59 @@ export default function LandingPage() {
       style={{
         fontFamily: "'DM Sans', sans-serif",
         background: "#030810",
-        overflowX: "hidden"
+        overflowX: "hidden",
       }}
     >
-      {/* ✅ Premium Cursor — Portal to body (bypass filter parent issue) */}
-      {!isMobile && createPortal(
-        <>
-          <div 
-            ref={cursorDotRef}
-            className={`cursor-dot ${cursorState.hovering ? "cursor-dot--hover" : ""}`}
-            style={{ zIndex: 2147483647 }}
-          />
-          <div 
-            ref={cursorRingRef}
-            className={`cursor-ring ${cursorState.hovering ? "cursor-ring--hover" : ""}`}
-            style={{ zIndex: 2147483646 }}
-          >
-            {cursorState.label && (
-              <span className="cursor-label">{cursorState.label}</span>
-            )}
-          </div>
-        </>,
-        document.body
-      )}
+      {!isMobile &&
+        createPortal(
+          <>
+            <div
+              ref={cursorDotRef}
+              className={`cursor-dot ${cursorState.hovering ? "cursor-dot--hover" : ""}`}
+              style={{ 
+                zIndex: 2147483647,
+                position: "fixed",
+                top: 0,
+                left: 0,
+                pointerEvents: "none",
+                willChange: "transform",
+              }}
+            />
+            <div
+              ref={cursorRingRef}
+              className={`cursor-ring ${cursorState.hovering ? "cursor-ring--hover" : ""}`}
+              style={{ 
+                zIndex: 2147483646,
+                position: "fixed",
+                top: 0,
+                left: 0,
+                pointerEvents: "none",
+                willChange: "transform",
+              }}
+            >
+              {cursorState.label && (
+                <span className="cursor-label">{cursorState.label}</span>
+              )}
+            </div>
+          </>,
+          document.body
+        )}
 
       {enableCanvas && (
         <canvas
           ref={canvasRef}
-          style={{ position: "fixed", top: 0, left: 0, zIndex: 0, pointerEvents: "none" }}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            zIndex: 0,
+            pointerEvents: "none",
+          }}
         />
       )}
 
       <Navbar scrollY={scrollY} />
-      <Hero isLoaded={isLoaded} mousePos={mousePos} />
+      <Hero isLoaded={isLoaded} mousePosRef={mousePosRef} />
       <Marquee />
       <Features />
       <About />

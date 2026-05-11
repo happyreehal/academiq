@@ -26,6 +26,8 @@ function Icon3D({ icon, index }) {
 function TiltCard({ feature, index }) {
   const cardRef = useRef(null);
   const rafRef = useRef(null);
+  const tiltRef = useRef({ x: 0, y: 0 });
+  const glowRef = useRef({ x: 50, y: 50 });
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [glowPos, setGlowPos] = useState({ x: 50, y: 50 });
 
@@ -53,20 +55,28 @@ function TiltCard({ feature, index }) {
       const rect = cardRef.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      setTilt({
+      
+      const newTilt = {
         x: ((e.clientY - centerY) / rect.height) * -10,
         y: ((e.clientX - centerX) / rect.width) * 10,
-      });
-      setGlowPos({
+      };
+      const newGlow = {
         x: ((e.clientX - rect.left) / rect.width) * 100,
         y: ((e.clientY - rect.top) / rect.height) * 100,
-      });
+      };
+      
+      tiltRef.current = newTilt;
+      glowRef.current = newGlow;
+      setTilt(newTilt);
+      setGlowPos(newGlow);
       rafRef.current = null;
     });
   }, []);
 
   const handleMouseLeave = () => {
     if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+    tiltRef.current = { x: 0, y: 0 };
+    glowRef.current = { x: 50, y: 50 };
     setTilt({ x: 0, y: 0 });
     setGlowPos({ x: 50, y: 50 });
   };
@@ -81,7 +91,9 @@ function TiltCard({ feature, index }) {
         background: "#040b14",
         transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
         transition: "transform 0.1s ease-out",
-        position: "relative", overflow: "hidden",
+        position: "relative", 
+        overflow: "hidden",
+        minHeight: "280px", // ✅ Minimum height ensure karo
       }}
     >
       <div style={{
@@ -96,14 +108,33 @@ function TiltCard({ feature, index }) {
         {feature.num}
       </div>
 
-      {/* ✅ Premium 3D Icon */}
       <Icon3D icon={feature.icon} index={index} />
 
-      <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: "400", color: "white", marginBottom: "12px", marginTop: "20px", position: "relative", zIndex: 1 }}>
+      <h3 style={{ 
+        fontFamily: "'Cormorant Garamond', serif", 
+        fontSize: "20px", 
+        fontWeight: "400", 
+        color: "white", 
+        marginBottom: "12px", 
+        marginTop: "20px", 
+        position: "relative", 
+        zIndex: 1,
+        wordWrap: "break-word", // ✅ Text wrap karo
+        overflowWrap: "break-word",
+      }}>
         {feature.title}
       </h3>
 
-      <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "13px", lineHeight: "1.8", fontWeight: "300", position: "relative", zIndex: 1 }}>
+      <p style={{ 
+        color: "rgba(255,255,255,0.35)", 
+        fontSize: "13px", 
+        lineHeight: "1.8", 
+        fontWeight: "300", 
+        position: "relative", 
+        zIndex: 1,
+        wordWrap: "break-word", // ✅ Text wrap karo
+        overflowWrap: "break-word",
+      }}>
         {feature.desc}
       </p>
     </div>
@@ -157,7 +188,12 @@ export default function Features() {
 
         <div 
           className="feat-grid" 
-          style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1px", background: "rgba(255,255,255,0.04)" }}
+          style={{ 
+            display: "grid", 
+            gridTemplateColumns: "repeat(3, 1fr)", // ✅ Fixed 3 columns
+            gap: "1px", 
+            background: "rgba(255,255,255,0.04)",
+          }}
         >
           {features.map((feature, i) => (
             <TiltCard key={feature.num} feature={feature} index={i} />
