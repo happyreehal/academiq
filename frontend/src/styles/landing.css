@@ -1,38 +1,31 @@
-/* Top pe ADD karo — override everything */
-html, body, #root {
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  height: auto !important;
-  min-height: 100vh !important;
-}
-
-/* Remove any existing overflow:hidden */
-.landing-page {
-  overflow-y: auto !important;
-  overflow-x: hidden;
-  min-height: 100vh;
-  height: auto !important;
-}
 /* ============================================
-   CRITICAL TOUCH & SCROLL FIXES — TOP PRIORITY
+   MOBILE SCROLL FIX — TOP PRIORITY (Override All)
    ============================================ */
 
 html, body, #root {
-  height: auto;
-  min-height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
 }
 
-/* ✅ REMOVE cursor: none on mobile/touch */
-.landing-page,
-.landing-page * {
-  cursor: auto; /* Default cursor for touch */
+/* Scroll container */
+.landing-page {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  min-height: 100vh !important;
+  height: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+  overscroll-behavior-y: auto !important; /* FIXED: was 'none' */
 }
 
-/* Desktop pe custom cursor */
+/* ============================================
+   CURSOR FIX — Mobile vs Desktop
+   ============================================ */
+
+/* Desktop: custom cursor ON */
 @media (hover: hover) and (pointer: fine) {
   .landing-page,
   .landing-page * {
@@ -41,12 +34,13 @@ html, body, #root {
   
   .cursor-dot,
   .cursor-ring {
-    display: block;
+    display: block !important;
+    pointer-events: none !important;
   }
 }
 
-/* Mobile pe default cursor + no custom cursor */
-@media (hover: none) or (pointer: coarse) {
+/* Mobile/Touch: default cursor ON, custom cursor OFF */
+@media (hover: none), (pointer: coarse) {
   .landing-page,
   .landing-page * {
     cursor: auto !important;
@@ -58,67 +52,31 @@ html, body, #root {
   }
 }
 
-/* Ensure all sections allow touch */
-section, div, article, main {
-  touch-action: pan-y;
-  -webkit-touch-callout: default;
-  -webkit-user-select: auto;
-  user-select: auto;
-}
-
-/* Canvas never blocks */
-canvas {
-  touch-action: none !important;
-  pointer-events: none !important;
-}
-
-/* Buttons/links clickable */
+/* Interactive elements always clickable */
 a, button, [role="button"], input, textarea, select {
-  cursor: pointer;
-  touch-action: manipulation;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
 }
 
 /* ============================================
-   EXISTING STYLES BELOW...
-   ============================================ */
-/* ============================================
-   MOBILE SCROLL FIX — ADD AT TOP
+   TOUCH FIX — All Elements
    ============================================ */
 
-html, body {
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch; /* Smooth iOS scroll */
-  height: auto;
-  min-height: 100%;
-}
-
-/* Prevent any element from blocking scroll */
-.landing-page {
-  overflow-y: auto !important;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
-  min-height: 100vh;
-}
-
-/* Ensure sections don't block scroll */
-section {
-  position: relative;
-  overflow: visible;
-}
-
-/* Canvas should never block touch */
-canvas {
+section, div, article, main, .container, .wrapper {
   touch-action: pan-y !important;
-  pointer-events: none;
+  -webkit-touch-callout: default !important;
+  -webkit-user-select: auto !important;
+  user-select: auto !important;
+}
+
+/* Canvas: allow scroll THROUGH it (not blocked by it) */
+canvas {
+  touch-action: pan-y !important; /* FIXED: was 'none' */
+  pointer-events: none !important; /* Let touches pass through */
 }
 
 /* ============================================
-   EXISTING CSS BELOW...
-   ============================================ */
-/* ============================================
-   LANDING PAGE STYLES
+   EXISTING STYLES BELOW (Unchanged)
    ============================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -917,19 +875,7 @@ div:hover > .divider {
   backface-visibility: hidden;
 }
 
-/* Smooth scrolling */
-.landing-page {
-  overscroll-behavior-y: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Cursor hide on landing page */
-.landing-page,
-.landing-page * {
-  cursor: none;
-}
-
-/* But show default on interactive elements for accessibility */
+/* Focus accessibility */
 .landing-page a:focus,
 .landing-page button:focus,
 .landing-page input:focus,
