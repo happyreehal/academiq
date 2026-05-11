@@ -745,20 +745,31 @@ div:hover > .divider {
     display: none !important; 
   }
 
-  /* Hero */
-  .hero-grid { 
-    grid-template-columns: 1fr !important; 
-    padding: 40px 5% !important;
-    gap: 0 !important;
-  }
-
-  /* 3D Scene — chhota karo */
-  .hero-visual { 
+  .hero-visual {
     display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     height: 280px !important;
     width: 100% !important;
     margin-top: 16px !important;
+    aspect-ratio: 1 / 1 !important; /* Square maintain karo */
+    max-width: 280px !important; /* Maximum width limit */
+    margin-left: auto !important;
+    margin-right: auto !important;
+    overflow: hidden !important;
   }
+
+  /* Canvas ko square banao */
+  .hero-visual canvas,
+  .hero-visual .three-canvas,
+  .hero-visual > div {
+    width: 240px !important;
+    height: 240px !important;
+    max-width: 80vw !important;
+    max-height: 80vw !important;
+    margin: 0 auto !important;
+  }
+
 
   /* About */
   .about-grid { 
