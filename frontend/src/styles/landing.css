@@ -1,3 +1,86 @@
+/* Top pe ADD karo — override everything */
+html, body, #root {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  height: auto !important;
+  min-height: 100vh !important;
+}
+
+/* Remove any existing overflow:hidden */
+.landing-page {
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  min-height: 100vh;
+  height: auto !important;
+}
+/* ============================================
+   CRITICAL TOUCH & SCROLL FIXES — TOP PRIORITY
+   ============================================ */
+
+html, body, #root {
+  height: auto;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+/* ✅ REMOVE cursor: none on mobile/touch */
+.landing-page,
+.landing-page * {
+  cursor: auto; /* Default cursor for touch */
+}
+
+/* Desktop pe custom cursor */
+@media (hover: hover) and (pointer: fine) {
+  .landing-page,
+  .landing-page * {
+    cursor: none !important;
+  }
+  
+  .cursor-dot,
+  .cursor-ring {
+    display: block;
+  }
+}
+
+/* Mobile pe default cursor + no custom cursor */
+@media (hover: none) or (pointer: coarse) {
+  .landing-page,
+  .landing-page * {
+    cursor: auto !important;
+  }
+  
+  .cursor-dot,
+  .cursor-ring {
+    display: none !important;
+  }
+}
+
+/* Ensure all sections allow touch */
+section, div, article, main {
+  touch-action: pan-y;
+  -webkit-touch-callout: default;
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+
+/* Canvas never blocks */
+canvas {
+  touch-action: none !important;
+  pointer-events: none !important;
+}
+
+/* Buttons/links clickable */
+a, button, [role="button"], input, textarea, select {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* ============================================
+   EXISTING STYLES BELOW...
+   ============================================ */
 /* ============================================
    MOBILE SCROLL FIX — ADD AT TOP
    ============================================ */

@@ -22,14 +22,20 @@ export default function LandingPage() {
   const scrollRafRef = useRef(null);
   const cursorRafRef = useRef(null);
 
-  const [isMobile, setIsMobile] = useState(
-    typeof window !== "undefined" ? window.innerWidth <= 768 : false
-  );
+  // ✅ Better mobile detection
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.innerWidth <= 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  });
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const checkMobile = () => {
+      const mobile = window.innerWidth <= 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      setIsMobile(mobile);
+    };
+    
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const prefersReducedMotion =
@@ -37,7 +43,6 @@ export default function LandingPage() {
       ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
       : false;
   
-  // ✅ Canvas sirf desktop pe
   const enableCanvas = !isMobile && !prefersReducedMotion;
 
   // Page title
@@ -48,7 +53,7 @@ export default function LandingPage() {
     };
   }, []);
 
-  // Custom cursor — desktop only
+  // ✅ Desktop cursor only
   useEffect(() => {
     if (isMobile) return;
 
@@ -110,13 +115,12 @@ export default function LandingPage() {
     };
   }, [isMobile]);
 
-  // Particle Canvas — desktop only, with touch-action fix
+  // Particle Canvas — desktop only
   useEffect(() => {
     if (!enableCanvas) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     
-    // ✅ CRITICAL: Allow scroll through canvas
     canvas.style.touchAction = "pan-y";
     
     const ctx = canvas.getContext("2d", { alpha: true });
@@ -204,12 +208,15 @@ export default function LandingPage() {
         fontFamily: "'DM Sans', sans-serif",
         background: "#030810",
         overflowX: "hidden",
-        // ✅ CRITICAL: Allow vertical scroll
         overflowY: "auto",
         minHeight: "100vh",
         position: "relative",
+        // ✅ CRITICAL: Allow touch scroll
+        touchAction: "pan-y",
+        WebkitOverflowScrolling: "touch",
       }}
     >
+      {/* Desktop cursor only */}
       {!isMobile &&
         createPortal(
           <>
@@ -217,7 +224,7 @@ export default function LandingPage() {
               ref={cursorDotRef}
               className={`cursor-dot ${cursorState.hovering ? "cursor-dot--hover" : ""}`}
               style={{ 
-                zIndex: 2147483647,
+                zIndex: 999999,
                 position: "fixed",
                 top: 0,
                 left: 0,
@@ -229,7 +236,7 @@ export default function LandingPage() {
               ref={cursorRingRef}
               className={`cursor-ring ${cursorState.hovering ? "cursor-ring--hover" : ""}`}
               style={{ 
-                zIndex: 2147483646,
+                zIndex: 999998,
                 position: "fixed",
                 top: 0,
                 left: 0,
@@ -245,7 +252,7 @@ export default function LandingPage() {
           document.body
         )}
 
-      {/* ✅ Canvas with touch-action fix */}
+      {/* Canvas — desktop only */}
       {enableCanvas && (
         <canvas
           ref={canvasRef}
@@ -254,8 +261,8 @@ export default function LandingPage() {
             top: 0,
             left: 0,
             zIndex: 0,
-            pointerEvents: "none", // Let clicks pass through
-            touchAction: "pan-y", // Allow vertical scroll
+            pointerEvents: "none",
+            touchAction: "pan-y",
           }}
         />
       )}
