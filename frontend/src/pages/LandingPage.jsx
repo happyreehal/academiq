@@ -11,73 +11,61 @@ import Developer from "../components/landing/Developer";
 import CTA from "../components/landing/CTA";
 import Marquee from "../components/landing/Marquee";
 
+// ✅ Detect mobile ONCE at module level
+const detectMobile = () => {
+  if (typeof window === "undefined") return false;
+  return window.innerWidth <= 768 ||
+         'ontouchstart' in window ||
+         navigator.maxTouchPoints > 0 ||
+         /Mobi|Android/i.test(navigator.userAgent);
+};
+
 export default function LandingPage() {
   const [scrollY, setScrollY] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [cursorState, setCursorState] = useState({ hovering: false, label: "" });
+  const [isMobile] = useState(detectMobile);
+
   const canvasRef = useRef(null);
   const cursorDotRef = useRef(null);
   const cursorRingRef = useRef(null);
   const mousePosRef = useRef({ x: 0, y: 0 });
   const scrollRafRef = useRef(null);
-  const cursorRafRef = useRef(null);
-
-  // ✅ Better mobile detection
-  const [isMobile, setIsMobile] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return window.innerWidth <= 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  });
-
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth <= 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      setIsMobile(mobile);
-    };
-    
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   const prefersReducedMotion =
-    typeof window !== "undefined"
-      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      : false;
-  
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   const enableCanvas = !isMobile && !prefersReducedMotion;
 
   // Page title
   useEffect(() => {
     document.title = "AcademiQ | Smart Question Paper Portal";
-    return () => {
-      document.title = "AcademiQ";
-    };
+    return () => { document.title = "AcademiQ"; };
   }, []);
 
-  // ✅ Desktop cursor only
+  // ✅ Cursor — desktop only, single RAF
   useEffect(() => {
     if (isMobile) return;
 
-    let dotX = 0, dotY = 0;
-    let ringX = 0, ringY = 0;
+    let dotX = 0, dotY = 0, ringX = 0, ringY = 0;
     let targetX = 0, targetY = 0;
+    let rafId;
     let isActive = true;
 
     const animate = () => {
       if (!isActive) return;
+      dotX += (targetX - dotX) * 0.25;
+      dotY += (targetY - dotY) * 0.25;
+      ringX += (targetX - ringX) * 0.1;
+      ringY += (targetY - ringY) * 0.1;
 
-      dotX += (targetX - dotX) * 0.2;
-      dotY += (targetY - dotY) * 0.2;
-      ringX += (targetX - ringX) * 0.08;
-      ringY += (targetY - ringY) * 0.08;
+      if (cursorDotRef.current)
+        cursorDotRef.current.style.transform = `translate3d(${dotX}px,${dotY}px,0) translate(-50%,-50%)`;
+      if (cursorRingRef.current)
+        cursorRingRef.current.style.transform = `translate3d(${ringX}px,${ringY}px,0) translate(-50%,-50%)`;
 
-      if (cursorDotRef.current) {
-        cursorDotRef.current.style.transform = `translate3d(${dotX}px, ${dotY}px, 0) translate(-50%, -50%)`;
-      }
-      if (cursorRingRef.current) {
-        cursorRingRef.current.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
-      }
-
-      cursorRafRef.current = requestAnimationFrame(animate);
+      rafId = requestAnimationFrame(animate);
     };
 
     const handleMouse = (e) => {
@@ -87,45 +75,34 @@ export default function LandingPage() {
     };
 
     const handleMouseOver = (e) => {
-      const target = e.target;
-      const isLink = target.closest("a");
-      const isButton = target.closest("button");
-      const isHoverTarget = target.closest(".hover-target");
-
-      if (isButton) {
-        setCursorState({ hovering: true, label: "Click" });
-      } else if (isLink) {
-        setCursorState({ hovering: true, label: "View" });
-      } else if (isHoverTarget) {
-        setCursorState({ hovering: true, label: "" });
-      } else {
-        setCursorState({ hovering: false, label: "" });
-      }
+      const t = e.target;
+      if (t.closest("button")) setCursorState({ hovering: true, label: "Click" });
+      else if (t.closest("a")) setCursorState({ hovering: true, label: "View" });
+      else if (t.closest(".hover-target")) setCursorState({ hovering: true, label: "" });
+      else setCursorState({ hovering: false, label: "" });
     };
 
     window.addEventListener("mousemove", handleMouse, { passive: true });
     window.addEventListener("mouseover", handleMouseOver, { passive: true });
-    cursorRafRef.current = requestAnimationFrame(animate);
+    rafId = requestAnimationFrame(animate);
 
     return () => {
       isActive = false;
       window.removeEventListener("mousemove", handleMouse);
       window.removeEventListener("mouseover", handleMouseOver);
-      if (cursorRafRef.current) cancelAnimationFrame(cursorRafRef.current);
+      cancelAnimationFrame(rafId);
     };
   }, [isMobile]);
 
-  // Particle Canvas — desktop only
+  // ✅ Canvas particles — desktop only, throttled
   useEffect(() => {
     if (!enableCanvas) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
-    canvas.style.touchAction = "pan-y";
-    
+
     const ctx = canvas.getContext("2d", { alpha: true });
-    const dpr = Math.min(window.devicePixelRatio, 1.5);
-    
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+
     const setSize = () => {
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
@@ -135,7 +112,7 @@ export default function LandingPage() {
     };
     setSize();
 
-    const particles = Array.from({ length: 30 }, () => ({
+    const particles = Array.from({ length: 25 }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
       r: Math.random() * 1.2 + 0.3,
@@ -152,10 +129,9 @@ export default function LandingPage() {
       animId = requestAnimationFrame(animate);
       if (!isVisible) return;
       frameCount++;
-      if (frameCount % 2 !== 0) return;
+      if (frameCount % 2 !== 0) return; // 30fps
 
-      ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
-      
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       particles.forEach((p) => {
         p.x += p.dx; p.y += p.dy;
         if (p.x < 0 || p.x > window.innerWidth) p.dx *= -1;
@@ -175,7 +151,7 @@ export default function LandingPage() {
 
     const resize = () => setSize();
     window.addEventListener("resize", resize);
-    
+
     return () => {
       cancelAnimationFrame(animId);
       observer.disconnect();
@@ -183,7 +159,7 @@ export default function LandingPage() {
     };
   }, [enableCanvas]);
 
-  // Throttled scroll
+  // Scroll throttled
   const handleScroll = useCallback(() => {
     if (scrollRafRef.current) return;
     scrollRafRef.current = requestAnimationFrame(() => {
@@ -194,81 +170,48 @@ export default function LandingPage() {
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true });
-    setTimeout(() => setIsLoaded(true), 100);
+    const t = setTimeout(() => setIsLoaded(true), 100);
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      clearTimeout(t);
       if (scrollRafRef.current) cancelAnimationFrame(scrollRafRef.current);
     };
   }, [handleScroll]);
 
   return (
-    <div
-      className="landing-page"
-      style={{
-        fontFamily: "'DM Sans', sans-serif",
-        background: "#030810",
-        overflowX: "hidden",
-        overflowY: "auto",
-        minHeight: "100vh",
-        position: "relative",
-        // ✅ CRITICAL: Allow touch scroll
-        touchAction: "pan-y",
-        WebkitOverflowScrolling: "touch",
-      }}
-    >
-      {/* Desktop cursor only */}
-      {!isMobile &&
-        createPortal(
-          <>
-            <div
-              ref={cursorDotRef}
-              className={`cursor-dot ${cursorState.hovering ? "cursor-dot--hover" : ""}`}
-              style={{ 
-                zIndex: 999999,
-                position: "fixed",
-                top: 0,
-                left: 0,
-                pointerEvents: "none",
-                willChange: "transform",
-              }}
-            />
-            <div
-              ref={cursorRingRef}
-              className={`cursor-ring ${cursorState.hovering ? "cursor-ring--hover" : ""}`}
-              style={{ 
-                zIndex: 999998,
-                position: "fixed",
-                top: 0,
-                left: 0,
-                pointerEvents: "none",
-                willChange: "transform",
-              }}
-            >
-              {cursorState.label && (
-                <span className="cursor-label">{cursorState.label}</span>
-              )}
-            </div>
-          </>,
-          document.body
-        )}
+    <div className="landing-page" style={{
+      fontFamily: "'DM Sans', sans-serif",
+      background: "#030810",
+      minHeight: "100vh",
+      position: "relative",
+    }}>
+      {!isMobile && createPortal(
+        <>
+          <div
+            ref={cursorDotRef}
+            className={`cursor-dot ${cursorState.hovering ? "cursor-dot--hover" : ""}`}
+            style={{ position: "fixed", top: 0, left: 0, pointerEvents: "none", zIndex: 999999, willChange: "transform" }}
+          />
+          <div
+            ref={cursorRingRef}
+            className={`cursor-ring ${cursorState.hovering ? "cursor-ring--hover" : ""}`}
+            style={{ position: "fixed", top: 0, left: 0, pointerEvents: "none", zIndex: 999998, willChange: "transform" }}
+          >
+            {cursorState.label && <span className="cursor-label">{cursorState.label}</span>}
+          </div>
+        </>,
+        document.body
+      )}
 
-      {/* Canvas — desktop only */}
       {enableCanvas && (
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            zIndex: 0,
-            pointerEvents: "none",
-            touchAction: "pan-y",
-          }}
-        />
+        <canvas ref={canvasRef} style={{
+          position: "fixed", top: 0, left: 0,
+          zIndex: 0, pointerEvents: "none",
+        }} />
       )}
 
       <Navbar scrollY={scrollY} />
-      <Hero isLoaded={isLoaded} mousePosRef={mousePosRef} />
+      <Hero isLoaded={isLoaded} mousePosRef={mousePosRef} isMobile={isMobile} />
       <Marquee />
       <Features />
       <About />

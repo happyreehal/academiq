@@ -1,26 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-/* ✅ CRITICAL FIX: Override any overflow:hidden */
-html, body, #root {
-  overflow-y: auto !important;
-  overflow-x: hidden;
-  height: auto !important;
-  min-height: 100vh;
-  /* Ensure scroll works */
-  overscroll-behavior-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
   margin: 0;
   font-family: 'DM Sans', sans-serif;
   background: #030810;
   color: white;
-  /* Remove any overflow:hidden from here */
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
 }
