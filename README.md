@@ -6,7 +6,7 @@ The application is built using a decoupled architecture with a Python-based robu
 
 ## 🚀 Live Demo
 🎉 The dynamic platform web application is fully deployed and production-ready:
-🔗 [Launch AcademiQ Platform](https://academiq-sigma.vercel.app)[cite: 1]
+🔗 [Launch AcademiQ Platform](https://academiq-sigma.vercel.app)
 
 ---
 
