@@ -62,9 +62,10 @@ academiq/
 │   │   ├── package.json        # Frontend commands, building scripts & modules
 │   │   ├── vercel.json         # Rewrites routing layout rules for Vercel deployment
 │   │   └── vite.config.js      # Core compilation configuration properties for Vite
-🚀 Step-by-Step Local Workspace Configuration
+## 🚀 Step-by-Step Local Workspace Configuration
 Follow these command groups sequentially in isolated terminals to run the ecosystem:
-STEP 1 — Launch the API Microservice Backend
+
+## STEP 1 — Launch the API Microservice Backend
 1.Open a new terminal window on your desktop.
 2.Navigate directly inside the backend working environment:
 Bash   cd C:\Users\happy\Desktop\academiq\backend
