@@ -69,28 +69,28 @@ Follow these command groups sequentially in isolated terminals to run the ecosys
 
 ## STEP 1 — Launch the API Microservice Backend
 
-1.Open a new terminal window on your desktop.
+1. Open a new terminal window on your desktop.
 
-2.Navigate directly inside the backend working environment:
+2. Navigate directly inside the backend working environment:
 Bash   cd C:\Users\happy\Desktop\academiq\backend
 
-3.Install required Python packages listed in your setup schema:
+3. Install required Python packages listed in your setup schema:
 Bash   pip install -r requirements.txt
 
-4.Fire up the core backend microservice instance:
+4. Fire up the core backend microservice instance:
 Bash   python main.py
 The backend engine starts running, exposing API access arrays locally.
 
 ## STEP 2 — Launch the React + Vite Frontend UI
-1.Open a completely secondary independent terminal window.
+1. Open a completely secondary independent terminal window.
 
-2.Change paths directly into the client folder structure:
+2. Change paths directly into the client folder structure:
 Bash   cd C:\Users\happy\Desktop\academiq\frontend
 
-3.Fetch the required node modules package structures securely:
+3. Fetch the required node modules package structures securely:
 Bash   npm install
 
-4.Initiate the blazing-fast Vite local runtime environment:
+4. Initiate the blazing-fast Vite local runtime environment:
 Bash   npm run dev
 Your terminal will prompt a local IP stream link (usually http://localhost:5173). Launch it in your browser!
 
