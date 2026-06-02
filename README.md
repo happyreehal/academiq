@@ -107,26 +107,29 @@ The landing blocks (like HowItWorks.jsx) utilize advanced UI physics engine call
 ## ❓ Common Troubleshooting & Issues
 
 ## 📌 Error: JWT Secret Missing or Server Terminating on Run
-Reason: The backend scripts cannot bind private configuration variables.
-Fix: Ensure a .env file exists directly inside your backend/ folder specifying valid server keys and database connectivity string properties.
+# Reason: 
+The backend scripts cannot bind private configuration variables.
+# Fix:
+Ensure a .env file exists directly inside your backend/ folder specifying valid server keys and database connectivity string properties.
 
 ## 📌 Error: CORS Blocked when React requests backend assets
 Reason: Cross-Origin rules are blocking local calls across port 5173 and the backend execution port.
-# Fix: Ensure your backend configuration setup registers standard CORS allow-origin parameters accepting localized inputs.
+# Fix:
+Ensure your backend configuration setup registers standard CORS allow-origin parameters accepting localized inputs.
 
 ## 📌 Error: Vite command not found or build script crash
 Reason: node_modules are absent or incorrectly cached in the directory.
-# Fix: Run npm install directly inside your frontend/ folder, then re-trigger npm run dev.
+# Fix: 
+Run npm install directly inside your frontend/ folder, then re-trigger npm run dev.
 
 ## 🛠️ Complete Full-Stack Tech Stack
-|Layer	Framework | Tech Used	Implementation |Scope
-Frontend UI Core|	React.js 18 + Vite Engine|	Drives modular UI components, ultra fast compilation, and smooth page states.|
-|Motion Physics	|Framer Motion Scripting|	Manages asynchronous interactive page scaling, rotations, and UI loading transitions.|
-|Backend API	|Python (FastAPI / Flask Framework)|Drives multi-tier endpoints, routes handling pipelines, and powers predictive logic|
-
-|Security Operations|	PyJWT Routing Architecture	|Drives secure cookie states, access payload encryption, and user authorization|
-
-|Cloud Infrastructures	|Vercel Engine Deployment Ecosystem	|Distributes high-speed static frontend routes and handles dynamic redirection rules|
+| Layer | Framework / Tech Used | Implementation Scope |
+| :--- | :--- | :--- |
+| **Frontend UI Core** | `React.js 18` + `Vite Engine` | Drives modular UI components, ultra-fast compilation, and smooth page states. |
+| **Motion Physics** | `Framer Motion Scripting` | Manages asynchronous interactive page scaling, rotations, and UI loading transitions. |
+| **Backend API** | `Python (FastAPI / Flask Framework)` | Drives multi-tier endpoints, routes handling pipelines, and powers predictive logic. |
+| **Security Operations** | `PyJWT Routing Architecture` | Drives secure cookie states, access payload encryption, and user authorization. |
+| **Cloud Infrastructure**| `Vercel Engine Ecosystem` | Distributes high-speed static frontend routes and handles dynamic redirection rules. |
 
 ## 📝 LicenseMIT — 
 Available completely for personal portfolio staging, educational scaling, and code modification.
