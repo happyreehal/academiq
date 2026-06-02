@@ -26,6 +26,7 @@ Install these core development runtimes on your machine before initiating local 
 Based on your local workspace setup, the directory structure maps out systematically:
 
 ### 1. Root Directory & Backend Ecosystem (`backend`)
+```text
 academiq/
 ├── backend/
 │   ├── models/
@@ -61,6 +62,7 @@ academiq/
 │   │   ├── package.json        # Frontend commands, building scripts & modules
 │   │   ├── vercel.json         # Rewrites routing layout rules for Vercel deployment
 │   │   └── vite.config.js      # Core compilation configuration properties for Vite
+```
 
  ## 🚀 Step-by-Step Local Workspace Configuration
 Follow these command groups sequentially in isolated terminals to run the ecosystem:
@@ -117,17 +119,14 @@ Reason: node_modules are absent or incorrectly cached in the directory.
 # Fix: Run npm install directly inside your frontend/ folder, then re-trigger npm run dev.
 
 ## 🛠️ Complete Full-Stack Tech Stack
-Layer	Framework / Tech Used	Implementation Scope
-Frontend UI Core	React.js 18 + Vite Engine	Drives modular UI components, ultra-fast compilation, and smooth page states.
-Motion Physics	Framer Motion Scripting	Manages asynchronous interactive page scaling, rotations, and UI loading transitions.
-Backend API	Python (FastAPI / Flask Framework)	
-Drives multi-tier endpoints, routes handling pipelines, and powers predictive logic
+|Layer	Framework | Tech Used	Implementation |Scope
+Frontend UI Core|	React.js 18 + Vite Engine|	Drives modular UI components, ultra fast compilation, and smooth page states.|
+|Motion Physics	|Framer Motion Scripting|	Manages asynchronous interactive page scaling, rotations, and UI loading transitions.|
+|Backend API	|Python (FastAPI / Flask Framework)|Drives multi-tier endpoints, routes handling pipelines, and powers predictive logic|
 
-Security Operations	PyJWT Routing Architecture	
-Drives secure cookie states, access payload encryption, and user authorization
+|Security Operations|	PyJWT Routing Architecture	|Drives secure cookie states, access payload encryption, and user authorization|
 
-Cloud Infrastructures	Vercel Engine Deployment Ecosystem	
-Distributes high-speed static frontend routes and handles dynamic redirection rules
+|Cloud Infrastructures	|Vercel Engine Deployment Ecosystem	|Distributes high-speed static frontend routes and handles dynamic redirection rules|
 
 ## 📝 LicenseMIT — 
 Available completely for personal portfolio staging, educational scaling, and code modification.
